@@ -1,0 +1,8 @@
+#datasetID finalState XS BF filterEff relUncertainty
+# I think here there might be a conversion mistake-- DG 2014-07-07
+169670	0	0.1897	1.000000	1.000000 1.00
+169671	0	0.1897	1.000000	1.000000 1.00
+169672  0   0.01568 1.000000    1.000000 1.00
+169673  0   0.01568 1.000000    1.000000 1.00
+
+
