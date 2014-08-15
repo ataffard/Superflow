@@ -59,6 +59,11 @@ namespace sflow {
         m_varInt = nullptr;
         m_varBool = nullptr;
 
+        m_varFloat_array = nullptr;
+        m_varDouble_array = nullptr;
+        m_varInt_array = nullptr;
+        m_varBool_array = nullptr;
+
         m_sysState = SupersysState::closed;
         m_sysTemplate.reset();
         m_sys_hasNiceName = false;
@@ -68,6 +73,8 @@ namespace sflow {
 
         m_singleEventSyst = NtSys_NOM;
         m_RunSyst = new Supersys(SupersysType::central);
+
+        m_trigObj = nullptr;
 
         m_data_periods[ATLAS_stream::Egamma][ATLAS_period::A] = "periodA.physics_Egamma.PhysCont";
         m_data_periods[ATLAS_stream::Egamma][ATLAS_period::B] = "periodB.physics_Egamma.PhysCont";
@@ -473,13 +480,13 @@ namespace sflow {
         // determine number of event systematics
         if (m_runMode == SuperflowRunMode::all_syst) {
             for (int i = 0; i < m_sysStore.size(); i++) {
-                if (m_sysStore[i].type == SupersysType::weight) {
-                    index_weight_sys.push_back(i);
+                if (m_sysStore[i].type == SupersysType::event) {
+                    index_event_sys.push_back(i);
                 }
             }
         }
 
-        // Set correct event systematic
+        // Set single event systematic
         if (m_runMode == SuperflowRunMode::single_event_syst) {
             for (int i = 0; i < m_sysStore.size(); i++) {
                 if (m_sysStore[i].type == SupersysType::event && m_sysStore[i].event_syst == m_singleEventSyst) {
@@ -492,6 +499,7 @@ namespace sflow {
 
         cout << app_name << "in Begin()" << endl;
         SusyNtAna::Begin(0);
+
         string period = "Moriond";
         bool useReweightUtils = false;
         m_trigObj = new DilTrigLogic(period, useReweightUtils);
@@ -517,6 +525,8 @@ namespace sflow {
             m_countWeights = false;
             m_super_isData = true;
 
+            // output file name
+            stringstream sfile_name_;
             sfile_name_ << "NOM_";
 
             size_t find_period = m_sample.find("period");
@@ -558,6 +568,7 @@ namespace sflow {
         }
         else if (m_runMode == SuperflowRunMode::single_event_syst) {
             if (m_NtSys_to_string.count(m_singleEventSyst) != 0) {
+                stringstream sfile_name_; // output file name
                 sfile_name_ << m_NtSys_to_string[m_singleEventSyst] << "_" << nt.evt()->mcChannel << ".root";
                 cout << app_name << "Run mode: SuperflowRunMode::single_event_syst" << endl;
                 cout << app_name << "Setting output file name to: " << sfile_name_.str() << endl;
@@ -569,6 +580,7 @@ namespace sflow {
             }
         }
         else if (nt.evt()->isMC) {
+            stringstream sfile_name_; // output file name
             sfile_name_ << "NOM_" << nt.evt()->mcChannel << ".root";
 
             cout << app_name << "Run mode: SuperflowRunMode::nominal_and_weight_syst" << endl;
@@ -595,7 +607,8 @@ namespace sflow {
 
         // initialize output tree
         m_HFT = new TTree(tree_name.str().data(), tree_name.str().data());
-        m_HFT->SetDirectory(0); // make tree "memory resident"
+        m_HFT->SetDirectory(m_outputFile);
+        m_HFT->SetAutoFlush(-16777216L);
 
         // define number of trees
         m_tree_leafs_size = m_varType.size() + 2 * index_weight_sys.size();// 2nd term may be zero
@@ -607,50 +620,113 @@ namespace sflow {
         m_varBool = new Bool_t[m_varType.size()];
 
         // initialize HFT
-        for (int v_ = 0; v_ < m_tree_leafs_size; v_++) m_varFloat[v_] = 1.0;
-        for (int v_ = 0; v_ < m_varType.size(); v_++) m_varDouble[v_] = 1.0;
-        for (int v_ = 0; v_ < m_varType.size(); v_++) m_varInt[v_] = 0;
-        for (int v_ = 0; v_ < m_varType.size(); v_++) m_varBool[v_] = false;
+        for (int i = 0; i < m_tree_leafs_size; i++) m_varFloat[i] = 1.0;
+        for (int i = 0; i < m_varType.size(); i++) m_varDouble[i] = 1.0;
+        for (int i = 0; i < m_varType.size(); i++) m_varInt[i] = 0;
+        for (int i = 0; i < m_varType.size(); i++) m_varBool[i] = false;
 
-        for (int v_ = 0; v_ < m_varType.size(); v_++) {
-            switch (m_varType[v_]) {
+        for (int i = 0; i < m_varType.size(); i++) {
+            switch (m_varType[i]) {
                 case SupervarType::sv_float: {
-                    string leaflist_ = m_varHFTName[v_] + "/F";
-                    m_HFT->Branch(m_varHFTName[v_].data(), m_varFloat + v_, leaflist_.data());
+                    string leaflist_ = m_varHFTName[i] + "/F";
+                    m_HFT->Branch(m_varHFTName[i].data(), m_varFloat + i, leaflist_.data(), 65536);
                     break;
                 }
                 case SupervarType::sv_double: {
-                    string leaflist_ = m_varHFTName[v_] + "/D";
-                    m_HFT->Branch(m_varHFTName[v_].data(), m_varDouble + v_, leaflist_.data());
+                    string leaflist_ = m_varHFTName[i] + "/D";
+                    m_HFT->Branch(m_varHFTName[i].data(), m_varDouble + i, leaflist_.data(), 65536);
                     break;
                 }
                 case SupervarType::sv_int: {
-                    string leaflist_ = m_varHFTName[v_] + "/I";
-                    m_HFT->Branch(m_varHFTName[v_].data(), m_varInt + v_, leaflist_.data());
+                    string leaflist_ = m_varHFTName[i] + "/I";
+                    m_HFT->Branch(m_varHFTName[i].data(), m_varInt + i, leaflist_.data(), 65536);
                     break;
                 }
                 case SupervarType::sv_bool: {
-                    string leaflist_ = m_varHFTName[v_] + "/O";
-                    m_HFT->Branch(m_varHFTName[v_].data(), m_varBool + v_, leaflist_.data());
+                    string leaflist_ = m_varHFTName[i] + "/O";
+                    m_HFT->Branch(m_varHFTName[i].data(), m_varBool + i, leaflist_.data(), 65536);
                     break;
                 }
             }
         }
 
-        for (int w_ = 0; w_ < index_weight_sys.size(); w_++) {
-            string syst_var_name_up = weight_prefix + m_sysStore[index_weight_sys[w_]].tree_name + weight_suffix_up;
-            string syst_var_name_down = weight_prefix + m_sysStore[index_weight_sys[w_]].tree_name + weight_suffix_down;
+        for (int i = 0; i < index_weight_sys.size(); i++) {
+            string syst_var_name_up = weight_prefix + m_sysStore[index_weight_sys[i]].tree_name + weight_suffix_up;
+            string syst_var_name_down = weight_prefix + m_sysStore[index_weight_sys[i]].tree_name + weight_suffix_down;
 
             string leaflist_up = syst_var_name_up + "/F";
             string leaflist_down = syst_var_name_down + "/F";
 
             cout << app_name << "Weight var trees: " << syst_var_name_up << ", " << syst_var_name_down << endl;
 
-            m_HFT->Branch(syst_var_name_up.data(), m_varFloat + m_weight_leaf_offset + 2 * w_, leaflist_up.data());
-            m_HFT->Branch(syst_var_name_down.data(), m_varFloat + m_weight_leaf_offset + 2 * w_ + 1, leaflist_down.data());
+            m_HFT->Branch(syst_var_name_up.data(), m_varFloat + m_weight_leaf_offset + 2 * i, leaflist_up.data(), 65536);
+            m_HFT->Branch(syst_var_name_down.data(), m_varFloat + m_weight_leaf_offset + 2 * i + 1, leaflist_down.data(), 65536);
+        }
+
+        // event systematics are complicated.
+        // Make an output file for each event systematic.
+        if (m_runMode == SuperflowRunMode::all_syst) {
+
+            m_output_array = new TFile*[index_event_sys.size()];
+
+            for (int i = 0; i < index_event_sys.size(); i++) {
+                stringstream sfile_name_; // output file name
+                sfile_name_ << m_NtSys_to_string[m_sysStore[index_event_sys[i]].event_syst] << "_" << nt.evt()->mcChannel << ".root";
+                m_output_array[i] = new TFile(sfile_name_.str().data(), "RECREATE");
+            }
+
+            m_HFT_array = new TTree*[index_event_sys.size()];
+            for (int i = 0; i < index_event_sys.size(); i++) {
+                m_HFT_array[i] = new TTree(tree_name.str().data(), tree_name.str().data());
+                m_HFT_array[i]->SetDirectory(m_output_array[i]);
+                m_HFT_array[i]->SetAutoFlush(-16777216L);
+            }
+
+            m_varFloat_array = new Float_t*[index_event_sys.size()];
+            m_varDouble_array = new Double_t*[index_event_sys.size()];
+            m_varInt_array = new Int_t*[index_event_sys.size()];
+            m_varBool_array = new Bool_t*[index_event_sys.size()];
+
+            for (int i = 0; i < index_event_sys.size(); i++) {
+                m_varFloat_array[i] = new Float_t[m_varType.size()];
+                m_varDouble_array[i] = new Double_t[m_varType.size()];
+                m_varInt_array[i] = new Int_t[m_varType.size()];
+                m_varBool_array[i] = new Bool_t[m_varType.size()];
+
+                for (int j = 0; j < m_varType.size(); j++) m_varFloat_array[i][j] = 1.0;
+                for (int j = 0; j < m_varType.size(); j++) m_varDouble_array[i][j] = 1.0;
+                for (int j = 0; j < m_varType.size(); j++) m_varInt_array[i][j] = 0;
+                for (int j = 0; j < m_varType.size(); j++) m_varBool_array[i][j] = false;
+            }
+
+            for (int i = 0; i < index_event_sys.size(); i++) {
+                for (int j = 0; j < m_varType.size(); j++) {
+                    switch (m_varType[j]) {
+                        case SupervarType::sv_float: {
+                            string leaflist_ = m_varHFTName[j] + "/F";
+                            m_HFT_array[i]->Branch(m_varHFTName[j].data(), m_varFloat_array[i] + j, leaflist_.data(), 65536);
+                            break;
+                        }
+                        case SupervarType::sv_double: {
+                            string leaflist_ = m_varHFTName[j] + "/D";
+                            m_HFT_array[i]->Branch(m_varHFTName[j].data(), m_varDouble_array[i] + j, leaflist_.data(), 65536);
+                            break;
+                        }
+                        case SupervarType::sv_int: {
+                            string leaflist_ = m_varHFTName[j] + "/I";
+                            m_HFT_array[i]->Branch(m_varHFTName[j].data(), m_varInt_array[i] + j, leaflist_.data(), 65536);
+                            break;
+                        }
+                        case SupervarType::sv_bool: {
+                            string leaflist_ = m_varHFTName[j] + "/O";
+                            m_HFT_array[i]->Branch(m_varHFTName[j].data(), m_varBool_array[i] + j, leaflist_.data(), 65536);
+                            break;
+                        }
+                    }
+                }
+            }
         }
     }
-
 
     Bool_t Superflow::Process(Long64_t entry)
     {
@@ -723,6 +799,7 @@ namespace sflow {
             } break;
             case SuperflowRunMode::nominal:
             case SuperflowRunMode::single_event_syst: {
+
                 clearObjects();
                 selectObjects(m_RunSyst->event_syst, removeLepsFromIso, TauID_medium); // always select with nominal? (to compute event flags)
 
@@ -781,67 +858,60 @@ namespace sflow {
                     delete sl_;
                     delete m_weights;
                 }
+
             } break;
             case SuperflowRunMode::all_syst: {
-                clearObjects();
-                selectObjects(m_RunSyst->event_syst, removeLepsFromIso, TauID_medium); // always select with nominal? (to compute event flags)
+                for (int i = 0; i < index_event_sys.size(); i++) {
+                    clearObjects();
+                    delete m_RunSyst;
 
-                EventFlags eventFlags = computeEventFlags();
-                if (eventFlags.passAllEventCriteria()) {
+                    m_RunSyst = &m_sysStore[index_event_sys[i]];
 
-                    m_weights = new Superweight();
-                    Superlink* sl_ = new Superlink;
-                    attach_superlink(sl_);
+                    selectObjects(m_RunSyst->event_syst, removeLepsFromIso, TauID_medium); // always select with nominal? (to compute event flags)
 
-                    bool pass_cuts = true; // loop over and appply the cuts in m_CutStore.
+                    EventFlags eventFlags = computeEventFlags();
+                    if (eventFlags.passAllEventCriteria()) {
 
-                    if (m_countWeights) {
-                        assignNonStaticWeightComponents(nt, *m_mcWeighter, m_signalLeptons, m_baseJets, m_RunSyst, m_weights);
-                    }
+                        m_weights = new Superweight();
+                        Superlink* sl_ = new Superlink;
+                        attach_superlink(sl_);
 
-                    if (m_LambdaCutStore.size() > 0) {
-                        for (int i = 0; i < m_LambdaCutStore.size(); i++) {
-                            pass_cuts = m_LambdaCutStore[i](sl_); // run the cut function
+                        bool pass_cuts = true; // loop over and appply the cuts in m_CutStore.
 
-                            if (pass_cuts) {
-                                m_RawCounter[i]++;
-                                if (m_countWeights) m_WeightCounter[i] += m_weights->product();
-                            }
-                            else {
-                                break;
+                        if (m_LambdaCutStore.size() > 0) {
+                            for (int i = 0; i < m_LambdaCutStore.size(); i++) {
+                                pass_cuts = m_LambdaCutStore[i](sl_); // run the cut function
+                                if (!pass_cuts) break;
                             }
                         }
-                    }
 
-                    if (pass_cuts) {
-                        if (!m_countWeights) {
+                        if (pass_cuts) {
                             assignNonStaticWeightComponents(nt, *m_mcWeighter, m_signalLeptons, m_baseJets, m_RunSyst, m_weights);
-                            m_WeightCounter[m_LambdaCutStore.size() - 1] += m_weights->product();
-                        }
-
-                        // FILL_HFTs
-                        for (int v_ = 0; v_ < m_varType.size(); v_++) {
-                            switch (m_varType[v_]) {
-                                case SupervarType::sv_float: {
-                                    m_varFloat[v_] = m_varExprFloat[v_](sl_, vf_); break;
-                                }
-                                case SupervarType::sv_double: {
-                                    m_varDouble[v_] = m_varExprDouble[v_](sl_, vd_); break;
-                                }
-                                case SupervarType::sv_int: {
-                                    m_varInt[v_] = m_varExprInt[v_](sl_, vi_); break;
-                                }
-                                case SupervarType::sv_bool: {
-                                    m_varBool[v_] = m_varExprBool[v_](sl_, vb_); break;
+                            // FILL_HFTs
+                            for (int v_ = 0; v_ < m_varType.size(); v_++) {
+                                switch (m_varType[v_]) {
+                                    case SupervarType::sv_float: {
+                                        m_varFloat_array[i][v_] = m_varExprFloat[v_](sl_, vf_); break;
+                                    }
+                                    case SupervarType::sv_double: {
+                                        m_varDouble_array[i][v_] = m_varExprDouble[v_](sl_, vd_); break;
+                                    }
+                                    case SupervarType::sv_int: {
+                                        m_varInt_array[i][v_] = m_varExprInt[v_](sl_, vi_); break;
+                                    }
+                                    case SupervarType::sv_bool: {
+                                        m_varBool_array[i][v_] = m_varExprBool[v_](sl_, vb_); break;
+                                    }
                                 }
                             }
+                            m_HFT_array[i]->Fill();
                         }
-                        m_HFT->Fill();
+                        delete sl_;
+                        delete m_weights;
                     }
-                    delete sl_;
-                    delete m_weights;
+                    m_RunSyst = nullptr;
                 }
-            } break;
+            } // we didn't break!!
             case SuperflowRunMode::nominal_and_weight_syst: {
                 delete m_RunSyst;
                 m_RunSyst = new Supersys(SupersysType::central);
@@ -978,18 +1048,35 @@ namespace sflow {
         }
         cout << app_name << endl << app_name << endl;
 
-        m_outputFile->WriteTObject(m_HFT);
+        m_outputFile->Write();
         m_outputFile->Close();
+
+        for (int i = 0; i < index_event_sys.size(); i++) {
+            m_output_array[i]->Write();
+            m_output_array[i]->Close();
+        }
 
         cout << app_name << "Files OK." << endl;
 
         SusyNtAna::Terminate();
         if (m_mcWeighter) delete m_mcWeighter;
+        if (m_trigObj) delete m_trigObj;
 
         delete[] m_varFloat;
         delete[] m_varDouble;
         delete[] m_varInt;
         delete[] m_varBool;
+
+        if (m_runMode == SuperflowRunMode::all_syst) {
+            for (int i = 0; i < index_event_sys.size(); i++) delete[] m_varFloat_array[i];
+            delete m_varFloat_array;
+            for (int i = 0; i < index_event_sys.size(); i++) delete[] m_varDouble_array[i];
+            delete m_varDouble_array;
+            for (int i = 0; i < index_event_sys.size(); i++) delete[] m_varInt_array[i];
+            delete m_varInt_array;
+            for (int i = 0; i < index_event_sys.size(); i++) delete[] m_varBool_array[i];
+            delete m_varBool_array;
+        }
 
         if (m_runMode != SuperflowRunMode::single_event_syst) delete m_RunSyst;
 
@@ -1093,8 +1180,33 @@ namespace sflow {
                     weights_->lepSf = (computeLeptonEfficiencySf(l0, super_sys->weight_syst) * computeLeptonEfficiencySf(l1, super_sys->weight_syst));
                 }
 
-                if (super_sys->weight_syst == SupersysWeight::null) { // do trigger // Consider if this is safe. (it is)
-                    weights_->trigger = computeDileptonTriggerWeight(leptons, super_sys->event_syst);
+                bool do_lep_triggers_ = false; // do_lep_triggers_
+                SusyNtSys trig_sys = NtSys_NOM;
+
+                switch (super_sys->weight_syst) {
+                    case SupersysWeight::ETRIGREWUP: {
+                        trig_sys = NtSys_TRIGSF_EL_UP;
+                        do_lep_triggers_ = true;
+                    } break;
+                    case SupersysWeight::ETRIGREWDOWN: {
+                        trig_sys = NtSys_TRIGSF_EL_DN;
+                        do_lep_triggers_ = true;
+                    } break;
+                    case SupersysWeight::MTRIGREWUP: {
+                        trig_sys = NtSys_TRIGSF_MU_UP;
+                        do_lep_triggers_ = true;
+                    } break;
+                    case SupersysWeight::MTRIGREWDOWN: {
+                        trig_sys = NtSys_TRIGSF_MU_DN;
+                        do_lep_triggers_ = true;
+                    } break;
+                    case SupersysWeight::null: {
+                        do_lep_triggers_ = true;
+                    } break;
+                    default: break;
+                }
+                if (do_lep_triggers_) {
+                    weights_->trigger = computeDileptonTriggerWeight(leptons, trig_sys);
                 }
 
                 bool do_btag_ = false; // do_btag_
@@ -1126,24 +1238,18 @@ namespace sflow {
         if (leptons.size() == 2) {
 
             trigW = m_trigObj->getTriggerWeight(leptons, nt.evt()->isMC, m_met->Et, m_signalJets2Lep.size(), nt.evt()->nVtx, sys);
-
             bool twIsInvalid = !(trigW >= 0) || trigW < 0.0;
-
-            if (twIsInvalid) {
-                // if (m_dbg) cout << app_name << "computeDileptonTriggerWeight: invalid weight " << trigW << ", using 0.0" << endl;
-                trigW = (twIsInvalid ? 0.0 : trigW);
-            }
+            trigW = twIsInvalid ? 0.0 : trigW;
         }
         return trigW;
     }
 
-
     double Superflow::computeBtagWeight(const JetVector& jets, const Susy::Event* evt, SupersysWeight sys)
     {
+        cout << app_name << "computeBtagWeight" << endl;
         JetVector taggableJets = SusyNtTools::getBTagSFJets2Lep(jets);
         return SusyNtTools::bTagSF(evt, taggableJets, evt->mcChannel, supersys_to_btagsys(sys));
     }
-
 
     double Superflow::computeLeptonEfficiencySf(const Susy::Lepton &lep, const SupersysWeight sys)
     {

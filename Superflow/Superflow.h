@@ -143,6 +143,11 @@ namespace sflow {
         Int_t* m_varInt;
         Bool_t* m_varBool;
 
+        Float_t** m_varFloat_array;
+        Double_t** m_varDouble_array;
+        Int_t** m_varInt_array;
+        Bool_t** m_varBool_array;
+
         SupervarState m_varState;
 
         vector<SupervarType> m_varType;
@@ -167,11 +172,11 @@ namespace sflow {
         Supersys* m_RunSyst;
 
         vector<int> index_weight_sys;
+        vector<int> index_event_sys;
 
         int m_tree_leafs_size;
         int m_weight_leaf_offset;
 
-        vector<int> index_event_sys;
        
     private:
         /// initialize weighter used for normalization

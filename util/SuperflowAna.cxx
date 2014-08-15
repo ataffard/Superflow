@@ -248,7 +248,7 @@ int main(int argc, char* argv[])
     // JETS
 
     *cutflow << NewVar("number of central light jets"); {
-        *cutflow << HFTname("L2nCentralLightJets");
+        *cutflow << HFTname("nCentralLightJets");
         *cutflow << [](Superlink* sl, var_int*) -> int {
             return SusyNtTools::numberOfCLJets(*sl->jets, sl->jvfTool, sl->nt_sys, sl->anaType);
         };
@@ -256,13 +256,13 @@ int main(int argc, char* argv[])
     }
 
     *cutflow << NewVar("number of central b jets"); {
-        *cutflow << HFTname("L2nCentralBJets");
+        *cutflow << HFTname("nCentralBJets");
         *cutflow << [](Superlink* sl, var_int*) -> int { return SusyNtTools::numberOfCBJets(*sl->jets); };
         *cutflow << SaveVar();
     }
 
     *cutflow << NewVar("number of forward jets"); {
-        *cutflow << HFTname("L2nForwardJets");
+        *cutflow << HFTname("nForwardJets");
         *cutflow << [](Superlink* sl, var_int*) -> int { return SusyNtTools::numberOfFJets(*sl->jets); };
         *cutflow << SaveVar();
     }
@@ -284,7 +284,7 @@ int main(int argc, char* argv[])
     }
 
     *cutflow << NewVar("Etmiss Rel"); {
-        *cutflow << HFTname("L2METrel");
+        *cutflow << HFTname("METrel");
         *cutflow << [](Superlink* sl, var_float*) -> double { return SusyNtTools::getMetRel(sl->met, *sl->leptons, *sl->jets); };
         *cutflow << SaveVar();
     }
@@ -297,7 +297,7 @@ int main(int argc, char* argv[])
     TLorentzVector local_ll;
 
     *cutflow << NewVar("mass of di-lepton system, M_ll"); {
-        *cutflow << HFTname("L2Mll");
+        *cutflow << HFTname("ll_m");
         *cutflow << [&](Superlink* sl, var_float*) -> double {
             local_ll = (*sl->leptons->at(0) + *sl->leptons->at(1));
             return local_ll.M() * GeV_to_MeV;
@@ -305,8 +305,8 @@ int main(int argc, char* argv[])
         *cutflow << SaveVar();
     }
 
-    *cutflow << NewVar("delta Eta(ll)"); {
-        *cutflow << HFTname("deltaEtaLl");
+    *cutflow << NewVar("delta Eta of di-lepton system"); {
+        *cutflow << HFTname("ll_deltaEta");
         *cutflow << [](Superlink* sl, var_float*) -> double { return abs(sl->leptons->at(0)->Eta() - sl->leptons->at(1)->Eta()); };
         *cutflow << SaveVar();
     }
@@ -426,18 +426,6 @@ int main(int argc, char* argv[])
         *cutflow << SaveVar();
     }
 
-    *cutflow << NewVar("mCT"); {
-        *cutflow << HFTname("mct");
-        *cutflow << [&](Superlink* sl, var_float*) -> double { please return PhysicsTools::mCT(*sl->leptons->at(0), *sl->leptons->at(1)) * GeV_to_MeV; };
-        *cutflow << SaveVar();
-    }
-
-    *cutflow << NewVar("mCT perpendicular"); {
-        *cutflow << HFTname("mctPerp");
-        *cutflow << [&](Superlink* sl, var_float*) -> double { return PhysicsTools::mCTperp(*sl->leptons->at(0), *sl->leptons->at(1), sl->met->lv()) * GeV_to_MeV; };
-        *cutflow << SaveVar();
-    }
-
     // END Setup output trees
     // END Setup output trees
     // END Setup output trees
@@ -451,17 +439,17 @@ int main(int argc, char* argv[])
     // START Setup systematics
 
     // weight variation systematics
-    // *cutflow << NewSystematic("shift in electron trigger weights"); {
-    //     *cutflow << WeightSystematic(SupersysWeight::ETRIGREWUP, SupersysWeight::ETRIGREWDOWN);
-    //     *cutflow << TreeName("ETRIGREW");
-    //     *cutflow << SaveSystematic();
-    // } // This is now included as an event variation systematic
-    // 
-    // *cutflow << NewSystematic("shift in muon trigger weights"); {
-    //     *cutflow << WeightSystematic(SupersysWeight::MTRIGREWUP, SupersysWeight::MTRIGREWDOWN);
-    //     *cutflow << TreeName("MTRIGREW");
-    //     *cutflow << SaveSystematic();
-    // } // This is now included as an event variation systematic
+    *cutflow << NewSystematic("shift in electron trigger weights"); {
+        *cutflow << WeightSystematic(SupersysWeight::ETRIGREWUP, SupersysWeight::ETRIGREWDOWN);
+        *cutflow << TreeName("ETRIGREW");
+        *cutflow << SaveSystematic();
+    }
+    
+    *cutflow << NewSystematic("shift in muon trigger weights"); {
+        *cutflow << WeightSystematic(SupersysWeight::MTRIGREWUP, SupersysWeight::MTRIGREWDOWN);
+        *cutflow << TreeName("MTRIGREW");
+        *cutflow << SaveSystematic();
+    } 
 
     *cutflow << NewSystematic("shift in b-tag scale factor"); {
         *cutflow << WeightSystematic(SupersysWeight::BJETUP, SupersysWeight::BJETDOWN);
@@ -626,30 +614,6 @@ int main(int argc, char* argv[])
         *cutflow << SaveSystematic();
     }
 
-    *cutflow << NewSystematic("Trigger Scale factor + error for el"); {
-        *cutflow << EventSystematic(NtSys_TRIGSF_EL_UP);
-        *cutflow << TreeName("TRIGSFELUP");
-        *cutflow << SaveSystematic();
-    }
-
-    *cutflow << NewSystematic("Trigger Scale factor - error for el"); {
-        *cutflow << EventSystematic(NtSys_TRIGSF_EL_DN);
-        *cutflow << TreeName("TRIGSFELDN");
-        *cutflow << SaveSystematic();
-    }
-
-    *cutflow << NewSystematic("Trigger Scale factor + error for mu"); {
-        *cutflow << EventSystematic(NtSys_TRIGSF_MU_UP);
-        *cutflow << TreeName("TRIGSFMUUP");
-        *cutflow << SaveSystematic();
-    }
-
-    *cutflow << NewSystematic("Trigger Scale factor - error for mu"); {
-        *cutflow << EventSystematic(NtSys_TRIGSF_MU_DN);
-        *cutflow << TreeName("TRIGSFMUDN");
-        *cutflow << SaveSystematic();
-    }
-
     *cutflow << NewSystematic("Tau energy scale + sigma"); {
         *cutflow << EventSystematic(NtSys_TES_UP);
         *cutflow << TreeName("TESUP");
@@ -688,29 +652,9 @@ int main(int argc, char* argv[])
     exit(0);
 }
 
-void print_usage(const char *exeName) // Courtesy of Davide
-{
-    cout << "Usage: " << endl
-        << exeName << " options" << endl
-        << "\t -h [--help]                   : print this message \n"
-        << "\t -v [--verbose]                : toggle verbose \n"
-        << "\t -d [--debug]                  : toggle debug \n"
-        << "\t -i [--input]   <file.txt>     : input root file (or filelist or dir) \n"
-        << "\t -n [--num-events] <int>       : number of events to be processed \n"
-        << "\t -s [--sample_]  <samplename>   : sample_ name \n"
-        << "\t -e [--event-list] <file.root> : file where the eventlist is cached \n"
-        << "Example: \n"
-        << exeName << "\n"
-        << " -i filelist/Sherpa_CT10_lllnu_WZ_MassiveCB.txt \n"
-        << " -s Sherpa_CT10_lllnu_WZ_MassiveCB \n"
-        << " -e out/selection/eventlist_files \n"
-        << endl;
-}
-
 void read_options(int argc, char* argv[], TChain* chain, int& n_skip_, int& num_events_, string& sample_,
     SuperflowRunMode& run_mode_, SusyNtSys& nt_sys) // Courtesy of Davide
 {
-    bool debug = false;
     bool nominal_ = false;
     bool nominal_and_weight_syst_ = false;
     bool all_syst_ = false;
@@ -719,9 +663,6 @@ void read_options(int argc, char* argv[], TChain* chain, int& n_skip_, int& num_
     string systematic_ = "undefined";
 
     string input;
-    string output;
-    string eventlist;
-    string tuple_out;
 
     /** Read inputs to program */
     for (int i = 1; i < argc; i++) {
@@ -756,7 +697,6 @@ void read_options(int argc, char* argv[], TChain* chain, int& n_skip_, int& num_
     bool validInput(inputIsFile || inputIsList || inputIsDir);
     if (!validInput) {
         cout << "Analysis    invalid input '" << input << "'" << endl;
-        print_usage(argv[0]);
         exit(1);
     }
     if (inputIsFile) {
@@ -791,7 +731,7 @@ void read_options(int argc, char* argv[], TChain* chain, int& n_skip_, int& num_
     }
     Long64_t tot_num_events = chain->GetEntries();
     num_events_ = (num_events_ < 0 ? tot_num_events : num_events_);
-    if (debug) chain->ls();
+    // if (debug) chain->ls();
 
     if (nominal_) {
         run_mode_ = SuperflowRunMode::nominal;
@@ -846,7 +786,7 @@ void read_options(int argc, char* argv[], TChain* chain, int& n_skip_, int& num_
             nt_sys = event_syst_map[systematic_];
         }
         else {
-            cout << "Analysis" << "    ERROR (fatal): Event systematic option -t " << systematic_ << " / not found." << endl;
+            cout << "Analysis" << "    ERROR (fatal): Event systematic option /s " << systematic_ << " -> not found." << endl;
             exit(1);
         }
     }
@@ -886,9 +826,9 @@ void read_options(int argc, char* argv[], TChain* chain, int& n_skip_, int& num_
 // 
 
 
-// A SELECTION OF CUTS
-// A SELECTION OF CUTS
-// A SELECTION OF CUTS
+// A SELECTION OF CUTS and Variables
+// A SELECTION OF CUTS and Variables
+// A SELECTION OF CUTS and Variables
 //
 // *cutflow << CutName("exactly two base leptons") << [](Superlink* sl) -> bool {
 //     return sl->baseLeptons->size() == 2;
@@ -907,9 +847,45 @@ void read_options(int argc, char* argv[], TChain* chain, int& n_skip_, int& num_
 //     return sl->leptons->size() == 2;
 // };
 //
-// A SELECTION OF CUTS
-// A SELECTION OF CUTS
-// A SELECTION OF CUTS
+// *cutflow << NewVar("mCT"); {
+//     *cutflow << HFTname("mct");
+//     *cutflow << [&](Superlink* sl, var_float*) -> double { please return PhysicsTools::mCT(*sl->leptons->at(0), *sl->leptons->at(1)) * GeV_to_MeV; };
+//     *cutflow << SaveVar();
+// }
+// 
+// *cutflow << NewVar("mCT perpendicular"); {
+//     *cutflow << HFTname("mctPerp");
+//     *cutflow << [&](Superlink* sl, var_float*) -> double { return PhysicsTools::mCTperp(*sl->leptons->at(0), *sl->leptons->at(1), sl->met->lv()) * GeV_to_MeV; };
+//     *cutflow << SaveVar();
+// }
+//
+// *cutflow << NewSystematic("Trigger Scale factor + error for el"); {
+//     *cutflow << EventSystematic(NtSys_TRIGSF_EL_UP);
+//     *cutflow << TreeName("TRIGSFELUP");
+//     *cutflow << SaveSystematic();
+// } // These are correctly included as event variation systematics
+// 
+// *cutflow << NewSystematic("Trigger Scale factor - error for el"); {
+//     *cutflow << EventSystematic(NtSys_TRIGSF_EL_DN);
+//     *cutflow << TreeName("TRIGSFELDN");
+//     *cutflow << SaveSystematic();
+// } // These are correctly included as event variation systematics
+// 
+// *cutflow << NewSystematic("Trigger Scale factor + error for mu"); {
+//     *cutflow << EventSystematic(NtSys_TRIGSF_MU_UP);
+//     *cutflow << TreeName("TRIGSFMUUP");
+//     *cutflow << SaveSystematic();
+// } // These are correctly included as event variation systematics
+// 
+// *cutflow << NewSystematic("Trigger Scale factor - error for mu"); {
+//     *cutflow << EventSystematic(NtSys_TRIGSF_MU_DN);
+//     *cutflow << TreeName("TRIGSFMUDN");
+//     *cutflow << SaveSystematic();
+// } // These are correctly included as event variation systematics
+//
+// A SELECTION OF CUTS and Variables
+// A SELECTION OF CUTS and Variables
+// A SELECTION OF CUTS and Variables
 
 
 //rem// Cut* is_e_mu = new IsEMu(); // initialize cut
