@@ -31,12 +31,16 @@ namespace sflow {
         m_super_isData = false;
 
         m_outputFileName = "";
+        m_entry_list_FileName = "entrylist_";
+        m_tree_name_auto = "";
         m_outputFile = nullptr;
+        m_entryListFile = nullptr;
         m_HFT = nullptr;
 
         m_output_array = nullptr;
         m_HFT_array = nullptr;
-        m_num_output_files = 1;
+        m_entry_list_total = nullptr;
+        m_entry_list_single_tree = nullptr;
 
         m_period = ATLAS_period::null;
         m_stream = ATLAS_stream::null;
@@ -53,6 +57,7 @@ namespace sflow {
         m_nullExprDouble = [](Superlink* sl, var_double*) -> double { return 0.0; };
         m_nullExprInt = [](Superlink* sl, var_int*) -> int { return 0; };
         m_nullExprBool = [](Superlink* sl, var_bool*) -> bool { return false; };
+        m_nullExprVoid = [](Superlink* sl, var_void*) {};
 
         m_varFloat = nullptr;
         m_varDouble = nullptr;
@@ -75,6 +80,8 @@ namespace sflow {
         m_RunSyst = new Supersys(SupersysType::central);
 
         m_trigObj = nullptr;
+
+        m_input_chain = nullptr;
 
         m_data_periods[ATLAS_stream::Egamma][ATLAS_period::A] = "periodA.physics_Egamma.PhysCont";
         m_data_periods[ATLAS_stream::Egamma][ATLAS_period::B] = "periodB.physics_Egamma.PhysCont";
@@ -209,6 +216,7 @@ namespace sflow {
             m_varExprDouble.push_back(m_nullExprDouble);
             m_varExprInt.push_back(m_nullExprInt);
             m_varExprBool.push_back(m_nullExprBool);
+            m_varExprVoid.push_back(m_nullExprVoid);
 
             m_varType.push_back(SupervarType::sv_float);
             m_superVar_hasFunction = true;
@@ -226,6 +234,7 @@ namespace sflow {
             m_varExprDouble.push_back(var_); // fill
             m_varExprInt.push_back(m_nullExprInt);
             m_varExprBool.push_back(m_nullExprBool);
+            m_varExprVoid.push_back(m_nullExprVoid);
 
             m_varType.push_back(SupervarType::sv_double);
             m_superVar_hasFunction = true;
@@ -243,6 +252,7 @@ namespace sflow {
             m_varExprDouble.push_back(m_nullExprDouble);
             m_varExprInt.push_back(var_); // fill
             m_varExprBool.push_back(m_nullExprBool);
+            m_varExprVoid.push_back(m_nullExprVoid);
 
             m_varType.push_back(SupervarType::sv_int);
             m_superVar_hasFunction = true;
@@ -260,6 +270,7 @@ namespace sflow {
             m_varExprDouble.push_back(m_nullExprDouble);
             m_varExprInt.push_back(m_nullExprInt);
             m_varExprBool.push_back(var_); // fill
+            m_varExprVoid.push_back(m_nullExprVoid);
 
             m_varType.push_back(SupervarType::sv_bool);
             m_superVar_hasFunction = true;
@@ -268,6 +279,19 @@ namespace sflow {
             cout << app_name << "ERROR (Fatal): First open a new Var using NewVar().";
             exit(1);
         }
+    }
+
+    void Superflow::operator<<(std::function<void(Superlink*, var_void*)> var_)
+    {
+        m_varExprFloat.push_back(m_nullExprFloat);
+        m_varExprDouble.push_back(m_nullExprDouble);
+        m_varExprInt.push_back(m_nullExprInt);
+        m_varExprBool.push_back(m_nullExprBool);
+        m_varExprVoid.push_back(var_);// fill
+
+        m_varNiceName.push_back("void");
+        m_varHFTName.push_back("void");
+        m_varType.push_back(SupervarType::sv_void);
     }
 
     void Superflow::operator<<(SaveVar save_var)
@@ -560,6 +584,7 @@ namespace sflow {
                 cout << app_name << "Setting output file name to: " << sfile_name_.str() << endl;
 
                 m_outputFileName = sfile_name_.str();
+                m_entry_list_FileName += m_data_periods[m_stream][m_period] + ".root";
             }
             else {
                 cout << app_name << "ERROR (fatal): Failed to determine data period. Try to specify the full path." << endl;
@@ -573,6 +598,7 @@ namespace sflow {
                 cout << app_name << "Run mode: SuperflowRunMode::single_event_syst" << endl;
                 cout << app_name << "Setting output file name to: " << sfile_name_.str() << endl;
                 m_outputFileName = sfile_name_.str();
+                m_entry_list_FileName += sfile_name_.str() + ".root";
             }
             else {
                 cout << app_name << "ERROR (Fatal): Unknown event systematic! Code: " << static_cast<int>(m_singleEventSyst) << endl;
@@ -586,6 +612,7 @@ namespace sflow {
             cout << app_name << "Run mode: SuperflowRunMode::nominal_and_weight_syst" << endl;
             cout << app_name << "Setting output file name to: " << sfile_name_.str() << endl;
             m_outputFileName = sfile_name_.str();
+            m_entry_list_FileName += to_string(nt.evt()->mcChannel) + ".root";
         }
         else {
             cout << app_name << "ERROR (Fatal): Inconsistent setup." << endl;
@@ -593,6 +620,7 @@ namespace sflow {
         }
 
         m_outputFile = new TFile(m_outputFileName.data(), "RECREATE");
+
 
         // output tree name
         stringstream tree_name;
@@ -604,6 +632,12 @@ namespace sflow {
         }
 
         cout << app_name << "Tree name: " << tree_name.str() << endl;
+        m_tree_name_auto = tree_name.str();
+
+        // initialize total entry list (also see Notify();)
+        m_entryListFile = new TFile(m_entry_list_FileName.data(), "RECREATE");
+        m_entry_list_total = new TEntryList(m_tree_name_auto.data(), m_tree_name_auto.data());
+        m_entry_list_total->SetDirectory(m_entryListFile);
 
         // initialize output tree
         m_HFT = new TTree(tree_name.str().data(), tree_name.str().data());
@@ -627,6 +661,7 @@ namespace sflow {
 
         for (int i = 0; i < m_varType.size(); i++) {
             switch (m_varType[i]) {
+                case SupervarType::sv_void: break;
                 case SupervarType::sv_float: {
                     string leaflist_ = m_varHFTName[i] + "/F";
                     m_HFT->Branch(m_varHFTName[i].data(), m_varFloat + i, leaflist_.data(), 65536);
@@ -702,6 +737,7 @@ namespace sflow {
             for (int i = 0; i < index_event_sys.size(); i++) {
                 for (int j = 0; j < m_varType.size(); j++) {
                     switch (m_varType[j]) {
+                        case SupervarType::sv_void: break;
                         case SupervarType::sv_float: {
                             string leaflist_ = m_varHFTName[j] + "/F";
                             m_HFT_array[i]->Branch(m_varHFTName[j].data(), m_varFloat_array[i] + j, leaflist_.data(), 65536);
@@ -728,9 +764,27 @@ namespace sflow {
         }
     }
 
+    Bool_t Superflow::Notify()
+    {
+        static int tree_counter;
+
+        if (m_entry_list_single_tree != nullptr) m_entry_list_total->Add(m_entry_list_single_tree);
+        delete m_entry_list_single_tree;
+
+        string new_list_name = m_tree_name_auto + "_" + to_string(tree_counter);
+        tree_counter++;
+
+        m_entry_list_single_tree = new TEntryList();
+        m_entry_list_single_tree->SetTree(m_input_chain->GetTree());
+
+        return kTRUE;
+    }
+
     Bool_t Superflow::Process(Long64_t entry)
     {
         GetEntry(entry);
+        bool save_entry_to_list = true;
+
         m_chainEntry++; // SusyNtAna counter
 
         if (m_chainEntry % 50000 == 0) {
@@ -747,6 +801,7 @@ namespace sflow {
         var_double* vd_ = nullptr;
         var_int* vi_ = nullptr;
         var_bool* vb_ = nullptr;
+        var_void* vv_ = nullptr;
 
         switch (m_runMode) {
             case SuperflowRunMode::data: {
@@ -775,6 +830,10 @@ namespace sflow {
                     }
 
                     if (pass_cuts) { // data passed cuts, so fill HFTs.
+                        if (save_entry_to_list) {
+                            m_entry_list_single_tree->Enter(entry);
+                            save_entry_to_list = false;
+                        }
                         for (int v_ = 0; v_ < m_varType.size(); v_++) {
                             switch (m_varType[v_]) {
                                 case SupervarType::sv_float: {
@@ -788,6 +847,9 @@ namespace sflow {
                                 }
                                 case SupervarType::sv_bool: {
                                     m_varBool[v_] = m_varExprBool[v_](sl_, vb_); break;
+                                }
+                                case SupervarType::sv_void: {
+                                    m_varExprVoid[v_](sl_, vv_); break;
                                 }
                             }
                         }
@@ -831,6 +893,10 @@ namespace sflow {
                     }
 
                     if (pass_cuts) {
+                        if (save_entry_to_list) {
+                            m_entry_list_single_tree->Enter(entry);
+                            save_entry_to_list = false;
+                        }
                         if (!m_countWeights) {
                             assignNonStaticWeightComponents(nt, *m_mcWeighter, m_signalLeptons, m_baseJets, m_RunSyst, m_weights);
                             m_WeightCounter[m_LambdaCutStore.size() - 1] += m_weights->product();
@@ -851,6 +917,9 @@ namespace sflow {
                                 case SupervarType::sv_bool: {
                                     m_varBool[v_] = m_varExprBool[v_](sl_, vb_); break;
                                 }
+                                case SupervarType::sv_void: {
+                                    m_varExprVoid[v_](sl_, vv_); break;
+                                }
                             }
                         }
                         m_HFT->Fill();
@@ -858,7 +927,6 @@ namespace sflow {
                     delete sl_;
                     delete m_weights;
                 }
-
             } break;
             case SuperflowRunMode::all_syst: {
                 for (int i = 0; i < index_event_sys.size(); i++) {
@@ -866,6 +934,12 @@ namespace sflow {
                     delete m_RunSyst;
 
                     m_RunSyst = &m_sysStore[index_event_sys[i]];
+
+                    //debug// cout << app_name << endl;
+                    //debug// cout << app_name << m_NtSys_to_string[m_RunSyst->event_syst] << endl;
+                    //debug// cout << app_name << m_NtSys_to_string[m_RunSyst->event_syst] << endl;
+                    //debug// cout << app_name << m_NtSys_to_string[m_RunSyst->event_syst] << endl;
+                    //debug// cout << app_name << endl;
 
                     selectObjects(m_RunSyst->event_syst, removeLepsFromIso, TauID_medium); // always select with nominal? (to compute event flags)
 
@@ -886,6 +960,10 @@ namespace sflow {
                         }
 
                         if (pass_cuts) {
+                            if (save_entry_to_list) {
+                                m_entry_list_single_tree->Enter(entry);
+                                save_entry_to_list = false;
+                            }
                             assignNonStaticWeightComponents(nt, *m_mcWeighter, m_signalLeptons, m_baseJets, m_RunSyst, m_weights);
                             // FILL_HFTs
                             for (int v_ = 0; v_ < m_varType.size(); v_++) {
@@ -902,6 +980,9 @@ namespace sflow {
                                     case SupervarType::sv_bool: {
                                         m_varBool_array[i][v_] = m_varExprBool[v_](sl_, vb_); break;
                                     }
+                                    case SupervarType::sv_void: {
+                                        m_varExprVoid[v_](sl_, vv_); break;
+                                    }
                                 }
                             }
                             m_HFT_array[i]->Fill();
@@ -917,7 +998,7 @@ namespace sflow {
                 m_RunSyst = new Supersys(SupersysType::central);
 
                 clearObjects();
-                selectObjects(m_RunSyst->event_syst, removeLepsFromIso, TauID_medium); // always select with nominal? (to compute event flags)
+                selectObjects(m_RunSyst->event_syst, removeLepsFromIso, TauID_medium);
 
                 EventFlags eventFlags = computeEventFlags();
                 if (eventFlags.passAllEventCriteria()) {
@@ -942,6 +1023,10 @@ namespace sflow {
                     }
 
                     if (pass_cuts) {
+                        if (save_entry_to_list) {
+                            m_entry_list_single_tree->Enter(entry);
+                            save_entry_to_list = false;
+                        }
                         assignNonStaticWeightComponents(nt, *m_mcWeighter, m_signalLeptons, m_baseJets, m_RunSyst, m_weights);
 
                         double nom_eventweight = m_weights->product();
@@ -961,6 +1046,9 @@ namespace sflow {
                                 }
                                 case SupervarType::sv_bool: {
                                     m_varBool[v_] = m_varExprBool[v_](sl_, vb_); break;
+                                }
+                                case SupervarType::sv_void: {
+                                    m_varExprVoid[v_](sl_, vv_); break;
                                 }
                             }
                         }
@@ -1020,11 +1108,6 @@ namespace sflow {
             } break;
         }
 
-        delete vf_;
-        delete vd_;
-        delete vi_;
-        delete vb_;
-
         return kTRUE;
     }
 
@@ -1048,8 +1131,14 @@ namespace sflow {
         }
         cout << app_name << endl << app_name << endl;
 
+        if (m_entry_list_single_tree != nullptr) m_entry_list_total->Add(m_entry_list_single_tree); // last tree
+        delete m_entry_list_single_tree;
+
         m_outputFile->Write();
         m_outputFile->Close();
+
+        m_entryListFile->Write();
+        m_entryListFile->Close();
 
         for (int i = 0; i < index_event_sys.size(); i++) {
             m_output_array[i]->Write();
@@ -1123,38 +1212,36 @@ namespace sflow {
         if (ntobj.evt()->isMC) {
             MCWeighter::WeightSys wSys = MCWeighter::Sys_NOM;
 
-            if (super_sys->weight_syst == SupersysWeight::null) {
-                weights_->susynt = weighter.getMCWeight(ntobj.evt(), LUMI_A_L, wSys);
-            }
-            else {
-                bool do_susynt_w = false;
+            bool do_susynt_w = false;
 
-                switch (super_sys->weight_syst) {
-                    case SupersysWeight::XSUP: {
-                        wSys = MCWeighter::Sys_XSEC_UP;
-                        do_susynt_w = true;
-                        break;
-                    }
-                    case SupersysWeight::XSDOWN: {
-                        wSys = MCWeighter::Sys_XSEC_DN;
-                        do_susynt_w = true;
-                        break;
-                    }
-                    case SupersysWeight::PILEUPUP: {
-                        wSys = MCWeighter::Sys_PILEUP_UP;
-                        do_susynt_w = true;
-                        break;
-                    }
-                    case SupersysWeight::PILEUPDOWN: {
-                        wSys = MCWeighter::Sys_PILEUP_DN;
-                        do_susynt_w = true;
-                        break;
-                    }
-                    default: break;
+            switch (super_sys->weight_syst) {
+                case SupersysWeight::XSUP: {
+                    wSys = MCWeighter::Sys_XSEC_UP;
+                    do_susynt_w = true;
+                    break;
                 }
-                if (do_susynt_w) {
-                    weights_->susynt = weighter.getMCWeight(ntobj.evt(), LUMI_A_L, wSys);
+                case SupersysWeight::XSDOWN: {
+                    wSys = MCWeighter::Sys_XSEC_DN;
+                    do_susynt_w = true;
+                    break;
                 }
+                case SupersysWeight::PILEUPUP: {
+                    wSys = MCWeighter::Sys_PILEUP_UP;
+                    do_susynt_w = true;
+                    break;
+                }
+                case SupersysWeight::PILEUPDOWN: {
+                    wSys = MCWeighter::Sys_PILEUP_DN;
+                    do_susynt_w = true;
+                    break;
+                }
+                case SupersysWeight::null: {
+                    do_susynt_w = true;
+                }
+                default: break;
+            }
+            if (do_susynt_w) {
+                weights_->susynt = weighter.getMCWeight(ntobj.evt(), LUMI_A_L, wSys);
             }
 
             // Other weight systematic variations
@@ -1246,7 +1333,7 @@ namespace sflow {
 
     double Superflow::computeBtagWeight(const JetVector& jets, const Susy::Event* evt, SupersysWeight sys)
     {
-        cout << app_name << "computeBtagWeight" << endl;
+        // cout << app_name << "in computeBtagWeight" << endl;
         JetVector taggableJets = SusyNtTools::getBTagSFJets2Lep(jets);
         return SusyNtTools::bTagSF(evt, taggableJets, evt->mcChannel, supersys_to_btagsys(sys));
     }
@@ -1329,5 +1416,10 @@ namespace sflow {
     void Superflow::setSingleEventSyst(SusyNtSys nt_syst_)
     {
         m_singleEventSyst = nt_syst_;
+    }
+
+    void Superflow::setChain(TChain* input_chain_)
+    {
+        m_input_chain = input_chain_;
     }
 }

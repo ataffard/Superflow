@@ -38,7 +38,8 @@ namespace sflow {
         PILEUPDOWN,         ///< Negative shift in pileup
         XSUP,               ///< Positive shift in xsec
         XSDOWN,             ///< Negative shift in xsec
-        null                ///< Null value
+        null,               ///< Nominal value
+        block               ///< Prevent (re)calculation of the weight
     };
 
     class Supersys {

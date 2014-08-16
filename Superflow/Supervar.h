@@ -32,6 +32,11 @@ namespace sflow {
         // in operator overloading
     };
 
+    class var_void {
+        // this class is used for type identification 
+        // in operator overloading
+    };
+
     enum class SupervarState {
         closed,
         open
@@ -41,7 +46,8 @@ namespace sflow {
         sv_float,
         sv_double,
         sv_int,
-        sv_bool
+        sv_bool,
+        sv_void
     };
 
     class NewVar {

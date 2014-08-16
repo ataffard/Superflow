@@ -6,14 +6,13 @@
 #include "TFile.h"
 #include "TTree.h"
 #include "TBranch.h"
+#include "TEntryList.h"
 
 #include "TVector2.h"
 
 #include "SusyNtuple/SusyDefs.h"
 #include "SusyNtuple/SusyNtAna.h"
 #include "SusyNtuple/SusyNtTools.h"
-
-#include "SusyNtuple/EventlistHandler.h"
 
 #include "SusyNtuple/MCWeighter.h"
 #include "SusyNtuple/DilTrigLogic.h"
@@ -57,6 +56,7 @@ namespace sflow {
         void operator<<(std::function<double(Superlink*, var_double*)> var_);
         void operator<<(std::function<int(Superlink*, var_int*)> var_);
         void operator<<(std::function<bool(Superlink*, var_bool*)> var_);
+        void operator<<(std::function<void(Superlink*, var_void*)> var_);
 
         void operator<<(NewSystematic new_sys);
         void operator<<(TreeName tree_name);
@@ -71,11 +71,13 @@ namespace sflow {
         void Begin(TTree *tree); ///< called before looping on entries
         void Init(TTree *tree); ///< called when the TChain is attached
         void Terminate(); ///< called after looping is finished
+        Bool_t Notify(); ///< called at each event
         Bool_t Process(Long64_t entry); ///< called at each event
 
         void setCountWeights(bool value); ///< Toggle the display of the weighted cuts. (default off)
         void setRunMode(SuperflowRunMode run_mode_);
         void setSingleEventSyst(SusyNtSys nt_syst_);
+        void setChain(TChain* input_chain_);
 
     protected:
         void attach_superlink(Superlink* sl_);
@@ -115,13 +117,18 @@ namespace sflow {
         bool m_super_isData;
 
         string m_outputFileName;
+        string m_entry_list_FileName;
+        string m_tree_name_auto;
         TFile* m_outputFile;
+        TFile* m_entryListFile;
         TTree* m_HFT;
 
         TFile** m_output_array;
         TTree** m_HFT_array;
 
-        int m_num_output_files;
+        TEntryList* m_entry_list_total;
+        TEntryList* m_entry_list_single_tree;
+
         ATLAS_period m_period;
         ATLAS_stream m_stream;
 
@@ -129,11 +136,13 @@ namespace sflow {
         std::function<double(Superlink*, var_double*)> m_nullExprDouble;
         std::function<int(Superlink*, var_int*)> m_nullExprInt;
         std::function<bool(Superlink*, var_bool*)> m_nullExprBool;
+        std::function<void(Superlink*, var_void*)> m_nullExprVoid;
 
         vector<std::function<double(Superlink*, var_float*)>> m_varExprFloat;
         vector<std::function<double(Superlink*, var_double*)>> m_varExprDouble;
         vector<std::function<int(Superlink*, var_int*)>> m_varExprInt;
         vector<std::function<bool(Superlink*, var_bool*)>> m_varExprBool;
+        vector<std::function<void(Superlink*, var_void*)>> m_varExprVoid;
         //vector<Float_t> m_varFloat;
         //vector<Double_t> m_varDouble;
         //vector<Int_t> m_varInt;
@@ -177,7 +186,6 @@ namespace sflow {
         int m_tree_leafs_size;
         int m_weight_leaf_offset;
 
-       
     private:
         /// initialize weighter used for normalization
         bool initMcWeighter(TTree *tree);
@@ -187,6 +195,8 @@ namespace sflow {
 
         map<ATLAS_stream, map<ATLAS_period, string>> m_data_periods;
         map<SusyNtSys, string> m_NtSys_to_string;
+
+        TChain* m_input_chain;
 
         const double m_epsilon = 1e-12;
     };
