@@ -10,7 +10,7 @@ namespace sflow {
 
     std::string pad_width(std::string s, int width)
     {
-        stringstream stream_;
+        std::stringstream stream_;
         int pad = width - s.size();
         stream_ << s;
         while (pad > 0) {
