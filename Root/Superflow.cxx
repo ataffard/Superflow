@@ -448,13 +448,7 @@ namespace sflow {
 
     void Superflow::attach_superlink(Superlink* sl_)
     {
-
-        // sl_->cutFlags = SusyNtTools::cleaningCutFlags(nt.evt()->cutFlags[m_RunSyst->event_syst],
-        //                                               m_preMuons,
-        //                                               m_baseMuons,
-        //                                               m_preJets,
-        //                                               m_baseJets);
-        // 
+        sl_->tools = this;
 
         sl_->anaType = m_anaType;
 
@@ -835,56 +829,53 @@ namespace sflow {
                 clearObjects();
                 selectObjects(m_RunSyst->event_syst, removeLepsFromIso, TauID_medium); // always select with nominal? (to compute event flags)
 
-                EventFlags eventFlags = computeEventFlags();
-                if (eventFlags.passAllEventCriteria()) {
+                m_weights = new Superweight();
+                Superlink* sl_ = new Superlink;
+                attach_superlink(sl_);
 
-                    m_weights = new Superweight();
-                    Superlink* sl_ = new Superlink;
-                    attach_superlink(sl_);
+                bool pass_cuts = true; // loop over and appply the cuts in m_CutStore.
+                if (m_CutStore.size() > 0) {
+                    for (int i = 0; i < m_CutStore.size(); i++) {
+                        pass_cuts = m_CutStore[i](sl_); // run the cut function
 
-                    bool pass_cuts = true; // loop over and appply the cuts in m_CutStore.
-                    if (m_CutStore.size() > 0) {
-                        for (int i = 0; i < m_CutStore.size(); i++) {
-                            pass_cuts = m_CutStore[i](sl_); // run the cut function
-
-                            if (pass_cuts) {
-                                m_RawCounter[i]++;
-                            }
-                            else {
-                                break;
-                            }
+                        if (pass_cuts) {
+                            m_RawCounter[i]++;
+                        }
+                        else {
+                            break;
                         }
                     }
-
-                    if (pass_cuts) { // data passed cuts, so fill HFTs.
-                        if (save_entry_to_list) {
-                            m_entry_list_single_tree->Enter(entry);
-                            save_entry_to_list = false;
-                        }
-                        for (int v_ = 0; v_ < m_varType.size(); v_++) {
-                            switch (m_varType[v_]) {
-                                case SupervarType::sv_float: {
-                                    m_varFloat[v_] = m_varExprFloat[v_](sl_, vf_); break;
-                                }
-                                case SupervarType::sv_double: {
-                                    m_varDouble[v_] = m_varExprDouble[v_](sl_, vd_); break;
-                                }
-                                case SupervarType::sv_int: {
-                                    m_varInt[v_] = m_varExprInt[v_](sl_, vi_); break;
-                                }
-                                case SupervarType::sv_bool: {
-                                    m_varBool[v_] = m_varExprBool[v_](sl_, vb_); break;
-                                }
-                                case SupervarType::sv_void: {
-                                    m_varExprVoid[v_](sl_, vv_); break;
-                                }
-                            }
-                        }
-                        m_HFT->Fill();
-                    }
-                    delete sl_;
-                    delete m_weights;
                 }
+
+                if (pass_cuts) { // data passed cuts, so fill HFTs.
+                    if (save_entry_to_list) {
+                        m_entry_list_single_tree->Enter(entry);
+                        save_entry_to_list = false;
+                    }
+                    for (int v_ = 0; v_ < m_varType.size(); v_++) {
+                        switch (m_varType[v_]) {
+                            case SupervarType::sv_float: {
+                                m_varFloat[v_] = m_varExprFloat[v_](sl_, vf_); break;
+                            }
+                            case SupervarType::sv_double: {
+                                m_varDouble[v_] = m_varExprDouble[v_](sl_, vd_); break;
+                            }
+                            case SupervarType::sv_int: {
+                                m_varInt[v_] = m_varExprInt[v_](sl_, vi_); break;
+                            }
+                            case SupervarType::sv_bool: {
+                                m_varBool[v_] = m_varExprBool[v_](sl_, vb_); break;
+                            }
+                            case SupervarType::sv_void: {
+                                m_varExprVoid[v_](sl_, vv_); break;
+                            }
+                        }
+                    }
+                    m_HFT->Fill();
+                }
+                delete sl_;
+                delete m_weights;
+
             } break;
             case SuperflowRunMode::nominal:
             case SuperflowRunMode::single_event_syst: {
@@ -892,8 +883,73 @@ namespace sflow {
                 clearObjects();
                 selectObjects(m_RunSyst->event_syst, removeLepsFromIso, TauID_medium); // always select with nominal? (to compute event flags)
 
-                EventFlags eventFlags = computeEventFlags();
-                if (eventFlags.passAllEventCriteria()) {
+                m_weights = new Superweight();
+                Superlink* sl_ = new Superlink;
+                attach_superlink(sl_);
+
+                bool pass_cuts = true;
+
+                if (m_countWeights) {
+                    computeWeights(nt, *m_mcWeighter, m_signalLeptons, m_baseJets, m_RunSyst, m_weights);
+                }
+
+                if (m_CutStore.size() > 0) {
+                    for (int i = 0; i < m_CutStore.size(); i++) {
+                        pass_cuts = m_CutStore[i](sl_); // run the cut function
+
+                        if (pass_cuts) {
+                            m_RawCounter[i]++;
+                            if (m_countWeights) m_WeightCounter[i] += m_weights->product();
+                        }
+                        else {
+                            break;
+                        }
+                    }
+                }
+
+                if (pass_cuts) {
+                    if (save_entry_to_list) {
+                        m_entry_list_single_tree->Enter(entry);
+                        save_entry_to_list = false;
+                    }
+                    if (!m_countWeights) {
+                        computeWeights(nt, *m_mcWeighter, m_signalLeptons, m_baseJets, m_RunSyst, m_weights);
+                        m_WeightCounter[m_CutStore.size() - 1] += m_weights->product();
+                    }
+
+                    // FILL_HFTs
+                    for (int v_ = 0; v_ < m_varType.size(); v_++) {
+                        switch (m_varType[v_]) {
+                            case SupervarType::sv_float: {
+                                m_varFloat[v_] = m_varExprFloat[v_](sl_, vf_); break;
+                            }
+                            case SupervarType::sv_double: {
+                                m_varDouble[v_] = m_varExprDouble[v_](sl_, vd_); break;
+                            }
+                            case SupervarType::sv_int: {
+                                m_varInt[v_] = m_varExprInt[v_](sl_, vi_); break;
+                            }
+                            case SupervarType::sv_bool: {
+                                m_varBool[v_] = m_varExprBool[v_](sl_, vb_); break;
+                            }
+                            case SupervarType::sv_void: {
+                                m_varExprVoid[v_](sl_, vv_); break;
+                            }
+                        }
+                    }
+                    m_HFT->Fill();
+                }
+                delete sl_;
+                delete m_weights;
+
+            } break;
+            case SuperflowRunMode::all_syst: {
+                for (int i = 0; i < index_event_sys.size(); i++) { // loop over event systematics
+                    clearObjects();
+                    delete m_RunSyst;
+
+                    m_RunSyst = &m_sysStore[index_event_sys[i]]; // don't delete!!
+                    selectObjects(m_RunSyst->event_syst, removeLepsFromIso, TauID_medium); // always select with nominal? (to compute event flags)
 
                     m_weights = new Superweight();
                     Superlink* sl_ = new Superlink;
@@ -901,21 +957,10 @@ namespace sflow {
 
                     bool pass_cuts = true;
 
-                    if (m_countWeights) {
-                        computeWeights(nt, *m_mcWeighter, m_signalLeptons, m_baseJets, m_RunSyst, m_weights);
-                    }
-
                     if (m_CutStore.size() > 0) {
                         for (int i = 0; i < m_CutStore.size(); i++) {
                             pass_cuts = m_CutStore[i](sl_); // run the cut function
-
-                            if (pass_cuts) {
-                                m_RawCounter[i]++;
-                                if (m_countWeights) m_WeightCounter[i] += m_weights->product();
-                            }
-                            else {
-                                break;
-                            }
+                            if (!pass_cuts) break;
                         }
                     }
 
@@ -924,92 +969,32 @@ namespace sflow {
                             m_entry_list_single_tree->Enter(entry);
                             save_entry_to_list = false;
                         }
-                        if (!m_countWeights) {
-                            computeWeights(nt, *m_mcWeighter, m_signalLeptons, m_baseJets, m_RunSyst, m_weights);
-                            m_WeightCounter[m_CutStore.size() - 1] += m_weights->product();
-                        }
-
+                        computeWeights(nt, *m_mcWeighter, m_signalLeptons, m_baseJets, m_RunSyst, m_weights);
                         // FILL_HFTs
                         for (int v_ = 0; v_ < m_varType.size(); v_++) {
                             switch (m_varType[v_]) {
                                 case SupervarType::sv_float: {
-                                    m_varFloat[v_] = m_varExprFloat[v_](sl_, vf_); break;
+                                    m_varFloat_array[i][v_] = m_varExprFloat[v_](sl_, vf_); break;
                                 }
                                 case SupervarType::sv_double: {
-                                    m_varDouble[v_] = m_varExprDouble[v_](sl_, vd_); break;
+                                    m_varDouble_array[i][v_] = m_varExprDouble[v_](sl_, vd_); break;
                                 }
                                 case SupervarType::sv_int: {
-                                    m_varInt[v_] = m_varExprInt[v_](sl_, vi_); break;
+                                    m_varInt_array[i][v_] = m_varExprInt[v_](sl_, vi_); break;
                                 }
                                 case SupervarType::sv_bool: {
-                                    m_varBool[v_] = m_varExprBool[v_](sl_, vb_); break;
+                                    m_varBool_array[i][v_] = m_varExprBool[v_](sl_, vb_); break;
                                 }
                                 case SupervarType::sv_void: {
                                     m_varExprVoid[v_](sl_, vv_); break;
                                 }
                             }
                         }
-                        m_HFT->Fill();
+                        m_HFT_array[i]->Fill();
                     }
                     delete sl_;
                     delete m_weights;
-                }
-            } break;
-            case SuperflowRunMode::all_syst: {
-                for (int i = 0; i < index_event_sys.size(); i++) {
-                    clearObjects();
-                    delete m_RunSyst;
 
-                    m_RunSyst = &m_sysStore[index_event_sys[i]]; // don't delete!!
-                    selectObjects(m_RunSyst->event_syst, removeLepsFromIso, TauID_medium); // always select with nominal? (to compute event flags)
-
-                    EventFlags eventFlags = computeEventFlags();
-                    if (eventFlags.passAllEventCriteria()) {
-
-                        m_weights = new Superweight();
-                        Superlink* sl_ = new Superlink;
-                        attach_superlink(sl_);
-
-                        bool pass_cuts = true;
-
-                        if (m_CutStore.size() > 0) {
-                            for (int i = 0; i < m_CutStore.size(); i++) {
-                                pass_cuts = m_CutStore[i](sl_); // run the cut function
-                                if (!pass_cuts) break;
-                            }
-                        }
-
-                        if (pass_cuts) {
-                            if (save_entry_to_list) {
-                                m_entry_list_single_tree->Enter(entry);
-                                save_entry_to_list = false;
-                            }
-                            computeWeights(nt, *m_mcWeighter, m_signalLeptons, m_baseJets, m_RunSyst, m_weights);
-                            // FILL_HFTs
-                            for (int v_ = 0; v_ < m_varType.size(); v_++) {
-                                switch (m_varType[v_]) {
-                                    case SupervarType::sv_float: {
-                                        m_varFloat_array[i][v_] = m_varExprFloat[v_](sl_, vf_); break;
-                                    }
-                                    case SupervarType::sv_double: {
-                                        m_varDouble_array[i][v_] = m_varExprDouble[v_](sl_, vd_); break;
-                                    }
-                                    case SupervarType::sv_int: {
-                                        m_varInt_array[i][v_] = m_varExprInt[v_](sl_, vi_); break;
-                                    }
-                                    case SupervarType::sv_bool: {
-                                        m_varBool_array[i][v_] = m_varExprBool[v_](sl_, vb_); break;
-                                    }
-                                    case SupervarType::sv_void: {
-                                        m_varExprVoid[v_](sl_, vv_); break;
-                                    }
-                                }
-                            }
-                            m_HFT_array[i]->Fill();
-                        }
-                        delete sl_;
-                        delete m_weights;
-                    }
                     m_RunSyst = nullptr;
                 }
             } // we didn't break!!
@@ -1020,101 +1005,97 @@ namespace sflow {
                 clearObjects();
                 selectObjects(m_RunSyst->event_syst, removeLepsFromIso, TauID_medium);
 
-                EventFlags eventFlags = computeEventFlags();
-                if (eventFlags.passAllEventCriteria()) {
+                m_weights = new Superweight();
+                Superlink* sl_ = new Superlink;
+                attach_superlink(sl_);
 
-                    m_weights = new Superweight();
-                    Superlink* sl_ = new Superlink;
-                    attach_superlink(sl_);
+                bool pass_cuts = true;
 
-                    bool pass_cuts = true;
+                if (m_CutStore.size() > 0) {
+                    for (int i = 0; i < m_CutStore.size(); i++) {
+                        pass_cuts = m_CutStore[i](sl_); // run the cut function
 
-                    if (m_CutStore.size() > 0) {
-                        for (int i = 0; i < m_CutStore.size(); i++) {
-                            pass_cuts = m_CutStore[i](sl_); // run the cut function
-
-                            if (pass_cuts) {
-                                m_RawCounter[i]++;
-                            }
-                            else {
-                                break;
-                            }
+                        if (pass_cuts) {
+                            m_RawCounter[i]++;
+                        }
+                        else {
+                            break;
                         }
                     }
-
-                    if (pass_cuts) {
-                        if (save_entry_to_list) {
-                            m_entry_list_single_tree->Enter(entry);
-                            save_entry_to_list = false;
-                        }
-                        computeWeights(nt, *m_mcWeighter, m_signalLeptons, m_baseJets, m_RunSyst, m_weights);
-
-                        double nom_eventweight = m_weights->product();
-                        m_WeightCounter[m_CutStore.size() - 1] += m_weights->product();
-
-                        // FILL HFTs
-                        for (int v_ = 0; v_ < m_varType.size(); v_++) {
-                            switch (m_varType[v_]) {
-                                case SupervarType::sv_float: {
-                                    m_varFloat[v_] = m_varExprFloat[v_](sl_, vf_); break;
-                                }
-                                case SupervarType::sv_double: {
-                                    m_varDouble[v_] = m_varExprDouble[v_](sl_, vd_); break;
-                                }
-                                case SupervarType::sv_int: {
-                                    m_varInt[v_] = m_varExprInt[v_](sl_, vi_); break;
-                                }
-                                case SupervarType::sv_bool: {
-                                    m_varBool[v_] = m_varExprBool[v_](sl_, vb_); break;
-                                }
-                                case SupervarType::sv_void: {
-                                    m_varExprVoid[v_](sl_, vv_); break;
-                                }
-                            }
-                        }
-
-                        // FILL more HFTs
-                        for (int w_ = 0; w_ < index_weight_sys.size(); w_++) {
-                            Superweight* weightComponents_copy = new Superweight(*m_weights);
-
-                            // Up variation
-                            m_RunSyst->weight_syst = m_sysStore[index_weight_sys[w_]].weight_syst_up; // do up variation
-                            computeWeights(nt, *m_mcWeighter, m_signalLeptons, m_baseJets, m_RunSyst, weightComponents_copy);
-                            double up_weight = weightComponents_copy->product();
-                            delete weightComponents_copy;
-
-                            weightComponents_copy = new Superweight(*m_weights);
-                            // Down variation
-                            m_RunSyst->weight_syst = m_sysStore[index_weight_sys[w_]].weight_syst_down; // do down variation
-                            computeWeights(nt, *m_mcWeighter, m_signalLeptons, m_baseJets, m_RunSyst, weightComponents_copy);
-                            double down_weight = weightComponents_copy->product();
-
-                            delete weightComponents_copy;
-                            weightComponents_copy = nullptr;
-
-                            if (up_weight < nom_eventweight && down_weight > nom_eventweight) {
-                                double temp = up_weight; // reason to swap these
-                                up_weight = down_weight;
-                                down_weight = temp;
-                            }
-                            if (nom_eventweight > m_epsilon) {
-                                up_weight = up_weight / nom_eventweight;
-                                down_weight = down_weight / nom_eventweight;
-                            }
-                            else {
-                                up_weight = 1.0;
-                                down_weight = 1.0;
-                            }
-
-                            *(m_varFloat + m_weight_leaf_offset + 2 * w_) = up_weight; // put in TBranch
-                            *(m_varFloat + m_weight_leaf_offset + 2 * w_ + 1) = down_weight;
-                        }
-                        m_RunSyst->weight_syst = SupersysWeight::null; // must reset this value!
-                        m_HFT->Fill();
-                    }
-                    delete sl_;
-                    delete m_weights;
                 }
+
+                if (pass_cuts) {
+                    if (save_entry_to_list) {
+                        m_entry_list_single_tree->Enter(entry);
+                        save_entry_to_list = false;
+                    }
+                    computeWeights(nt, *m_mcWeighter, m_signalLeptons, m_baseJets, m_RunSyst, m_weights);
+
+                    double nom_eventweight = m_weights->product();
+                    m_WeightCounter[m_CutStore.size() - 1] += m_weights->product();
+
+                    // FILL HFTs
+                    for (int v_ = 0; v_ < m_varType.size(); v_++) {
+                        switch (m_varType[v_]) {
+                            case SupervarType::sv_float: {
+                                m_varFloat[v_] = m_varExprFloat[v_](sl_, vf_); break;
+                            }
+                            case SupervarType::sv_double: {
+                                m_varDouble[v_] = m_varExprDouble[v_](sl_, vd_); break;
+                            }
+                            case SupervarType::sv_int: {
+                                m_varInt[v_] = m_varExprInt[v_](sl_, vi_); break;
+                            }
+                            case SupervarType::sv_bool: {
+                                m_varBool[v_] = m_varExprBool[v_](sl_, vb_); break;
+                            }
+                            case SupervarType::sv_void: {
+                                m_varExprVoid[v_](sl_, vv_); break;
+                            }
+                        }
+                    }
+
+                    // FILL more HFTs
+                    for (int w_ = 0; w_ < index_weight_sys.size(); w_++) {
+                        Superweight* weightComponents_copy = new Superweight(*m_weights);
+
+                        // Up variation
+                        m_RunSyst->weight_syst = m_sysStore[index_weight_sys[w_]].weight_syst_up; // do up variation
+                        computeWeights(nt, *m_mcWeighter, m_signalLeptons, m_baseJets, m_RunSyst, weightComponents_copy);
+                        double up_weight = weightComponents_copy->product();
+                        delete weightComponents_copy;
+
+                        weightComponents_copy = new Superweight(*m_weights);
+                        // Down variation
+                        m_RunSyst->weight_syst = m_sysStore[index_weight_sys[w_]].weight_syst_down; // do down variation
+                        computeWeights(nt, *m_mcWeighter, m_signalLeptons, m_baseJets, m_RunSyst, weightComponents_copy);
+                        double down_weight = weightComponents_copy->product();
+
+                        delete weightComponents_copy;
+                        weightComponents_copy = nullptr;
+
+                        if (up_weight < nom_eventweight && down_weight > nom_eventweight) {
+                            double temp = up_weight; // reason to swap these
+                            up_weight = down_weight;
+                            down_weight = temp;
+                        }
+                        if (nom_eventweight > m_epsilon) {
+                            up_weight = up_weight / nom_eventweight;
+                            down_weight = down_weight / nom_eventweight;
+                        }
+                        else {
+                            up_weight = 1.0;
+                            down_weight = 1.0;
+                        }
+
+                        *(m_varFloat + m_weight_leaf_offset + 2 * w_) = up_weight; // put in TBranch
+                        *(m_varFloat + m_weight_leaf_offset + 2 * w_ + 1) = down_weight;
+                    }
+                    m_RunSyst->weight_syst = SupersysWeight::null; // must reset this value!
+                    m_HFT->Fill();
+                }
+                delete sl_;
+                delete m_weights;
             } break;
             default: break;
         }
@@ -1128,6 +1109,8 @@ namespace sflow {
         cout << app_name << "Raw" << endl;
         cout << app_name << "Raw" << endl;
         cout << app_name << "Raw" << endl;
+        cout << std::fixed;
+        cout << std::setprecision(0);
         for (int i = 0; i < m_CutStore.size(); i++) {
             cout << app_name << "Cut " << pad_width(to_string(i), 2) << ": " << pad_width(m_CutStoreNames[i], 32) << ": " << m_RawCounter[i] << endl;
         }
@@ -1136,6 +1119,9 @@ namespace sflow {
         cout << app_name << "Weighted" << endl;
         cout << app_name << "Weighted" << endl;
         cout << app_name << "Weighted" << endl;
+        cout << std::resetiosflags(std::ios::floatfield);
+        cout << std::resetiosflags(std::ios::adjustfield);
+        cout << std::setprecision(6);
         for (int i = 0; i < m_CutStore.size(); i++) {
             cout << app_name << "Cut " << pad_width(to_string(i), 2) << ": " << pad_width(m_CutStoreNames[i], 32) << ": " << m_WeightCounter[i] << endl;
         }
@@ -1145,15 +1131,19 @@ namespace sflow {
         delete m_entry_list_single_tree;
 
         m_outputFile->Write();
-        m_outputFile->Close();
-
         m_entryListFile->Write();
-        m_entryListFile->Close();
+        for (int i = 0; i < index_event_sys.size(); i++) m_output_array[i]->Write();
 
-        for (int i = 0; i < index_event_sys.size(); i++) {
-            m_output_array[i]->Write();
-            m_output_array[i]->Close();
-        }
+        delete m_outputFile;
+        delete m_entryListFile;
+        for (int i = 0; i < index_event_sys.size(); i++) delete m_output_array[i];
+        delete m_output_array;
+
+        delete m_HFT;
+        for (int i = 0; i < index_event_sys.size(); i++) delete m_HFT_array[i];
+        delete m_HFT_array;
+
+        delete m_entry_list_total;
 
         cout << app_name << "Files OK." << endl;
 
@@ -1373,93 +1363,6 @@ namespace sflow {
 
         effFactor = (sf + delta); // ?? Seems odd.
         return effFactor;
-    }
-
-    // bool Superflow::passFlags()
-    // {
-    //     bool pass_flags = true;
-    // 
-    //     if (m_signalLeptons.size() < 2) pass_flags = false;
-    // 
-    //     int cutFlags = SusyNtTools::cleaningCutFlags(nt.evt()->cutFlags[m_RunSyst->event_syst],
-    //                                                  m_preMuons,
-    //                                                  m_baseMuons,
-    //                                                  m_preJets,
-    //                                                  m_baseJets);
-    // 
-    //     //cout << "cutflags: " << cutFlags << endl;
-    // 
-    //     // pass_flags = pass_flags && !(nt.evt()->eventWithSusyProp); // SUSY grid simplified model: remove higgsino events 
-    //     //cout << "pass num 1: " << (pass_flags ? "pass" : "fail") << endl;
-    //     pass_flags = pass_flags && SusyNtTools::passGRL(cutFlags);
-    //     //cout << "pass num 2: " << (pass_flags ? "pass"hasHotSpotJet : "fail") << endl;
-    //     pass_flags = pass_flags && SusyNtTools::passTileTripCut(cutFlags);
-    //     //cout << "pass num 3: " << (pass_flags ? "pass" : "fail") << endl;
-    //     pass_flags = pass_flags && SusyNtTools::passLarErr(cutFlags);
-    //     //cout << "pass num 4: " << (pass_flags ? "pass" : "fail") << endl;
-    // 
-    //     JetVector jets = getPreJets(&nt, m_RunSyst->event_syst);
-    //     e_j_overlap(m_baseElectrons, jets, J_E_DR, true);
-    //     t_j_overlap(m_signalTaus, jets, J_T_DR, true);
-    // 
-    //     pass_flags = pass_flags && !SusyNtTools::hasBadJet(jets);
-    //     jets.clear();
-    // 
-    //     //cout << "pass num 5: " << (pass_flags ? "pass" : "fail") << endl;
-    //     pass_flags = pass_flags && SusyNtTools::passDeadRegions(m_preJets, m_met, nt.evt()->run, nt.evt()->isMC);
-    //     //cout << "pass num 6: " << (pass_flags ? "pass" : "fail") << endl;
-    //     pass_flags = pass_flags && !SusyNtTools::hasBadMuon(m_preMuons);
-    //     //cout << "pass num 7: " << (pass_flags ? "pass" : "fail") << endl;
-    //     pass_flags = pass_flags && !SusyNtTools::hasCosmicMuon(m_baseMuons);
-    //     //cout << "pass num 8: " << (pass_flags ? "pass" : "fail") << endl;
-    //     pass_flags = pass_flags && !SusyNtTools::hasHotSpotJet(m_preJets);
-    //     //cout << "pass num 9: " << (pass_flags ? "pass" : "fail") << endl;
-    //     //pass_flags = pass_flags && SusyNtTools::passTileErr(cutFlags);
-    //     //cout << "pass num 10: " << (pass_flags ? "pass" : "fail") << endl;
-    //     pass_flags = pass_flags && SusyNtTools::passTTCVeto(cutFlags);
-    //     //cout << "pass num 11: " << (pass_flags ? "pass" : "fail") << endl;
-    //     pass_flags = pass_flags && SusyNtTools::passGoodVtx(cutFlags);
-    //     //cout << "pass num 12: " << (pass_flags ? "pass" : "fail") << endl;
-    // 
-    //     return pass_flags;
-    // }
-
-    EventFlags Superflow::computeEventFlags()
-    { // stolen from Davide
-        EventFlags f;
-        if (m_dbg) cout << app_name << "computeEventFlags" << endl;
-        int flag = nt.evt()->cutFlags[NtSys_NOM];
-        const LeptonVector &bleps = m_baseLeptons;
-        const JetVector     &jets = m_baseJets;
-        const JetVector    &pjets = m_preJets;
-        const Susy::Met      *met = m_met;
-        uint run = nt.evt()->run;
-        bool mc = nt.evt()->isMC;
-        float mllMin(20);
-        bool has2lep(bleps.size() > 1 && bleps[0] && bleps[1]);
-        float mll(has2lep ? (*bleps[0] + *bleps[1]).M() : 0.0);
-        const int killHfor(4); // inheriting hardcoded magic values from HforToolD3PD.cxx
-        if (passGRL(flag))  f.grl = true;
-        if (passLarErr(flag))  f.larErr = true;
-        if (passTileErr(flag))  f.tileErr = true;
-        if (passTTCVeto(flag))  f.ttcVeto = true;
-        if (passGoodVtx(flag))  f.goodVtx = true;
-        if (passTileTripCut(flag))  f.tileTrip = true;
-        if (passLAr(flag))  f.lAr = true;
-        if (!hasBadJet(jets))  f.badJet = true;
-        if (passDeadRegions(pjets, met, run, mc)) f.deadRegions = true;
-        if (!hasBadMuon(m_preMuons))  f.badMuon = true;
-        if (!hasCosmicMuon(m_baseMuons))  f.cosmicMuon = true;
-        if (nt.evt()->hfor != killHfor)  f.hfor = true;
-        if (bleps.size() >= 2)  f.ge2blep = true;
-        if (bleps.size() == 2)  f.eq2blep = true;
-
-        // const LeptonVector& leptons, DilTrigLogic *dtl, float met, Event* evt
-        // dtl->passDilEvtTrig(leptons, met, evt);
-        // dtl->passDilTrigMatch(leptons, met, evt);
-
-        if (mll > mllMin)  f.mllMin = true;
-        return f;
     }
 
     void Superflow::setCountWeights(bool value) ///> public function, if set true it prints the weighted cutflow

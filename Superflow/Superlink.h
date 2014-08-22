@@ -21,14 +21,13 @@ namespace sflow {
 
     public:
         Superlink();
+        ~Superlink();
 
         bool isMC;
         bool isData;
         bool doFake;
 
-        int cutFlags;
-
-        //SusyNtTools* tools;
+        SusyNtTools* tools;
 
         AnalysisType anaType;
 
@@ -53,9 +52,9 @@ namespace sflow {
         JetVector* jets; ///< signal jets
         JetVector* jets2Lep; ///< signal jets for 2 Lep
 
-        // // New organization of tau selections
-        // TauVector* mediumTaus; ///< taus with medium ID
-        // TauVector* tightTaus; ///< taus with tight ID
+        // New organization of tau selections
+        TauVector* mediumTaus; ///< taus with medium ID
+        TauVector* tightTaus; ///< taus with tight ID
 
         const Susy::Met* met; ///< Met
 

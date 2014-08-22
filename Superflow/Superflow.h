@@ -23,7 +23,6 @@
 #include "Superflow/Superlink.h"
 #include "Superflow/Supervar.h"
 #include "Superflow/Supersys.h"
-#include "Superflow/EventFlags.h"
 
 using namespace DataDefinitions;
 
@@ -86,8 +85,6 @@ namespace sflow {
         DilTrigLogic* m_trigObj; ///< trigger logic class
         MCWeighter* m_mcWeighter; ///< tool to determine the normalization
 
-        bool passFlags();
-
         bool computeWeights(
             Susy::SusyNtObject &ntobj,
             MCWeighter &weighter,
@@ -101,8 +98,6 @@ namespace sflow {
         double computeBtagWeight(const JetVector& jets, const Susy::Event* evt, SupersysWeight sys);
 
         double computeLeptonEfficiencySf(const Susy::Lepton &lep, const SupersysWeight sys);
-
-        EventFlags computeEventFlags();
 
         vector<double> m_RawCounter;
         vector<double> m_WeightCounter; // indexed by cut #

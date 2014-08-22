@@ -5,8 +5,8 @@
 #include <cmath>
 #include <fstream> 
 #include <iostream>
+#include <iomanip>
 #include <string>
-#include <getopt.h>
 
 #include "TChain.h"
 #include "TVectorD.h"
@@ -50,7 +50,7 @@ int main(int argc, char* argv[])
     // END read-in
 
     Superflow* cutflow = new Superflow(); // initialize the cutflow
-    cutflow->setAnaType(Ana_2LepWH); // Ana_2Lep Ana_2LepWH 
+    cutflow->setAnaType(Ana_2Lep); // Ana_2Lep Ana_2LepWH 
     cutflow->setSampleName(sample_);
     cutflow->setRunMode(run_mode);
     cutflow->setChain(chain);
@@ -64,12 +64,56 @@ int main(int argc, char* argv[])
     // START Setup cuts
     // START Setup cuts
 
-    *cutflow << CutName("cleaning cuts") << [](Superlink* sl) -> bool { return true; };
+    *cutflow << CutName("read in") << [](Superlink* sl) -> bool { return true; };
 
+    *cutflow << CutName("at least two signal leptons") << [](Superlink* sl) -> bool {
+        return !(sl->leptons->size() < 2);
+    };
+
+    *cutflow << CutName("remove higgsino events") << [](Superlink* sl) -> bool {
+        return !sl->nt->evt()->eventWithSusyProp;
+    };
+    
+    int cutFlags = 0;
+    
+    *cutflow << CutName("GRL, tile trip, and LAr error") << [&](Superlink* sl) -> bool {
+        cutFlags = sl->tools->cleaningCutFlags(sl->nt->evt()->cutFlags[sl->nt_sys], *sl->preMuons, *sl->baseMuons, *sl->preJets, *sl->baseJets);
+        return sl->tools->passGRL(cutFlags) 
+            && sl->tools->passTileTripCut(cutFlags)
+            && sl->tools->passLarErr(cutFlags);
+    };
+    
+    *cutflow << CutName("bad jets") << [](Superlink* sl) -> bool {
+        JetVector jets = sl->tools->getPreJets(sl->nt, sl->nt_sys);
+        sl->tools->e_j_overlap(*sl->baseElectrons, jets, J_E_DR, true);
+        sl->tools->t_j_overlap(*sl->taus, jets, J_T_DR, true);
+        return !sl->tools->hasBadJet(jets);
+    };
+    
+    *cutflow << CutName("dead regions") << [](Superlink* sl) -> bool {
+        return sl->tools->passDeadRegions(*sl->preJets, sl->met, sl->nt->evt()->run, sl->nt->evt()->isMC);
+    };
+    
+    *cutflow << CutName("bad muons") << [](Superlink* sl) -> bool {
+        return !sl->tools->hasBadMuon(*sl->preMuons);
+    };
+    
+    *cutflow << CutName("cosmic muons") << [](Superlink* sl) -> bool {
+        return !sl->tools->hasCosmicMuon(*sl->baseMuons);
+    };
+    
+    *cutflow << CutName("hotspot jets") << [](Superlink* sl) -> bool {
+        return !sl->tools->hasHotSpotJet(*sl->preJets);
+    };
+    
+    *cutflow << CutName("TTC Veto and Good Vertex") << [&](Superlink* sl) -> bool {
+        return sl->tools->passTTCVeto(cutFlags) && sl->tools->passGoodVtx(cutFlags);
+    };
+    
     *cutflow << CutName("exactly two base leptons") << [](Superlink* sl) -> bool {
         return sl->baseLeptons->size() == 2;
     };
-
+    
     *cutflow << CutName("m_ll > 20 GeV") << [](Superlink* sl) -> bool {
         return (*sl->baseLeptons->at(0) + *sl->baseLeptons->at(1)).M() > 20.0;
     };
@@ -95,7 +139,7 @@ int main(int argc, char* argv[])
         return sl->taus->size() == 0;
     };
 
-    
+
     *cutflow << CutName("pass dilepton trigger") << [](Superlink* sl) -> bool {
         return sl->dileptonTrigger->passDilTrig(*sl->leptons, sl->met->lv().Pt(), sl->nt->evt());
     };
@@ -120,6 +164,65 @@ int main(int argc, char* argv[])
         return (sl->leptons->at(0)->q * sl->leptons->at(1)->q < 0);
     };
 
+    /*
+    *cutflow << CutName("read in") << [](Superlink* sl) -> bool {
+    return true;
+    };
+
+    *cutflow << CutName("exactly two base leptons") << [](Superlink* sl) -> bool {
+    return sl->baseLeptons->size() == 2;
+    };
+
+    *cutflow << CutName("m_ll > 20 GeV") << [](Superlink* sl) -> bool {
+    return (*sl->baseLeptons->at(0) + *sl->baseLeptons->at(1)).M() > 20.0;
+    };
+
+    *cutflow << CutName("is ME") << [](Superlink* sl) -> bool {
+    return sl->baseLeptons->at(0)->isMu() && sl->baseLeptons->at(1)->isEle();
+    }; // debug only !!!
+
+    // *cutflow << CutName("is El + Mu (any)") << [](Superlink* sl) -> bool {
+    //     return sl->baseLeptons->at(0)->isEle() ^ sl->baseLeptons->at(1)->isEle();
+    // }; // debug only !!!
+
+    *cutflow << CutName("exactly two signal leptons") << [](Superlink* sl) -> bool {
+    please return sl->leptons->size() == 2;
+    }; // First cut to help speed.
+
+    *cutflow << CutName("muon eta < 2.4") << [](Superlink* sl) -> bool {
+    return (!sl->leptons->at(0)->isMu() || abs(sl->leptons->at(0)->Eta()) < 2.4)
+    && (!sl->leptons->at(1)->isMu() || abs(sl->leptons->at(1)->Eta()) < 2.4);
+    };
+
+    *cutflow << CutName("tau veto") << [](Superlink* sl) -> bool {
+    return sl->taus->size() == 0;
+    };
+
+    *cutflow << CutName("pass dilepton trigger") << [](Superlink* sl) -> bool {
+    return sl->dileptonTrigger->passDilTrig(*sl->leptons, sl->met->lv().Pt(), sl->nt->evt());
+    };
+
+    *cutflow << CutName("prompt leptons") << [](Superlink* sl) -> bool {
+    bool pass_ = true;
+
+    if (sl->isMC && !sl->doFake) {
+    for (int l_ = 0; l_ < sl->leptons->size(); l_++) {
+    bool isReal = sl->leptons->at(l_)->truthType == LeptonTruthType::PROMPT;
+
+    bool isChargeFlip = sl->leptons->at(l_)->isEle()
+    && static_cast<Electron*>(sl->leptons->at(l_))->isChargeFlip;
+
+    if (!isReal || isChargeFlip) pass_ = false;
+    }
+    }
+    return pass_;
+    };
+
+    *cutflow << CutName("opposite sign") << [](Superlink* sl) -> bool {
+    return (sl->leptons->at(0)->q * sl->leptons->at(1)->q < 0);
+    };
+
+    */
 
     /*
     llType==2 || llType==3			49354.36 +/- 49354.36
@@ -130,7 +233,7 @@ int main(int argc, char* argv[])
     */
 
 
-    /*
+
     *cutflow << CutName("number of central b jets > 0") << [](Superlink* sl) -> bool {
         return SusyNtTools::numberOfCBJets(*sl->jets) > 0;
     };
@@ -146,7 +249,7 @@ int main(int argc, char* argv[])
     *cutflow << CutName("subleading lepton Pt > 18 GeV") << [](Superlink* sl) -> bool {
         please return sl->leptons->at(1)->Pt() > 18.0;
     };
-    */
+
 
 
 
@@ -470,3 +573,38 @@ void read_options(int argc, char* argv[], TChain* chain, int& n_skip_, int& num_
 //rem//         }
 //rem//     }
 //rem// };
+
+
+/*
+*cutflow << CutName("all cleaning") << [](Superlink* sl) -> bool {
+bool pass_cleaning = true;
+int cutFlags = sl->tools->cleaningCutFlags(sl->nt->evt()->cutFlags[sl->nt_sys], *sl->preMuons, *sl->baseMuons, *sl->preJets, *sl->baseJets);
+
+pass_cleaning &=
+!sl->nt->evt()->eventWithSusyProp
+&& sl->tools->passGRL(cutFlags)
+&& sl->tools->passTileTripCut(cutFlags)
+&& sl->tools->passLarErr(cutFlags)
+;
+
+if (pass_cleaning) {
+JetVector jets = sl->tools->getPreJets(sl->nt, sl->nt_sys);
+sl->tools->e_j_overlap(*sl->baseElectrons, jets, J_E_DR, true);
+sl->tools->t_j_overlap(*sl->taus, jets, J_T_DR, true);
+
+pass_cleaning &=
+!sl->tools->hasBadJet(jets)
+&& sl->tools->passDeadRegions(*sl->preJets, sl->met, sl->nt->evt()->run, sl->nt->evt()->isMC)
+&& !sl->tools->hasBadMuon(*sl->preMuons)
+&& !sl->tools->hasCosmicMuon(*sl->baseMuons)
+&& !sl->tools->hasHotSpotJet(*sl->preJets)
+&& sl->tools->passTTCVeto(cutFlags)
+&& sl->tools->passGoodVtx(cutFlags)
+&& sl->baseLeptons->size() == 2
+&& (*sl->baseLeptons->at(0) + *sl->baseLeptons->at(1)).M() > 20.0
+;
+}
+
+return pass_cleaning;
+};
+*/
