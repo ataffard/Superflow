@@ -49,24 +49,25 @@ namespace sflow {
 
         // Cut Operators
         Superflow& operator<<(CutName cut_);
-        void operator<<(std::function<bool(Superlink*)> cut_);
+        Superflow& operator<<(std::function<bool(Superlink*)> cut_);
 
         // Var Operators
-        void operator<<(std::function<double(Superlink*, var_float*)> var_);
-        void operator<<(std::function<double(Superlink*, var_double*)> var_);
-        void operator<<(std::function<int(Superlink*, var_int*)> var_);
-        void operator<<(std::function<bool(Superlink*, var_bool*)> var_);
-        void operator<<(std::function<void(Superlink*, var_void*)> var_);
+        Superflow& operator<<(NewVar new_var_name);
+        Superflow& operator<<(HFTname hft_name);
+        Superflow& operator<<(SaveVar save_var);
 
-        void operator<<(NewSystematic new_sys);
-        void operator<<(TreeName tree_name);
-        void operator<<(EventSystematic obj_);
-        void operator<<(WeightSystematic obj_);
-        void operator<<(SaveSystematic save_var);
+        Superflow& operator<<(std::function<double(Superlink*, var_float*)> var_);
+        Superflow& operator<<(std::function<double(Superlink*, var_double*)> var_);
+        Superflow& operator<<(std::function<int(Superlink*, var_int*)> var_);
+        Superflow& operator<<(std::function<bool(Superlink*, var_bool*)> var_);
+        Superflow& operator<<(std::function<void(Superlink*, var_void*)> var_);
 
-        void operator<<(NewVar new_var_name);
-        void operator<<(HFTname hft_name);
-        void operator<<(SaveVar save_var);
+        // Systematics Operators
+        Superflow& operator<<(NewSystematic new_sys);
+        Superflow& operator<<(TreeName tree_name);
+        Superflow& operator<<(EventSystematic obj_);
+        Superflow& operator<<(WeightSystematic obj_);
+        Superflow& operator<<(SaveSystematic save_var);
 
         void Begin(TTree *tree); ///< called before looping on entries
         void Init(TTree *tree); ///< called when the TChain is attached
@@ -85,7 +86,9 @@ namespace sflow {
         DilTrigLogic* m_trigObj; ///< trigger logic class
         MCWeighter* m_mcWeighter; ///< tool to determine the normalization
 
-        bool assignNonStaticWeightComponents(
+        bool passFlags();
+
+        bool computeWeights(
             Susy::SusyNtObject &ntobj,
             MCWeighter &weighter,
             const LeptonVector& leptons,
@@ -101,20 +104,12 @@ namespace sflow {
 
         EventFlags computeEventFlags();
 
-        // vector<Cut* > m_CutStore;
-        vector<std::function<bool(Superlink*)>> m_LambdaCutStore;
-        vector<string> m_LambdaCutStoreNames;
-
         vector<double> m_RawCounter;
-        vector<double> m_WeightCounter;
+        vector<double> m_WeightCounter; // indexed by cut #
 
-        double m_passed;
-        double m_weighted;
         bool m_countWeights;
 
         Superweight* m_weights;
-
-        bool m_super_isData;
 
         string m_outputFileName;
         string m_entry_list_FileName;
@@ -132,6 +127,11 @@ namespace sflow {
         ATLAS_period m_period;
         ATLAS_stream m_stream;
 
+        vector<std::function<bool(Superlink*)>> m_CutStore;
+        vector<string> m_CutStoreNames;
+        int m_CutStoreUntitled;
+        bool m_CutStore_Name_Exists;
+
         std::function<double(Superlink*, var_float*)> m_nullExprFloat;
         std::function<double(Superlink*, var_double*)> m_nullExprDouble;
         std::function<int(Superlink*, var_int*)> m_nullExprInt;
@@ -143,9 +143,6 @@ namespace sflow {
         vector<std::function<int(Superlink*, var_int*)>> m_varExprInt;
         vector<std::function<bool(Superlink*, var_bool*)>> m_varExprBool;
         vector<std::function<void(Superlink*, var_void*)>> m_varExprVoid;
-        //vector<Float_t> m_varFloat;
-        //vector<Double_t> m_varDouble;
-        //vector<Int_t> m_varInt;
 
         Float_t* m_varFloat;
         Double_t* m_varDouble;
@@ -155,7 +152,7 @@ namespace sflow {
         Float_t** m_varFloat_array;
         Double_t** m_varDouble_array;
         Int_t** m_varInt_array;
-        Bool_t** m_varBool_array;
+        Bool_t** m_varBool_array; // the arrays are not initialized unless needed
 
         SupervarState m_varState;
 
@@ -187,11 +184,8 @@ namespace sflow {
         int m_weight_leaf_offset;
 
     private:
-        /// initialize weighter used for normalization
         bool initMcWeighter(TTree *tree);
         string app_name = "Superflow    ";
-        int m_LambdaCutStoreUntitled;
-        bool m_LambdaCutStore_Name_Exists;
 
         map<ATLAS_stream, map<ATLAS_period, string>> m_data_periods;
         map<SusyNtSys, string> m_NtSys_to_string;

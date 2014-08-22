@@ -13,6 +13,10 @@ namespace sflow {
         isData = false;
         doFake = false;
 
+        cutFlags = 0;
+
+        //tools = nullptr;
+
         anaType = Ana_2Lep;
 
         nt = nullptr;
@@ -35,8 +39,8 @@ namespace sflow {
         jets = nullptr;
         jets2Lep = nullptr;
 
-        mediumTaus = nullptr;
-        tightTaus = nullptr;
+        // mediumTaus = nullptr;
+        // tightTaus = nullptr;
         
         met = nullptr;
 

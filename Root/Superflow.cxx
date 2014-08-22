@@ -17,18 +17,14 @@ namespace sflow {
 
     Superflow::Superflow()
     {
-        setAnaType(Ana_2Lep);
         setSelectTaus(true);
 
         m_runMode = SuperflowRunMode::null;
 
-        m_passed = 0;
-        m_weighted = 0;
-        m_LambdaCutStore_Name_Exists = false;
-        m_LambdaCutStoreUntitled = 1;
+        m_CutStore_Name_Exists = false;
+        m_CutStoreUntitled = 1;
 
         m_countWeights = false;
-        m_super_isData = false;
 
         m_outputFileName = "";
         m_entry_list_FileName = "entrylist_";
@@ -78,6 +74,9 @@ namespace sflow {
 
         m_singleEventSyst = NtSys_NOM;
         m_RunSyst = new Supersys(SupersysType::central);
+
+        m_tree_leafs_size = 0;
+        m_weight_leaf_offset = 0;
 
         m_trigObj = nullptr;
 
@@ -145,8 +144,8 @@ namespace sflow {
     Superflow& Superflow::operator<<(CutName cut_)
     {
         if (m_sysState == SupersysState::closed && m_varState == SupervarState::closed) {
-            m_LambdaCutStore_Name_Exists = true;
-            m_LambdaCutStoreNames.push_back(cut_.name);
+            m_CutStore_Name_Exists = true;
+            m_CutStoreNames.push_back(cut_.name);
 
             cout << app_name << "New cut: " << cut_.name << endl;
         }
@@ -157,18 +156,18 @@ namespace sflow {
         return *this;
     }
 
-    void Superflow::operator<<(std::function<bool(Superlink*)> cut_)
+    Superflow& Superflow::operator<<(std::function<bool(Superlink*)> cut_)
     {
         if (m_sysState == SupersysState::closed && m_varState == SupervarState::closed) {
-            m_LambdaCutStore.push_back(cut_);
+            m_CutStore.push_back(cut_);
 
-            if (m_LambdaCutStore_Name_Exists) {
-                m_LambdaCutStore_Name_Exists = false;
+            if (m_CutStore_Name_Exists) {
+                m_CutStore_Name_Exists = false;
             }
             else {
-                m_LambdaCutStoreNames.push_back("Untitled-" + to_string(m_LambdaCutStoreUntitled));
-                cout << app_name << "New cut: " << "Untitled-" << m_LambdaCutStoreUntitled << endl;
-                m_LambdaCutStoreUntitled++;
+                m_CutStoreNames.push_back("Untitled-" + to_string(m_CutStoreUntitled));
+                cout << app_name << "New cut: " << "Untitled-" << m_CutStoreUntitled << endl;
+                m_CutStoreUntitled++;
             }
 
             m_RawCounter.push_back(0.0);
@@ -178,13 +177,14 @@ namespace sflow {
             cout << app_name << "ERROR (Fatal): Cutflow operations are incorrectly ordered.";
             please exit(1);
         }
+        return *this;
     }
 
     // Var (HFT) Operators
     // Var (HFT) Operators
     // Var (HFT) Operators
 
-    void Superflow::operator<<(NewVar new_var_name) // this is the NiceName
+    Superflow& Superflow::operator<<(NewVar new_var_name) // this is the NiceName
     {
         if (m_varState == SupervarState::closed && m_sysState == SupersysState::closed) {
             m_varNiceName.push_back(new_var_name.name);
@@ -195,21 +195,23 @@ namespace sflow {
             cout << app_name << "ERROR (Fatal): Close the Var using SaveVar().";
             please exit(1);
         }
+        return *this;
     }
 
-    void Superflow::operator<<(HFTname hft_name)
+    Superflow& Superflow::operator<<(HFTname hft_name)
     {
         if (m_varState == SupervarState::open && m_sysState == SupersysState::closed && !m_superVar_hasHFTName) {
             m_varHFTName.push_back(hft_name.name);
             m_superVar_hasHFTName = true;
         }
         else {
-            cout << app_name << "ERROR (Fatal): Open a new Var using NewVar(string).";
+            cout << app_name << "ERROR (Fatal): Open a new Var using NewVar().";
             exit(1);
         }
+        return *this;
     }
 
-    void Superflow::operator<<(std::function<double(Superlink*, var_float*)> var_)
+    Superflow& Superflow::operator<<(std::function<double(Superlink*, var_float*)> var_)
     {
         if (m_varState == SupervarState::open && m_sysState == SupersysState::closed && !m_superVar_hasFunction) {
             m_varExprFloat.push_back(var_); // fill
@@ -225,9 +227,10 @@ namespace sflow {
             cout << app_name << "ERROR (Fatal): First open a new Var using NewVar().";
             exit(1);
         }
+        return *this;
     }
 
-    void Superflow::operator<<(std::function<double(Superlink*, var_double*)> var_)
+    Superflow& Superflow::operator<<(std::function<double(Superlink*, var_double*)> var_)
     {
         if (m_varState == SupervarState::open && m_sysState == SupersysState::closed && !m_superVar_hasFunction) {
             m_varExprFloat.push_back(m_nullExprFloat);
@@ -243,9 +246,10 @@ namespace sflow {
             cout << app_name << "ERROR (Fatal): First open a new Var using NewVar().";
             exit(1);
         }
+        return *this;
     }
 
-    void Superflow::operator<<(std::function<int(Superlink*, var_int*)> var_)
+    Superflow& Superflow::operator<<(std::function<int(Superlink*, var_int*)> var_)
     {
         if (m_varState == SupervarState::open && m_sysState == SupersysState::closed && !m_superVar_hasFunction) {
             m_varExprFloat.push_back(m_nullExprFloat);
@@ -261,9 +265,10 @@ namespace sflow {
             cout << app_name << "ERROR (Fatal): First open a new Var using NewVar().";
             exit(1);
         }
+        return *this;
     }
 
-    void Superflow::operator<<(std::function<bool(Superlink*, var_bool*)> var_)
+    Superflow& Superflow::operator<<(std::function<bool(Superlink*, var_bool*)> var_)
     {
         if (m_varState == SupervarState::open && m_sysState == SupersysState::closed && !m_superVar_hasFunction) {
             m_varExprFloat.push_back(m_nullExprFloat);
@@ -279,9 +284,10 @@ namespace sflow {
             cout << app_name << "ERROR (Fatal): First open a new Var using NewVar().";
             exit(1);
         }
+        return *this;
     }
 
-    void Superflow::operator<<(std::function<void(Superlink*, var_void*)> var_)
+    Superflow& Superflow::operator<<(std::function<void(Superlink*, var_void*)> var_)
     {
         m_varExprFloat.push_back(m_nullExprFloat);
         m_varExprDouble.push_back(m_nullExprDouble);
@@ -292,9 +298,10 @@ namespace sflow {
         m_varNiceName.push_back("void");
         m_varHFTName.push_back("void");
         m_varType.push_back(SupervarType::sv_void);
+        return *this;
     }
 
-    void Superflow::operator<<(SaveVar save_var)
+    Superflow& Superflow::operator<<(SaveVar save_var)
     {
         if (m_varState == SupervarState::open && m_superVar_hasFunction && m_superVar_hasNiceName) {
             if (!m_superVar_hasHFTName) {
@@ -320,13 +327,14 @@ namespace sflow {
             }
             exit(1);
         }
+        return *this;
     }
 
     // Systematics Operators
     // Systematics Operators
     // Systematics Operators
 
-    void Superflow::operator<<(NewSystematic new_sys) // this is the NiceName
+    Superflow& Superflow::operator<<(NewSystematic new_sys) // this is the NiceName
     {
         if (m_sysState == SupersysState::closed && m_varState == SupervarState::closed) {
             m_sysTemplate.name = new_sys.name;
@@ -337,9 +345,10 @@ namespace sflow {
             cout << app_name << "ERROR (Fatal): Close using SaveSystematic().";
             exit(1);
         }
+        return *this;
     }
 
-    void Superflow::operator<<(TreeName tree_name)
+    Superflow& Superflow::operator<<(TreeName tree_name)
     {
         if (m_sysState == SupersysState::open && m_varState == SupervarState::closed && !m_sys_hasTreeName) {
             m_sysTemplate.tree_name = tree_name.name;
@@ -349,9 +358,10 @@ namespace sflow {
             cout << app_name << "ERROR (Fatal): Open a NewSystematic().";
             exit(1);
         }
+        return *this;
     }
 
-    void Superflow::operator<<(EventSystematic obj_)
+    Superflow& Superflow::operator<<(EventSystematic obj_)
     {
         if (m_sysState == SupersysState::open && m_varState == SupervarState::closed && !m_sys_hasSystematic) {
             m_sysTemplate.event_syst = obj_.event_syst_;
@@ -365,9 +375,10 @@ namespace sflow {
             cout << app_name << "ERROR (Fatal): Open a NewSystematic().";
             exit(1);
         }
+        return *this;
     }
 
-    void Superflow::operator<<(WeightSystematic obj_)
+    Superflow& Superflow::operator<<(WeightSystematic obj_)
     {
         if (m_sysState == SupersysState::open && m_varState == SupervarState::closed && !m_sys_hasSystematic) {
             m_sysTemplate.event_syst = NtSys_NOM;
@@ -382,9 +393,10 @@ namespace sflow {
             cout << app_name << "ERROR (Fatal): Open a NewSystematic().";
             exit(1);
         }
+        return *this;
     }
 
-    void Superflow::operator<<(SaveSystematic save_var)
+    Superflow& Superflow::operator<<(SaveSystematic save_var)
     {
         if (m_sysState == SupersysState::open
             && m_varState == SupervarState::closed
@@ -427,6 +439,7 @@ namespace sflow {
             }
             exit(1);
         }
+        return *this;
     }
 
     // Superlink
@@ -435,11 +448,23 @@ namespace sflow {
 
     void Superflow::attach_superlink(Superlink* sl_)
     {
+
+        // sl_->cutFlags = SusyNtTools::cleaningCutFlags(nt.evt()->cutFlags[m_RunSyst->event_syst],
+        //                                               m_preMuons,
+        //                                               m_baseMuons,
+        //                                               m_preJets,
+        //                                               m_baseJets);
+        // 
+
         sl_->anaType = m_anaType;
 
         sl_->nt = &nt; // SusyNt
         sl_->weights = m_weights;
         sl_->nt_sys = m_RunSyst->event_syst;
+
+        sl_->preElectrons = &m_preElectrons;
+        sl_->preMuons = &m_preMuons;
+        sl_->preJets = &m_preJets;
 
         sl_->baseLeptons = &m_baseLeptons;
         sl_->baseElectrons = &m_baseElectrons;
@@ -516,7 +541,7 @@ namespace sflow {
                 if (m_sysStore[i].type == SupersysType::event && m_sysStore[i].event_syst == m_singleEventSyst) {
                     delete m_RunSyst;
 
-                    m_RunSyst = &m_sysStore[i];
+                    m_RunSyst = &m_sysStore[i]; // don't delete!!
                 }
             }
         }
@@ -547,11 +572,10 @@ namespace sflow {
         // determine output file name
         if (m_runMode == SuperflowRunMode::data) {
             m_countWeights = false;
-            m_super_isData = true;
 
             // output file name
             stringstream sfile_name_;
-            sfile_name_ << "NOM_";
+            sfile_name_ << "CENTRAL_";
 
             size_t find_period = m_sample.find("period");
             if (find_period != string::npos) {
@@ -607,9 +631,13 @@ namespace sflow {
         }
         else if (nt.evt()->isMC) {
             stringstream sfile_name_; // output file name
-            sfile_name_ << "NOM_" << nt.evt()->mcChannel << ".root";
-
-            cout << app_name << "Run mode: SuperflowRunMode::nominal_and_weight_syst" << endl;
+            sfile_name_ << "CENTRAL_" << nt.evt()->mcChannel << ".root";
+            if (m_runMode == SuperflowRunMode::nominal_and_weight_syst) {
+                cout << app_name << "Run mode: SuperflowRunMode::nominal_and_weight_syst" << endl;
+            }
+            else {
+                cout << app_name << "Run mode: SuperflowRunMode::nominal (weighted)" << endl;
+            }
             cout << app_name << "Setting output file name to: " << sfile_name_.str() << endl;
             m_outputFileName = sfile_name_.str();
             m_entry_list_FileName += to_string(nt.evt()->mcChannel) + ".root";
@@ -698,7 +726,6 @@ namespace sflow {
             m_HFT->Branch(syst_var_name_down.data(), m_varFloat + m_weight_leaf_offset + 2 * i + 1, leaflist_down.data(), 65536);
         }
 
-        // event systematics are complicated.
         // Make an output file for each event systematic.
         if (m_runMode == SuperflowRunMode::all_syst) {
 
@@ -816,9 +843,9 @@ namespace sflow {
                     attach_superlink(sl_);
 
                     bool pass_cuts = true; // loop over and appply the cuts in m_CutStore.
-                    if (m_LambdaCutStore.size() > 0) {
-                        for (int i = 0; i < m_LambdaCutStore.size(); i++) {
-                            pass_cuts = m_LambdaCutStore[i](sl_); // run the cut function
+                    if (m_CutStore.size() > 0) {
+                        for (int i = 0; i < m_CutStore.size(); i++) {
+                            pass_cuts = m_CutStore[i](sl_); // run the cut function
 
                             if (pass_cuts) {
                                 m_RawCounter[i]++;
@@ -872,15 +899,15 @@ namespace sflow {
                     Superlink* sl_ = new Superlink;
                     attach_superlink(sl_);
 
-                    bool pass_cuts = true; // loop over and appply the cuts in m_CutStore.
+                    bool pass_cuts = true;
 
                     if (m_countWeights) {
-                        assignNonStaticWeightComponents(nt, *m_mcWeighter, m_signalLeptons, m_baseJets, m_RunSyst, m_weights);
+                        computeWeights(nt, *m_mcWeighter, m_signalLeptons, m_baseJets, m_RunSyst, m_weights);
                     }
 
-                    if (m_LambdaCutStore.size() > 0) {
-                        for (int i = 0; i < m_LambdaCutStore.size(); i++) {
-                            pass_cuts = m_LambdaCutStore[i](sl_); // run the cut function
+                    if (m_CutStore.size() > 0) {
+                        for (int i = 0; i < m_CutStore.size(); i++) {
+                            pass_cuts = m_CutStore[i](sl_); // run the cut function
 
                             if (pass_cuts) {
                                 m_RawCounter[i]++;
@@ -898,8 +925,8 @@ namespace sflow {
                             save_entry_to_list = false;
                         }
                         if (!m_countWeights) {
-                            assignNonStaticWeightComponents(nt, *m_mcWeighter, m_signalLeptons, m_baseJets, m_RunSyst, m_weights);
-                            m_WeightCounter[m_LambdaCutStore.size() - 1] += m_weights->product();
+                            computeWeights(nt, *m_mcWeighter, m_signalLeptons, m_baseJets, m_RunSyst, m_weights);
+                            m_WeightCounter[m_CutStore.size() - 1] += m_weights->product();
                         }
 
                         // FILL_HFTs
@@ -933,14 +960,7 @@ namespace sflow {
                     clearObjects();
                     delete m_RunSyst;
 
-                    m_RunSyst = &m_sysStore[index_event_sys[i]];
-
-                    //debug// cout << app_name << endl;
-                    //debug// cout << app_name << m_NtSys_to_string[m_RunSyst->event_syst] << endl;
-                    //debug// cout << app_name << m_NtSys_to_string[m_RunSyst->event_syst] << endl;
-                    //debug// cout << app_name << m_NtSys_to_string[m_RunSyst->event_syst] << endl;
-                    //debug// cout << app_name << endl;
-
+                    m_RunSyst = &m_sysStore[index_event_sys[i]]; // don't delete!!
                     selectObjects(m_RunSyst->event_syst, removeLepsFromIso, TauID_medium); // always select with nominal? (to compute event flags)
 
                     EventFlags eventFlags = computeEventFlags();
@@ -950,11 +970,11 @@ namespace sflow {
                         Superlink* sl_ = new Superlink;
                         attach_superlink(sl_);
 
-                        bool pass_cuts = true; // loop over and appply the cuts in m_CutStore.
+                        bool pass_cuts = true;
 
-                        if (m_LambdaCutStore.size() > 0) {
-                            for (int i = 0; i < m_LambdaCutStore.size(); i++) {
-                                pass_cuts = m_LambdaCutStore[i](sl_); // run the cut function
+                        if (m_CutStore.size() > 0) {
+                            for (int i = 0; i < m_CutStore.size(); i++) {
+                                pass_cuts = m_CutStore[i](sl_); // run the cut function
                                 if (!pass_cuts) break;
                             }
                         }
@@ -964,7 +984,7 @@ namespace sflow {
                                 m_entry_list_single_tree->Enter(entry);
                                 save_entry_to_list = false;
                             }
-                            assignNonStaticWeightComponents(nt, *m_mcWeighter, m_signalLeptons, m_baseJets, m_RunSyst, m_weights);
+                            computeWeights(nt, *m_mcWeighter, m_signalLeptons, m_baseJets, m_RunSyst, m_weights);
                             // FILL_HFTs
                             for (int v_ = 0; v_ < m_varType.size(); v_++) {
                                 switch (m_varType[v_]) {
@@ -1007,11 +1027,11 @@ namespace sflow {
                     Superlink* sl_ = new Superlink;
                     attach_superlink(sl_);
 
-                    bool pass_cuts = true; // loop over and appply the cuts in m_CutStore.
+                    bool pass_cuts = true;
 
-                    if (m_LambdaCutStore.size() > 0) {
-                        for (int i = 0; i < m_LambdaCutStore.size(); i++) {
-                            pass_cuts = m_LambdaCutStore[i](sl_); // run the cut function
+                    if (m_CutStore.size() > 0) {
+                        for (int i = 0; i < m_CutStore.size(); i++) {
+                            pass_cuts = m_CutStore[i](sl_); // run the cut function
 
                             if (pass_cuts) {
                                 m_RawCounter[i]++;
@@ -1027,10 +1047,10 @@ namespace sflow {
                             m_entry_list_single_tree->Enter(entry);
                             save_entry_to_list = false;
                         }
-                        assignNonStaticWeightComponents(nt, *m_mcWeighter, m_signalLeptons, m_baseJets, m_RunSyst, m_weights);
+                        computeWeights(nt, *m_mcWeighter, m_signalLeptons, m_baseJets, m_RunSyst, m_weights);
 
                         double nom_eventweight = m_weights->product();
-                        m_WeightCounter[m_LambdaCutStore.size() - 1] += m_weights->product();
+                        m_WeightCounter[m_CutStore.size() - 1] += m_weights->product();
 
                         // FILL HFTs
                         for (int v_ = 0; v_ < m_varType.size(); v_++) {
@@ -1059,25 +1079,24 @@ namespace sflow {
 
                             // Up variation
                             m_RunSyst->weight_syst = m_sysStore[index_weight_sys[w_]].weight_syst_up; // do up variation
-                            assignNonStaticWeightComponents(nt, *m_mcWeighter, m_signalLeptons, m_baseJets, m_RunSyst, weightComponents_copy);
+                            computeWeights(nt, *m_mcWeighter, m_signalLeptons, m_baseJets, m_RunSyst, weightComponents_copy);
                             double up_weight = weightComponents_copy->product();
                             delete weightComponents_copy;
 
                             weightComponents_copy = new Superweight(*m_weights);
                             // Down variation
                             m_RunSyst->weight_syst = m_sysStore[index_weight_sys[w_]].weight_syst_down; // do down variation
-                            assignNonStaticWeightComponents(nt, *m_mcWeighter, m_signalLeptons, m_baseJets, m_RunSyst, weightComponents_copy);
+                            computeWeights(nt, *m_mcWeighter, m_signalLeptons, m_baseJets, m_RunSyst, weightComponents_copy);
                             double down_weight = weightComponents_copy->product();
 
                             delete weightComponents_copy;
                             weightComponents_copy = nullptr;
 
-                            if (nom_eventweight > m_epsilon && up_weight < nom_eventweight && down_weight > nom_eventweight) {
+                            if (up_weight < nom_eventweight && down_weight > nom_eventweight) {
                                 double temp = up_weight; // reason to swap these
                                 up_weight = down_weight;
                                 down_weight = temp;
                             }
-
                             if (nom_eventweight > m_epsilon) {
                                 up_weight = up_weight / nom_eventweight;
                                 down_weight = down_weight / nom_eventweight;
@@ -1087,14 +1106,9 @@ namespace sflow {
                                 down_weight = 1.0;
                             }
 
-                            // cout << app_name << "Weight variation: " << m_sysStore[index_weight_sys[w_]].tree_name << endl;
-                            // cout << "    nom: " << nom_eventweight << endl;
-                            // cout << "    up : " << up_weight << endl;
-                            // cout << "    dwn: " << down_weight << endl;
-                            *(m_varFloat + m_weight_leaf_offset + 2 * w_) = up_weight;
+                            *(m_varFloat + m_weight_leaf_offset + 2 * w_) = up_weight; // put in TBranch
                             *(m_varFloat + m_weight_leaf_offset + 2 * w_ + 1) = down_weight;
-                        } // cout << app_name << endl << app_name << endl;
-
+                        }
                         m_RunSyst->weight_syst = SupersysWeight::null; // must reset this value!
                         m_HFT->Fill();
                     }
@@ -1102,12 +1116,8 @@ namespace sflow {
                     delete m_weights;
                 }
             } break;
-            case SuperflowRunMode::null: {
-                cout << app_name << "ERROR (fatal): SuperflowRunMode::null seen in event loop." << endl;
-                exit(1);
-            } break;
+            default: break;
         }
-
         return kTRUE;
     }
 
@@ -1118,16 +1128,16 @@ namespace sflow {
         cout << app_name << "Raw" << endl;
         cout << app_name << "Raw" << endl;
         cout << app_name << "Raw" << endl;
-        for (int i = 0; i < m_LambdaCutStore.size(); i++) {
-            cout << app_name << "Cut " << pad_width(to_string(i), 2) << ": " << pad_width(m_LambdaCutStoreNames[i], 32) << ": " << m_RawCounter[i] << endl;
+        for (int i = 0; i < m_CutStore.size(); i++) {
+            cout << app_name << "Cut " << pad_width(to_string(i), 2) << ": " << pad_width(m_CutStoreNames[i], 32) << ": " << m_RawCounter[i] << endl;
         }
         cout << app_name << endl << app_name << endl;
 
         cout << app_name << "Weighted" << endl;
         cout << app_name << "Weighted" << endl;
         cout << app_name << "Weighted" << endl;
-        for (int i = 0; i < m_LambdaCutStore.size(); i++) {
-            cout << app_name << "Cut " << pad_width(to_string(i), 2) << ": " << pad_width(m_LambdaCutStoreNames[i], 32) << ": " << m_WeightCounter[i] << endl;
+        for (int i = 0; i < m_CutStore.size(); i++) {
+            cout << app_name << "Cut " << pad_width(to_string(i), 2) << ": " << pad_width(m_CutStoreNames[i], 32) << ": " << m_WeightCounter[i] << endl;
         }
         cout << app_name << endl << app_name << endl;
 
@@ -1199,7 +1209,7 @@ namespace sflow {
         return success;
     }
 
-    bool Superflow::assignNonStaticWeightComponents(
+    bool Superflow::computeWeights(
         Susy::SusyNtObject &ntobj,
         MCWeighter &weighter,
         const LeptonVector& leptons,
@@ -1365,6 +1375,55 @@ namespace sflow {
         return effFactor;
     }
 
+    // bool Superflow::passFlags()
+    // {
+    //     bool pass_flags = true;
+    // 
+    //     if (m_signalLeptons.size() < 2) pass_flags = false;
+    // 
+    //     int cutFlags = SusyNtTools::cleaningCutFlags(nt.evt()->cutFlags[m_RunSyst->event_syst],
+    //                                                  m_preMuons,
+    //                                                  m_baseMuons,
+    //                                                  m_preJets,
+    //                                                  m_baseJets);
+    // 
+    //     //cout << "cutflags: " << cutFlags << endl;
+    // 
+    //     // pass_flags = pass_flags && !(nt.evt()->eventWithSusyProp); // SUSY grid simplified model: remove higgsino events 
+    //     //cout << "pass num 1: " << (pass_flags ? "pass" : "fail") << endl;
+    //     pass_flags = pass_flags && SusyNtTools::passGRL(cutFlags);
+    //     //cout << "pass num 2: " << (pass_flags ? "pass"hasHotSpotJet : "fail") << endl;
+    //     pass_flags = pass_flags && SusyNtTools::passTileTripCut(cutFlags);
+    //     //cout << "pass num 3: " << (pass_flags ? "pass" : "fail") << endl;
+    //     pass_flags = pass_flags && SusyNtTools::passLarErr(cutFlags);
+    //     //cout << "pass num 4: " << (pass_flags ? "pass" : "fail") << endl;
+    // 
+    //     JetVector jets = getPreJets(&nt, m_RunSyst->event_syst);
+    //     e_j_overlap(m_baseElectrons, jets, J_E_DR, true);
+    //     t_j_overlap(m_signalTaus, jets, J_T_DR, true);
+    // 
+    //     pass_flags = pass_flags && !SusyNtTools::hasBadJet(jets);
+    //     jets.clear();
+    // 
+    //     //cout << "pass num 5: " << (pass_flags ? "pass" : "fail") << endl;
+    //     pass_flags = pass_flags && SusyNtTools::passDeadRegions(m_preJets, m_met, nt.evt()->run, nt.evt()->isMC);
+    //     //cout << "pass num 6: " << (pass_flags ? "pass" : "fail") << endl;
+    //     pass_flags = pass_flags && !SusyNtTools::hasBadMuon(m_preMuons);
+    //     //cout << "pass num 7: " << (pass_flags ? "pass" : "fail") << endl;
+    //     pass_flags = pass_flags && !SusyNtTools::hasCosmicMuon(m_baseMuons);
+    //     //cout << "pass num 8: " << (pass_flags ? "pass" : "fail") << endl;
+    //     pass_flags = pass_flags && !SusyNtTools::hasHotSpotJet(m_preJets);
+    //     //cout << "pass num 9: " << (pass_flags ? "pass" : "fail") << endl;
+    //     //pass_flags = pass_flags && SusyNtTools::passTileErr(cutFlags);
+    //     //cout << "pass num 10: " << (pass_flags ? "pass" : "fail") << endl;
+    //     pass_flags = pass_flags && SusyNtTools::passTTCVeto(cutFlags);
+    //     //cout << "pass num 11: " << (pass_flags ? "pass" : "fail") << endl;
+    //     pass_flags = pass_flags && SusyNtTools::passGoodVtx(cutFlags);
+    //     //cout << "pass num 12: " << (pass_flags ? "pass" : "fail") << endl;
+    // 
+    //     return pass_flags;
+    // }
+
     EventFlags Superflow::computeEventFlags()
     { // stolen from Davide
         EventFlags f;
@@ -1423,3 +1482,20 @@ namespace sflow {
         m_input_chain = input_chain_;
     }
 }
+
+/* snippets
+
+//debug// cout << app_name << endl;
+//debug// cout << app_name << m_NtSys_to_string[m_RunSyst->event_syst] << endl;
+//debug// cout << app_name << m_NtSys_to_string[m_RunSyst->event_syst] << endl;
+//debug// cout << app_name << m_NtSys_to_string[m_RunSyst->event_syst] << endl;
+//debug// cout << app_name << endl;
+
+// cout << app_name << "Weight variation: " << m_sysStore[index_weight_sys[w_]].tree_name << endl;
+// cout << "    nom: " << nom_eventweight << endl;
+// cout << "    up : " << up_weight << endl;
+// cout << "    dwn: " << down_weight << endl;
+// cout << app_name << endl << app_name << endl;
+
+
+*/

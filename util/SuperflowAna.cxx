@@ -50,6 +50,7 @@ int main(int argc, char* argv[])
     // END read-in
 
     Superflow* cutflow = new Superflow(); // initialize the cutflow
+    cutflow->setAnaType(Ana_2Lep); // Ana_2Lep Ana_2LepWH 
     cutflow->setSampleName(sample_);
     cutflow->setRunMode(run_mode);
     cutflow->setChain(chain);
@@ -61,6 +62,27 @@ int main(int argc, char* argv[])
     // START Setup cuts
     // START Setup cuts
     // START Setup cuts
+
+    *cutflow << CutName("cleaning cuts") << [](Superlink* sl) -> bool { return true; };
+
+    /// *cutflow << CutName("event cleaning") << [&](Superlink* sl) -> bool {
+    /// 
+    ///     bool pass_cuts =
+    ///         !(sl->nt->evt()->eventWithSusyProp) // SUSY grid simplified model: remove higgsino events 
+    ///         && SusyNtTools::passGRL(sl->cutFlags)
+    ///         && SusyNtTools::passTileTripCut(sl->cutFlags)
+    ///         && SusyNtTools::passLarErr(sl->cutFlags)
+    ///         //&& !SusyNtTools::hasBadJet(*sl->baseJets)
+    ///         //&& SusyNtTools::passDeadRegions(*sl->preJets, sl->met, sl->nt->evt()->run, sl->isMC)
+    ///         //&& !SusyNtTools::hasBadMuon(*sl->preMuons)
+    ///         //&& !SusyNtTools::hasCosmicMuon(*sl->baseMuons)
+    ///        // && !SusyNtTools::hasHotSpotJet(*sl->preJets)
+    ///         && SusyNtTools::passTTCVeto(sl->cutFlags)
+    ///         && SusyNtTools::passGoodVtx(sl->cutFlags)
+    ///         ;
+    /// 
+    ///     return pass_cuts;
+    /// };
 
     *cutflow << CutName("exactly two signal leptons") << [](Superlink* sl) -> bool {
         please return sl->leptons->size() == 2;
@@ -277,7 +299,7 @@ int main(int argc, char* argv[])
                     central_light_jets.push_back(sl->jets->at(i));
                 }
             }
-            return central_light_jets.size();
+            please return central_light_jets.size();
         };
         *cutflow << SaveVar();
     }
@@ -498,7 +520,7 @@ int main(int argc, char* argv[])
             corrMet.Et = metCorr.Mod();
             corrMet.phi = metCorr.Phi();
 
-            please return SusyNtTools::getMetRel(&corrMet, *sl->leptons, *sl->jets) * GeV_to_MeV;
+            return SusyNtTools::getMetRel(&corrMet, *sl->leptons, *sl->jets) * GeV_to_MeV;
         };
         *cutflow << SaveVar();
     }
@@ -753,7 +775,7 @@ int main(int argc, char* argv[])
 }
 
 void read_options(int argc, char* argv[], TChain* chain, int& n_skip_, int& num_events_, string& sample_,
-    SuperflowRunMode& run_mode_, SusyNtSys& nt_sys) // Courtesy of Davide
+    SuperflowRunMode& run_mode_, SusyNtSys& nt_sys)
 {
     bool nominal_ = false;
     bool nominal_and_weight_syst_ = false;
