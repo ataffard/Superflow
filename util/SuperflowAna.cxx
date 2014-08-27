@@ -532,7 +532,7 @@ int main(int argc, char* argv[])
 
     *cutflow << NewVar("ETmiss Corr (Phi)"); {
         *cutflow << HFTname("metCorrPhi");
-        *cutflow << [&](Superlink* sl, var_float*) -> double { return metCorr.Phi(); };
+        *cutflow << [&](Superlink* sl, var_float*) -> double { return metCorr.Phi() - 3.141592653589793238462; };
         *cutflow << SaveVar();
     }
 

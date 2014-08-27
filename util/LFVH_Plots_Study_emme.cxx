@@ -141,7 +141,7 @@ void convertErrorsToPoisson(TH1* histo, TGraphAsymmErrors* graph)
     }
 }
 
-void myText(Double_t x, Double_t y, Color_t color, char *text)
+void myText(Double_t x, Double_t y, Color_t color, const char *text)
 {
     Double_t tsize = 0.055;
     TLatex l; //l.SetTextAlign(12); 
@@ -484,16 +484,16 @@ vector<plot> definePlots()
     plot_.is_Log = true;
     plot_.run_group = 0;
 
-    // VR_Etmiss_Zmm
-    // VR_Etmiss_Zmm
-    // VR_Etmiss_Zmm
+    // CR_el_and_mu
+    // CR_el_and_mu
+    // CR_el_and_mu
     plot_.run_group = 1;
 
-    // VR_Etmiss_Zmm
+    // CR_el_and_mu
     // Plot: MT2
     plot_.root_get_member = "MT2";
     plot_.root_get_factor = " / 1000.0";
-    plot_.signal_region = "VR_Etmiss_Zmm";
+    plot_.signal_region = "CR_el_and_mu";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "m_{T2} [GeV]";
@@ -502,15 +502,15 @@ vector<plot> definePlots()
     plot_.x_range_min = 0.0;
     plot_.x_range_max = 300.0;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e8;
-    plot_.long_name = "VR_Etmiss_Zmm_MT2";
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_el_and_mu_MT2";
     vect_plot.push_back(plot_);
 
-    // VR_Etmiss_Zmm
+    // CR_el_and_mu
     // Plot: deltaPhi_met_l1
     plot_.root_get_member = "deltaPhi_met_l1";
     plot_.root_get_factor = "";
-    plot_.signal_region = "VR_Etmiss_Zmm";
+    plot_.signal_region = "CR_el_and_mu";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "#Delta#phi (E_{T}^{miss}, l_{1})";
@@ -519,15 +519,15 @@ vector<plot> definePlots()
     plot_.x_range_min = 0.0;
     plot_.x_range_max = 2.5 * Pi;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e8;
-    plot_.long_name = "VR_Etmiss_Zmm_deltaPhi_met_l1";
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_el_and_mu_deltaPhi_met_l1";
     vect_plot.push_back(plot_);
 
-    // VR_Etmiss_Zmm
+    // CR_el_and_mu
     // Plot: deltaPhi_met_l2
     plot_.root_get_member = "deltaPhi_met_l2";
     plot_.root_get_factor = "";
-    plot_.signal_region = "VR_Etmiss_Zmm";
+    plot_.signal_region = "CR_el_and_mu";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "#Delta#phi (E_{T}^{miss}, l_{2})";
@@ -536,15 +536,15 @@ vector<plot> definePlots()
     plot_.x_range_min = 0.0;
     plot_.x_range_max = 2.5 * Pi;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e8;
-    plot_.long_name = "VR_Etmiss_Zmm_deltaPhi_met_l2";
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_el_and_mu_deltaPhi_met_l2";
     vect_plot.push_back(plot_);
 
-    // VR_Etmiss_Zmm
+    // CR_el_and_mu
     // Plot: ll_M
     plot_.root_get_member = "ll_M";
     plot_.root_get_factor = " / 1000.0";
-    plot_.signal_region = "VR_Etmiss_Zmm";
+    plot_.signal_region = "CR_el_and_mu";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "m_{ll} [GeV]";
@@ -553,15 +553,15 @@ vector<plot> definePlots()
     plot_.x_range_min = 0.0;
     plot_.x_range_max = 750.0;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e8;
-    plot_.long_name = "VR_Etmiss_Zmm_ll_M";
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_el_and_mu_ll_M";
     vect_plot.push_back(plot_);
-
-    // VR_Etmiss_Zmm
+    
+    // CR_el_and_mu
     // Plot: ll_Pt
     plot_.root_get_member = "ll_Pt";
     plot_.root_get_factor = " / 1000.0";
-    plot_.signal_region = "VR_Etmiss_Zmm";
+    plot_.signal_region = "CR_el_and_mu";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "p_{T} (ll) [GeV]";
@@ -570,15 +570,15 @@ vector<plot> definePlots()
     plot_.x_range_min = 0.0;
     plot_.x_range_max = 500.0;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e8;
-    plot_.long_name = "VR_Etmiss_Zmm_ll_Pt";
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_el_and_mu_ll_Pt";
     vect_plot.push_back(plot_);
 
-    // VR_Etmiss_Zmm
+    // CR_el_and_mu
     // Plot: ll_deltaPhi
     plot_.root_get_member = "ll_deltaPhi";
     plot_.root_get_factor = "";
-    plot_.signal_region = "VR_Etmiss_Zmm";
+    plot_.signal_region = "CR_el_and_mu";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "#Delta#phi (ll)";
@@ -587,32 +587,32 @@ vector<plot> definePlots()
     plot_.x_range_min = 0.0;
     plot_.x_range_max = 2.5 * Pi;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e8;
-    plot_.long_name = "VR_Etmiss_Zmm_ll_deltaPhi";
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_el_and_mu_ll_deltaPhi";
     vect_plot.push_back(plot_);
 
-    // VR_Etmiss_Zmm
+    // CR_el_and_mu
     // Plot: METrel
     plot_.root_get_member = "METrel";
     plot_.root_get_factor = " / 1000.0";
-    plot_.signal_region = "VR_Etmiss_Zmm";
+    plot_.signal_region = "CR_el_and_mu";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "E_{T}^{miss, rel} [GeV]";
     plot_.y_label = "Events / 10 GeV";
     plot_.x_bin_width = 10.0;
     plot_.x_range_min = 0.0;
-    plot_.x_range_max = 300.0;
+    plot_.x_range_max = 450.0;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e8;
-    plot_.long_name = "VR_Etmiss_Zmm_METrel";
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_el_and_mu_METrel";
     vect_plot.push_back(plot_);
 
-    // VR_Etmiss_Zmm
-    // Plot: met
+    // CR_el_and_mu
+    // Plot: lept1Pt
     plot_.root_get_member = "lept1Pt";
     plot_.root_get_factor = " / 1000.0";
-    plot_.signal_region = "VR_Etmiss_Zmm";
+    plot_.signal_region = "CR_el_and_mu";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "p_{T, l1} [GeV]";
@@ -621,15 +621,15 @@ vector<plot> definePlots()
     plot_.x_range_min = 0.0;
     plot_.x_range_max = 500.0;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e8;
-    plot_.long_name = "VR_Etmiss_Zmm_lept1Pt";
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_el_and_mu_lept1Pt";
     vect_plot.push_back(plot_);
 
-    // VR_Etmiss_Zmm
-    // Plot: met
+    // CR_el_and_mu
+    // Plot: lept2Pt
     plot_.root_get_member = "lept2Pt";
     plot_.root_get_factor = " / 1000.0";
-    plot_.signal_region = "VR_Etmiss_Zmm";
+    plot_.signal_region = "CR_el_and_mu";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "p_{T, l2} [GeV]";
@@ -638,15 +638,15 @@ vector<plot> definePlots()
     plot_.x_range_min = 0.0;
     plot_.x_range_max = 500.0;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e8;
-    plot_.long_name = "VR_Etmiss_Zmm_lept2Pt";
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_el_and_mu_lept2Pt";
     vect_plot.push_back(plot_);
 
-    // VR_Etmiss_Zmm
+    // CR_el_and_mu
     // Plot: mcoll
     plot_.root_get_member = "mcoll";
     plot_.root_get_factor = " / 1000.0";
-    plot_.signal_region = "VR_Etmiss_Zmm";
+    plot_.signal_region = "CR_el_and_mu";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "m_{coll} [GeV]";
@@ -655,15 +655,15 @@ vector<plot> definePlots()
     plot_.x_range_min = 0.0;
     plot_.x_range_max = 1000.0;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e8;
-    plot_.long_name = "VR_Etmiss_Zmm_mcoll";
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_el_and_mu_mcoll";
     vect_plot.push_back(plot_);
-
-    // VR_Etmiss_Zmm
+    
+    // CR_el_and_mu
     // Plot: mcollCorr
     plot_.root_get_member = "mcollCorr";
     plot_.root_get_factor = " / 1000.0";
-    plot_.signal_region = "VR_Etmiss_Zmm";
+    plot_.signal_region = "CR_el_and_mu";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "m_{coll-corr} [GeV]";
@@ -672,67 +672,67 @@ vector<plot> definePlots()
     plot_.x_range_min = 0.0;
     plot_.x_range_max = 1000.0;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e8;
-    plot_.long_name = "VR_Etmiss_Zmm_mcollCorr";
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_el_and_mu_mcollCorr";
     vect_plot.push_back(plot_);
-
-    // VR_Etmiss_Zmm
+    
+    // CR_el_and_mu
     // Plot: met
     plot_.root_get_member = "met";
     plot_.root_get_factor = " / 1000.0";
-    plot_.signal_region = "VR_Etmiss_Zmm";
+    plot_.signal_region = "CR_el_and_mu";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "E_{T}^{miss} [GeV]";
     plot_.y_label = "Events / 10 GeV";
     plot_.x_bin_width = 10.0;
     plot_.x_range_min = 0.0;
-    plot_.x_range_max = 300.0;
+    plot_.x_range_max = 450.0;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e8;
-    plot_.long_name = "VR_Etmiss_Zmm_met";
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_el_and_mu_met";
     vect_plot.push_back(plot_);
-
-
-    // VR_Etmiss_Zmm
+    
+    
+    // CR_el_and_mu
     // Plot: metCorr
     plot_.root_get_member = "metCorr";
     plot_.root_get_factor = " / 1000.0";
-    plot_.signal_region = "VR_Etmiss_Zmm";
+    plot_.signal_region = "CR_el_and_mu";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "E_{T}^{miss-corr} [GeV]";
     plot_.y_label = "Events / 10 GeV";
     plot_.x_bin_width = 10.0;
     plot_.x_range_min = 0.0;
-    plot_.x_range_max = 300.0;
+    plot_.x_range_max = 450.0;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e8;
-    plot_.long_name = "VR_Etmiss_Zmm_metCorr";
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_el_and_mu_metCorr";
     vect_plot.push_back(plot_);
-
-    // VR_Etmiss_Zmm
+    
+    // CR_el_and_mu
     // Plot: METrelCorr
     plot_.root_get_member = "METrelCorr";
     plot_.root_get_factor = " / 1000.0";
-    plot_.signal_region = "VR_Etmiss_Zmm";
+    plot_.signal_region = "CR_el_and_mu";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "E_{T}^{miss-corr, rel} [GeV]";
     plot_.y_label = "Events / 10 GeV";
     plot_.x_bin_width = 10.0;
     plot_.x_range_min = 0.0;
-    plot_.x_range_max = 300.0;
+    plot_.x_range_max = 450.0;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e8;
-    plot_.long_name = "VR_Etmiss_Zmm_METrelCorr";
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_el_and_mu_METrelCorr";
     vect_plot.push_back(plot_);
 
-    // VR_Etmiss_Zmm
-    // Plot: ll_deltaPhi
+    // // CR_el_and_mu
+    // // Plot: ll_deltaPhi
     plot_.root_get_member = "ll_deltaPhi";
     plot_.root_get_factor = "";
-    plot_.signal_region = "VR_Etmiss_Zmm";
+    plot_.signal_region = "CR_el_and_mu";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "#Delta#phi (ll)";
@@ -741,16 +741,16 @@ vector<plot> definePlots()
     plot_.x_range_min = 0.0;
     plot_.x_range_max = 2.5 * Pi;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e8;
-    plot_.long_name = "VR_Etmiss_Zmm_ll_deltaPhi";
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_el_and_mu_ll_deltaPhi";
     vect_plot.push_back(plot_);
-
-    // VR_Etmiss_Zmm
-    // Plot: deltaPhi_metCorr_l1
+    // 
+    // // CR_el_and_mu
+    // // Plot: deltaPhi_metCorr_l1
     plot_.root_get_member = "abs(3.14159265358979323 - metCorrPhi - lept1Phi)";
     plot_.root_get_member_name = "deltaPhi_metCorr_l1";
     plot_.root_get_factor = "";
-    plot_.signal_region = "VR_Etmiss_Zmm";
+    plot_.signal_region = "CR_el_and_mu";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "#Delta#phi (E_{T}^{miss-corr}, l_{1})";
@@ -759,16 +759,16 @@ vector<plot> definePlots()
     plot_.x_range_min = 0.0;
     plot_.x_range_max = 2.5 * Pi;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e8;
-    plot_.long_name = "VR_Etmiss_Zmm_deltaPhi_metCorr_l1";
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_el_and_mu_deltaPhi_metCorr_l1";
     vect_plot.push_back(plot_);
-
-    // VR_Etmiss_Zmm
-    // Plot: deltaPhi_metCorr_l2
+    // 
+    // // CR_el_and_mu
+    // // Plot: deltaPhi_metCorr_l2
     plot_.root_get_member = "abs(3.14159265358979323 - metCorrPhi - lept2Phi)";
     plot_.root_get_member_name = "deltaPhi_metCorr_l2";
     plot_.root_get_factor = "";
-    plot_.signal_region = "VR_Etmiss_Zmm";
+    plot_.signal_region = "CR_el_and_mu";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "#Delta#phi (E_{T}^{miss-corr}, l_{2})";
@@ -777,24 +777,683 @@ vector<plot> definePlots()
     plot_.x_range_min = 0.0;
     plot_.x_range_max = 2.5 * Pi;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e8;
-    plot_.long_name = "VR_Etmiss_Zmm_deltaPhi_metCorr_l2";
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_el_and_mu_deltaPhi_metCorr_l2";
+    vect_plot.push_back(plot_);
+
+    // Plot: nCentralLightJets
+    // selection region
+    plot_.root_get_member = "nCentralLightJets";
+    plot_.root_get_member_name = "";
+    plot_.root_get_factor = "";
+    plot_.signal_region = "CR_el_and_mu";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    // plot setup
+    plot_.x_label = "N_{jets}-central";
+    plot_.y_label = "Events";
+    plot_.x_bin_width = 1.0;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 10.0;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_el_and_mu_nCentralLightJets";
     vect_plot.push_back(plot_);
 
     plot_.root_get_member_name = "";
     plot_.root_get_member_name = "";
     plot_.root_get_member_name = "";
 
-    // VR_Etmiss_Zee
-    // VR_Etmiss_Zee
-    // VR_Etmiss_Zee
+    // CR_EM
+    // CR_EM
+    // CR_EM
+    plot_.run_group = 1;
+
+    // CR_EM
+    // Plot: MT2
+    plot_.root_get_member = "MT2";
+    plot_.root_get_factor = " / 1000.0";
+    plot_.signal_region = "CR_EM";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    plot_.x_label = "m_{T2} [GeV]";
+    plot_.y_label = "Events / 10 GeV";
+    plot_.x_bin_width = 10.0;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 300.0;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_EM_MT2";
+    vect_plot.push_back(plot_);
+
+    // CR_EM
+    // Plot: deltaPhi_met_l1
+    plot_.root_get_member = "deltaPhi_met_l1";
+    plot_.root_get_factor = "";
+    plot_.signal_region = "CR_EM";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    plot_.x_label = "#Delta#phi (E_{T}^{miss}, l_{1})";
+    plot_.y_label = "Events";
+    plot_.x_bin_width = Pi / 12;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 2.5 * Pi;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_EM_deltaPhi_met_l1";
+    vect_plot.push_back(plot_);
+
+    // CR_EM
+    // Plot: deltaPhi_met_l2
+    plot_.root_get_member = "deltaPhi_met_l2";
+    plot_.root_get_factor = "";
+    plot_.signal_region = "CR_EM";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    plot_.x_label = "#Delta#phi (E_{T}^{miss}, l_{2})";
+    plot_.y_label = "Events";
+    plot_.x_bin_width = Pi / 12;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 2.5 * Pi;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_EM_deltaPhi_met_l2";
+    vect_plot.push_back(plot_);
+
+    // CR_EM
+    // Plot: ll_M
+    plot_.root_get_member = "ll_M";
+    plot_.root_get_factor = " / 1000.0";
+    plot_.signal_region = "CR_EM";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    plot_.x_label = "m_{ll} [GeV]";
+    plot_.y_label = "Events / 25 GeV";
+    plot_.x_bin_width = 25.0;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 750.0;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_EM_ll_M";
+    vect_plot.push_back(plot_);
+    
+    // CR_EM
+    // Plot: ll_Pt
+    plot_.root_get_member = "ll_Pt";
+    plot_.root_get_factor = " / 1000.0";
+    plot_.signal_region = "CR_EM";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    plot_.x_label = "p_{T} (ll) [GeV]";
+    plot_.y_label = "Events / 15 GeV";
+    plot_.x_bin_width = 15.0;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 500.0;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_EM_ll_Pt";
+    vect_plot.push_back(plot_);
+
+    // CR_EM
+    // Plot: ll_deltaPhi
+    plot_.root_get_member = "ll_deltaPhi";
+    plot_.root_get_factor = "";
+    plot_.signal_region = "CR_EM";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    plot_.x_label = "#Delta#phi (ll)";
+    plot_.y_label = "Events";
+    plot_.x_bin_width = Pi / 12;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 2.5 * Pi;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_EM_ll_deltaPhi";
+    vect_plot.push_back(plot_);
+
+    // CR_EM
+    // Plot: METrel
+    plot_.root_get_member = "METrel";
+    plot_.root_get_factor = " / 1000.0";
+    plot_.signal_region = "CR_EM";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    plot_.x_label = "E_{T}^{miss, rel} [GeV]";
+    plot_.y_label = "Events / 10 GeV";
+    plot_.x_bin_width = 10.0;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 450.0;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_EM_METrel";
+    vect_plot.push_back(plot_);
+
+    // CR_EM
+    // Plot: lept1Pt
+    plot_.root_get_member = "lept1Pt";
+    plot_.root_get_factor = " / 1000.0";
+    plot_.signal_region = "CR_EM";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    plot_.x_label = "p_{T, l1} [GeV]";
+    plot_.y_label = "Events / 20 GeV";
+    plot_.x_bin_width = 20.0;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 500.0;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_EM_lept1Pt";
+    vect_plot.push_back(plot_);
+
+    // CR_EM
+    // Plot: lept2Pt
+    plot_.root_get_member = "lept2Pt";
+    plot_.root_get_factor = " / 1000.0";
+    plot_.signal_region = "CR_EM";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    plot_.x_label = "p_{T, l2} [GeV]";
+    plot_.y_label = "Events / 20 GeV";
+    plot_.x_bin_width = 20.0;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 500.0;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_EM_lept2Pt";
+    vect_plot.push_back(plot_);
+    
+
+    // CR_EM
+    // Plot: mcoll
+    plot_.root_get_member = "mcoll";
+    plot_.root_get_factor = " / 1000.0";
+    plot_.signal_region = "CR_EM";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    plot_.x_label = "m_{coll} [GeV]";
+    plot_.y_label = "Events / 25 GeV";
+    plot_.x_bin_width = 25.0;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 1000.0;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_EM_mcoll";
+    vect_plot.push_back(plot_);
+    
+    // CR_EM
+    // Plot: mcollCorr
+    plot_.root_get_member = "mcollCorr";
+    plot_.root_get_factor = " / 1000.0";
+    plot_.signal_region = "CR_EM";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    plot_.x_label = "m_{coll-corr} [GeV]";
+    plot_.y_label = "Events / 25 GeV";
+    plot_.x_bin_width = 25.0;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 1000.0;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_EM_mcollCorr";
+    vect_plot.push_back(plot_);
+    
+    // CR_EM
+    // Plot: met
+    plot_.root_get_member = "met";
+    plot_.root_get_factor = " / 1000.0";
+    plot_.signal_region = "CR_EM";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    plot_.x_label = "E_{T}^{miss} [GeV]";
+    plot_.y_label = "Events / 10 GeV";
+    plot_.x_bin_width = 10.0;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 450.0;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_EM_met";
+    vect_plot.push_back(plot_);
+    
+    // CR_EM
+    // Plot: metCorr
+    plot_.root_get_member = "metCorr";
+    plot_.root_get_factor = " / 1000.0";
+    plot_.signal_region = "CR_EM";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    plot_.x_label = "E_{T}^{miss-corr} [GeV]";
+    plot_.y_label = "Events / 10 GeV";
+    plot_.x_bin_width = 10.0;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 450.0;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_EM_metCorr";
+    vect_plot.push_back(plot_);
+    
+    // CR_EM
+    // Plot: METrelCorr
+    plot_.root_get_member = "METrelCorr";
+    plot_.root_get_factor = " / 1000.0";
+    plot_.signal_region = "CR_EM";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    plot_.x_label = "E_{T}^{miss-corr, rel} [GeV]";
+    plot_.y_label = "Events / 10 GeV";
+    plot_.x_bin_width = 10.0;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 450.0;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_EM_METrelCorr";
+    vect_plot.push_back(plot_);
+
+    // // CR_EM
+    // // Plot: ll_deltaPhi
+    plot_.root_get_member = "ll_deltaPhi";
+    plot_.root_get_factor = "";
+    plot_.signal_region = "CR_EM";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    plot_.x_label = "#Delta#phi (ll)";
+    plot_.y_label = "Events";
+    plot_.x_bin_width = Pi / 12;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 2.5 * Pi;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_EM_ll_deltaPhi";
+    vect_plot.push_back(plot_);
+    // 
+    // // CR_EM
+    // // Plot: deltaPhi_metCorr_l1
+    plot_.root_get_member = "abs(3.14159265358979323 - metCorrPhi - lept1Phi)";
+    plot_.root_get_member_name = "deltaPhi_metCorr_l1";
+    plot_.root_get_factor = "";
+    plot_.signal_region = "CR_EM";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    plot_.x_label = "#Delta#phi (E_{T}^{miss-corr}, l_{1})";
+    plot_.y_label = "Events";
+    plot_.x_bin_width = Pi / 12;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 2.5 * Pi;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_EM_deltaPhi_metCorr_l1";
+    vect_plot.push_back(plot_);
+    // 
+    // // CR_EM
+    // // Plot: deltaPhi_metCorr_l2
+    plot_.root_get_member = "abs(3.14159265358979323 - metCorrPhi - lept2Phi)";
+    plot_.root_get_member_name = "deltaPhi_metCorr_l2";
+    plot_.root_get_factor = "";
+    plot_.signal_region = "CR_EM";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    plot_.x_label = "#Delta#phi (E_{T}^{miss-corr}, l_{2})";
+    plot_.y_label = "Events";
+    plot_.x_bin_width = Pi / 12;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 2.5 * Pi;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_EM_deltaPhi_metCorr_l2";
+    vect_plot.push_back(plot_);
+
+    // Plot: nCentralLightJets
+    // selection region
+    plot_.root_get_member = "nCentralLightJets";
+    plot_.root_get_member_name = "";
+    plot_.root_get_factor = "";
+    plot_.signal_region = "CR_EM";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    // plot setup
+    plot_.x_label = "N_{jets}-central";
+    plot_.y_label = "Events";
+    plot_.x_bin_width = 1.0;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 10.0;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_EM_nCentralLightJets";
+    vect_plot.push_back(plot_);
+
+    plot_.root_get_member_name = "";
+    plot_.root_get_member_name = "";
+    plot_.root_get_member_name = "";
+
+    // CR_ME
+    // CR_ME
+    // CR_ME
+    plot_.run_group = 1;
+    
+    // CR_ME
+    // Plot: MT2
+    plot_.root_get_member = "MT2";
+    plot_.root_get_factor = " / 1000.0";
+    plot_.signal_region = "CR_ME";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    plot_.x_label = "m_{T2} [GeV]";
+    plot_.y_label = "Events / 10 GeV";
+    plot_.x_bin_width = 10.0;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 300.0;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_ME_MT2";
+    vect_plot.push_back(plot_);
+
+    // CR_ME
+    // Plot: deltaPhi_met_l1
+    plot_.root_get_member = "deltaPhi_met_l1";
+    plot_.root_get_factor = "";
+    plot_.signal_region = "CR_ME";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    plot_.x_label = "#Delta#phi (E_{T}^{miss}, l_{1})";
+    plot_.y_label = "Events";
+    plot_.x_bin_width = Pi / 12;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 2.5 * Pi;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_ME_deltaPhi_met_l1";
+    vect_plot.push_back(plot_);
+
+    // CR_ME
+    // Plot: deltaPhi_met_l2
+    plot_.root_get_member = "deltaPhi_met_l2";
+    plot_.root_get_factor = "";
+    plot_.signal_region = "CR_ME";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    plot_.x_label = "#Delta#phi (E_{T}^{miss}, l_{2})";
+    plot_.y_label = "Events";
+    plot_.x_bin_width = Pi / 12;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 2.5 * Pi;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_ME_deltaPhi_met_l2";
+    vect_plot.push_back(plot_);
+
+    // CR_ME
+    // Plot: ll_M
+    plot_.root_get_member = "ll_M";
+    plot_.root_get_factor = " / 1000.0";
+    plot_.signal_region = "CR_ME";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    plot_.x_label = "m_{ll} [GeV]";
+    plot_.y_label = "Events / 25 GeV";
+    plot_.x_bin_width = 25.0;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 750.0;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_ME_ll_M";
+    vect_plot.push_back(plot_);
+    
+    // CR_ME
+    // Plot: ll_Pt
+    plot_.root_get_member = "ll_Pt";
+    plot_.root_get_factor = " / 1000.0";
+    plot_.signal_region = "CR_ME";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    plot_.x_label = "p_{T} (ll) [GeV]";
+    plot_.y_label = "Events / 15 GeV";
+    plot_.x_bin_width = 15.0;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 500.0;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_ME_ll_Pt";
+    vect_plot.push_back(plot_);
+    
+    // CR_ME
+    // Plot: ll_deltaPhi
+    plot_.root_get_member = "ll_deltaPhi";
+    plot_.root_get_factor = "";
+    plot_.signal_region = "CR_ME";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    plot_.x_label = "#Delta#phi (ll)";
+    plot_.y_label = "Events";
+    plot_.x_bin_width = Pi / 12;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 2.5 * Pi;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_ME_ll_deltaPhi";
+    vect_plot.push_back(plot_);
+
+    // CR_ME
+    // Plot: METrel
+    plot_.root_get_member = "METrel";
+    plot_.root_get_factor = " / 1000.0";
+    plot_.signal_region = "CR_ME";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    plot_.x_label = "E_{T}^{miss, rel} [GeV]";
+    plot_.y_label = "Events / 10 GeV";
+    plot_.x_bin_width = 10.0;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 450.0;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_ME_METrel";
+    vect_plot.push_back(plot_);
+
+    // CR_ME
+    // Plot: lept1Pt
+    plot_.root_get_member = "lept1Pt";
+    plot_.root_get_factor = " / 1000.0";
+    plot_.signal_region = "CR_ME";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    plot_.x_label = "p_{T, l1} [GeV]";
+    plot_.y_label = "Events / 20 GeV";
+    plot_.x_bin_width = 20.0;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 500.0;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_ME_lept1Pt";
+    vect_plot.push_back(plot_);
+
+    // CR_ME
+    // Plot: lept2Pt
+    plot_.root_get_member = "lept2Pt";
+    plot_.root_get_factor = " / 1000.0";
+    plot_.signal_region = "CR_ME";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    plot_.x_label = "p_{T, l2} [GeV]";
+    plot_.y_label = "Events / 20 GeV";
+    plot_.x_bin_width = 20.0;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 500.0;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_ME_lept2Pt";
+    vect_plot.push_back(plot_);
+
+    // CR_ME
+    // Plot: mcoll
+    plot_.root_get_member = "mcoll";
+    plot_.root_get_factor = " / 1000.0";
+    plot_.signal_region = "CR_ME";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    plot_.x_label = "m_{coll} [GeV]";
+    plot_.y_label = "Events / 25 GeV";
+    plot_.x_bin_width = 25.0;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 1000.0;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_ME_mcoll";
+    vect_plot.push_back(plot_);
+    
+    // CR_ME
+    // Plot: mcollCorr
+    plot_.root_get_member = "mcollCorr";
+    plot_.root_get_factor = " / 1000.0";
+    plot_.signal_region = "CR_ME";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    plot_.x_label = "m_{coll-corr} [GeV]";
+    plot_.y_label = "Events / 25 GeV";
+    plot_.x_bin_width = 25.0;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 1000.0;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_ME_mcollCorr";
+    vect_plot.push_back(plot_);
+    
+    // CR_ME
+    // Plot: met
+    plot_.root_get_member = "met";
+    plot_.root_get_factor = " / 1000.0";
+    plot_.signal_region = "CR_ME";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    plot_.x_label = "E_{T}^{miss} [GeV]";
+    plot_.y_label = "Events / 10 GeV";
+    plot_.x_bin_width = 10.0;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 450.0;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_ME_met";
+    vect_plot.push_back(plot_);
+    
+    
+    // CR_ME
+    // Plot: metCorr
+    plot_.root_get_member = "metCorr";
+    plot_.root_get_factor = " / 1000.0";
+    plot_.signal_region = "CR_ME";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    plot_.x_label = "E_{T}^{miss-corr} [GeV]";
+    plot_.y_label = "Events / 10 GeV";
+    plot_.x_bin_width = 10.0;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 450.0;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_ME_metCorr";
+    vect_plot.push_back(plot_);
+    
+    // CR_ME
+    // Plot: METrelCorr
+    plot_.root_get_member = "METrelCorr";
+    plot_.root_get_factor = " / 1000.0";
+    plot_.signal_region = "CR_ME";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    plot_.x_label = "E_{T}^{miss-corr, rel} [GeV]";
+    plot_.y_label = "Events / 10 GeV";
+    plot_.x_bin_width = 10.0;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 450.0;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_ME_METrelCorr";
+    vect_plot.push_back(plot_);
+    
+    // // CR_ME
+    // // Plot: ll_deltaPhi
+    plot_.root_get_member = "ll_deltaPhi";
+    plot_.root_get_factor = "";
+    plot_.signal_region = "CR_ME";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    plot_.x_label = "#Delta#phi (ll)";
+    plot_.y_label = "Events";
+    plot_.x_bin_width = Pi / 12;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 2.5 * Pi;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_ME_ll_deltaPhi";
+    vect_plot.push_back(plot_);
+    // 
+    // // CR_ME
+    // // Plot: deltaPhi_metCorr_l1
+    plot_.root_get_member = "abs(3.14159265358979323 - metCorrPhi - lept1Phi)";
+    plot_.root_get_member_name = "deltaPhi_metCorr_l1";
+    plot_.root_get_factor = "";
+    plot_.signal_region = "CR_ME";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    plot_.x_label = "#Delta#phi (E_{T}^{miss-corr}, l_{1})";
+    plot_.y_label = "Events";
+    plot_.x_bin_width = Pi / 12;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 2.5 * Pi;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_ME_deltaPhi_metCorr_l1";
+    vect_plot.push_back(plot_);
+    // 
+    // // CR_ME
+    // // Plot: deltaPhi_metCorr_l2
+    plot_.root_get_member = "abs(3.14159265358979323 - metCorrPhi - lept2Phi)";
+    plot_.root_get_member_name = "deltaPhi_metCorr_l2";
+    plot_.root_get_factor = "";
+    plot_.signal_region = "CR_ME";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    plot_.x_label = "#Delta#phi (E_{T}^{miss-corr}, l_{2})";
+    plot_.y_label = "Events";
+    plot_.x_bin_width = Pi / 12;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 2.5 * Pi;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_ME_deltaPhi_metCorr_l2";
+    vect_plot.push_back(plot_);
+
+    // Plot: nCentralLightJets
+    // selection region
+    plot_.root_get_member = "nCentralLightJets";
+    plot_.root_get_member_name = "";
+    plot_.root_get_factor = "";
+    plot_.signal_region = "CR_ME";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    // plot setup
+    plot_.x_label = "N_{jets}-central";
+    plot_.y_label = "Events";
+    plot_.x_bin_width = 1.0;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 10.0;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 1.0e7;
+    plot_.long_name = "CR_ME_nCentralLightJets";
+    vect_plot.push_back(plot_);
+
+    plot_.root_get_member_name = "";
+    plot_.root_get_member_name = "";
+    plot_.root_get_member_name = "";
+
+    // CR_high_mcoll_EM
+    // CR_high_mcoll_EM
+    // CR_high_mcoll_EM
     plot_.run_group = 2;
-
-    // VR_Etmiss_Zee
+    
+    // CR_high_mcoll_EM
     // Plot: MT2
     plot_.root_get_member = "MT2";
     plot_.root_get_factor = " / 1000.0";
-    plot_.signal_region = "VR_Etmiss_Zee";
+    plot_.signal_region = "CR_high_mcoll_EM";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "m_{T2} [GeV]";
@@ -803,15 +1462,15 @@ vector<plot> definePlots()
     plot_.x_range_min = 0.0;
     plot_.x_range_max = 300.0;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e8;
-    plot_.long_name = "VR_Etmiss_Zee_MT2";
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_high_mcoll_EM_MT2";
     vect_plot.push_back(plot_);
 
-    // VR_Etmiss_Zee
+    // CR_high_mcoll_EM
     // Plot: deltaPhi_met_l1
     plot_.root_get_member = "deltaPhi_met_l1";
     plot_.root_get_factor = "";
-    plot_.signal_region = "VR_Etmiss_Zee";
+    plot_.signal_region = "CR_high_mcoll_EM";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "#Delta#phi (E_{T}^{miss}, l_{1})";
@@ -820,15 +1479,15 @@ vector<plot> definePlots()
     plot_.x_range_min = 0.0;
     plot_.x_range_max = 2.5 * Pi;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e8;
-    plot_.long_name = "VR_Etmiss_Zee_deltaPhi_met_l1";
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_high_mcoll_EM_deltaPhi_met_l1";
     vect_plot.push_back(plot_);
 
-    // VR_Etmiss_Zee
+    // CR_high_mcoll_EM
     // Plot: deltaPhi_met_l2
     plot_.root_get_member = "deltaPhi_met_l2";
     plot_.root_get_factor = "";
-    plot_.signal_region = "VR_Etmiss_Zee";
+    plot_.signal_region = "CR_high_mcoll_EM";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "#Delta#phi (E_{T}^{miss}, l_{2})";
@@ -837,15 +1496,15 @@ vector<plot> definePlots()
     plot_.x_range_min = 0.0;
     plot_.x_range_max = 2.5 * Pi;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e8;
-    plot_.long_name = "VR_Etmiss_Zee_deltaPhi_met_l2";
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_high_mcoll_EM_deltaPhi_met_l2";
     vect_plot.push_back(plot_);
 
-    // VR_Etmiss_Zee
+    // CR_high_mcoll_EM
     // Plot: ll_M
     plot_.root_get_member = "ll_M";
     plot_.root_get_factor = " / 1000.0";
-    plot_.signal_region = "VR_Etmiss_Zee";
+    plot_.signal_region = "CR_high_mcoll_EM";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "m_{ll} [GeV]";
@@ -854,15 +1513,15 @@ vector<plot> definePlots()
     plot_.x_range_min = 0.0;
     plot_.x_range_max = 750.0;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e8;
-    plot_.long_name = "VR_Etmiss_Zee_ll_M";
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_high_mcoll_EM_ll_M";
     vect_plot.push_back(plot_);
-
-    // VR_Etmiss_Zee
+    
+    // CR_high_mcoll_EM
     // Plot: ll_Pt
     plot_.root_get_member = "ll_Pt";
     plot_.root_get_factor = " / 1000.0";
-    plot_.signal_region = "VR_Etmiss_Zee";
+    plot_.signal_region = "CR_high_mcoll_EM";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "p_{T} (ll) [GeV]";
@@ -871,15 +1530,15 @@ vector<plot> definePlots()
     plot_.x_range_min = 0.0;
     plot_.x_range_max = 500.0;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e8;
-    plot_.long_name = "VR_Etmiss_Zee_ll_Pt";
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_high_mcoll_EM_ll_Pt";
     vect_plot.push_back(plot_);
 
-    // VR_Etmiss_Zee
+    // CR_high_mcoll_EM
     // Plot: ll_deltaPhi
     plot_.root_get_member = "ll_deltaPhi";
     plot_.root_get_factor = "";
-    plot_.signal_region = "VR_Etmiss_Zee";
+    plot_.signal_region = "CR_high_mcoll_EM";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "#Delta#phi (ll)";
@@ -888,15 +1547,15 @@ vector<plot> definePlots()
     plot_.x_range_min = 0.0;
     plot_.x_range_max = 2.5 * Pi;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e8;
-    plot_.long_name = "VR_Etmiss_Zee_ll_deltaPhi";
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_high_mcoll_EM_ll_deltaPhi";
     vect_plot.push_back(plot_);
 
-    // VR_Etmiss_Zee
+    // CR_high_mcoll_EM
     // Plot: METrel
     plot_.root_get_member = "METrel";
     plot_.root_get_factor = " / 1000.0";
-    plot_.signal_region = "VR_Etmiss_Zee";
+    plot_.signal_region = "CR_high_mcoll_EM";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "E_{T}^{miss, rel} [GeV]";
@@ -905,15 +1564,15 @@ vector<plot> definePlots()
     plot_.x_range_min = 0.0;
     plot_.x_range_max = 300.0;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e8;
-    plot_.long_name = "VR_Etmiss_Zee_METrel";
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_high_mcoll_EM_METrel";
     vect_plot.push_back(plot_);
 
-    // VR_Etmiss_Zee
-    // Plot: met
+    // CR_high_mcoll_EM
+    // Plot: lept1Pt
     plot_.root_get_member = "lept1Pt";
     plot_.root_get_factor = " / 1000.0";
-    plot_.signal_region = "VR_Etmiss_Zee";
+    plot_.signal_region = "CR_high_mcoll_EM";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "p_{T, l1} [GeV]";
@@ -922,15 +1581,15 @@ vector<plot> definePlots()
     plot_.x_range_min = 0.0;
     plot_.x_range_max = 500.0;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e8;
-    plot_.long_name = "VR_Etmiss_Zee_lept1Pt";
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_high_mcoll_EM_lept1Pt";
     vect_plot.push_back(plot_);
 
-    // VR_Etmiss_Zee
-    // Plot: met
+    // CR_high_mcoll_EM
+    // Plot: lept2Pt
     plot_.root_get_member = "lept2Pt";
     plot_.root_get_factor = " / 1000.0";
-    plot_.signal_region = "VR_Etmiss_Zee";
+    plot_.signal_region = "CR_high_mcoll_EM";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "p_{T, l2} [GeV]";
@@ -939,15 +1598,15 @@ vector<plot> definePlots()
     plot_.x_range_min = 0.0;
     plot_.x_range_max = 500.0;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e8;
-    plot_.long_name = "VR_Etmiss_Zee_lept2Pt";
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_high_mcoll_EM_lept2Pt";
     vect_plot.push_back(plot_);
 
-    // VR_Etmiss_Zee
+    // CR_high_mcoll_EM
     // Plot: mcoll
     plot_.root_get_member = "mcoll";
     plot_.root_get_factor = " / 1000.0";
-    plot_.signal_region = "VR_Etmiss_Zee";
+    plot_.signal_region = "CR_high_mcoll_EM";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "m_{coll} [GeV]";
@@ -956,15 +1615,15 @@ vector<plot> definePlots()
     plot_.x_range_min = 0.0;
     plot_.x_range_max = 1000.0;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e8;
-    plot_.long_name = "VR_Etmiss_Zee_mcoll";
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_high_mcoll_EM_mcoll";
     vect_plot.push_back(plot_);
-
-    // VR_Etmiss_Zee
+    
+    // CR_high_mcoll_EM
     // Plot: mcollCorr
     plot_.root_get_member = "mcollCorr";
     plot_.root_get_factor = " / 1000.0";
-    plot_.signal_region = "VR_Etmiss_Zee";
+    plot_.signal_region = "CR_high_mcoll_EM";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "m_{coll-corr} [GeV]";
@@ -973,15 +1632,15 @@ vector<plot> definePlots()
     plot_.x_range_min = 0.0;
     plot_.x_range_max = 1000.0;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e8;
-    plot_.long_name = "VR_Etmiss_Zee_mcollCorr";
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_high_mcoll_EM_mcollCorr";
     vect_plot.push_back(plot_);
-
-    // VR_Etmiss_Zee
+    
+    // CR_high_mcoll_EM
     // Plot: met
     plot_.root_get_member = "met";
     plot_.root_get_factor = " / 1000.0";
-    plot_.signal_region = "VR_Etmiss_Zee";
+    plot_.signal_region = "CR_high_mcoll_EM";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "E_{T}^{miss} [GeV]";
@@ -990,16 +1649,16 @@ vector<plot> definePlots()
     plot_.x_range_min = 0.0;
     plot_.x_range_max = 300.0;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e8;
-    plot_.long_name = "VR_Etmiss_Zee_met";
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_high_mcoll_EM_met";
     vect_plot.push_back(plot_);
-
-
-    // VR_Etmiss_Zee
+    
+    
+    // CR_high_mcoll_EM
     // Plot: metCorr
     plot_.root_get_member = "metCorr";
     plot_.root_get_factor = " / 1000.0";
-    plot_.signal_region = "VR_Etmiss_Zee";
+    plot_.signal_region = "CR_high_mcoll_EM";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "E_{T}^{miss-corr} [GeV]";
@@ -1008,15 +1667,15 @@ vector<plot> definePlots()
     plot_.x_range_min = 0.0;
     plot_.x_range_max = 300.0;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e8;
-    plot_.long_name = "VR_Etmiss_Zee_metCorr";
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_high_mcoll_EM_metCorr";
     vect_plot.push_back(plot_);
-
-    // VR_Etmiss_Zee
+    
+    // CR_high_mcoll_EM
     // Plot: METrelCorr
     plot_.root_get_member = "METrelCorr";
     plot_.root_get_factor = " / 1000.0";
-    plot_.signal_region = "VR_Etmiss_Zee";
+    plot_.signal_region = "CR_high_mcoll_EM";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "E_{T}^{miss-corr, rel} [GeV]";
@@ -1025,15 +1684,15 @@ vector<plot> definePlots()
     plot_.x_range_min = 0.0;
     plot_.x_range_max = 300.0;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e8;
-    plot_.long_name = "VR_Etmiss_Zee_METrelCorr";
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_high_mcoll_EM_METrelCorr";
     vect_plot.push_back(plot_);
 
-    // VR_Etmiss_Zee
-    // Plot: ll_deltaPhi
+    // // CR_high_mcoll_EM
+    // // Plot: ll_deltaPhi
     plot_.root_get_member = "ll_deltaPhi";
     plot_.root_get_factor = "";
-    plot_.signal_region = "VR_Etmiss_Zee";
+    plot_.signal_region = "CR_high_mcoll_EM";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "#Delta#phi (ll)";
@@ -1042,16 +1701,16 @@ vector<plot> definePlots()
     plot_.x_range_min = 0.0;
     plot_.x_range_max = 2.5 * Pi;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e8;
-    plot_.long_name = "VR_Etmiss_Zee_ll_deltaPhi";
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_high_mcoll_EM_ll_deltaPhi";
     vect_plot.push_back(plot_);
-
-    // VR_Etmiss_Zee
-    // Plot: deltaPhi_metCorr_l1
+    // 
+    // // CR_high_mcoll_EM
+    // // Plot: deltaPhi_metCorr_l1
     plot_.root_get_member = "abs(3.14159265358979323 - metCorrPhi - lept1Phi)";
     plot_.root_get_member_name = "deltaPhi_metCorr_l1";
     plot_.root_get_factor = "";
-    plot_.signal_region = "VR_Etmiss_Zee";
+    plot_.signal_region = "CR_high_mcoll_EM";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "#Delta#phi (E_{T}^{miss-corr}, l_{1})";
@@ -1060,16 +1719,16 @@ vector<plot> definePlots()
     plot_.x_range_min = 0.0;
     plot_.x_range_max = 2.5 * Pi;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e8;
-    plot_.long_name = "VR_Etmiss_Zee_deltaPhi_metCorr_l1";
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_high_mcoll_EM_deltaPhi_metCorr_l1";
     vect_plot.push_back(plot_);
-
-    // VR_Etmiss_Zee
-    // Plot: deltaPhi_metCorr_l2
+    // 
+    // // CR_high_mcoll_EM
+    // // Plot: deltaPhi_metCorr_l2
     plot_.root_get_member = "abs(3.14159265358979323 - metCorrPhi - lept2Phi)";
     plot_.root_get_member_name = "deltaPhi_metCorr_l2";
     plot_.root_get_factor = "";
-    plot_.signal_region = "VR_Etmiss_Zee";
+    plot_.signal_region = "CR_high_mcoll_EM";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "#Delta#phi (E_{T}^{miss-corr}, l_{2})";
@@ -1078,41 +1737,60 @@ vector<plot> definePlots()
     plot_.x_range_min = 0.0;
     plot_.x_range_max = 2.5 * Pi;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e8;
-    plot_.long_name = "VR_Etmiss_Zee_deltaPhi_metCorr_l2";
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_high_mcoll_EM_deltaPhi_metCorr_l2";
+    vect_plot.push_back(plot_);
+
+    // Plot: nCentralLightJets
+    // selection region
+    plot_.root_get_member = "nCentralLightJets";
+    plot_.root_get_member_name = "";
+    plot_.root_get_factor = "";
+    plot_.signal_region = "CR_high_mcoll_EM";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    // plot setup
+    plot_.x_label = "N_{jets}-central";
+    plot_.y_label = "Events";
+    plot_.x_bin_width = 1.0;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 10.0;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_high_mcoll_EM_nCentralLightJets";
     vect_plot.push_back(plot_);
 
     plot_.root_get_member_name = "";
     plot_.root_get_member_name = "";
     plot_.root_get_member_name = "";
 
-    // VR_Etmiss_Top
-    // VR_Etmiss_Top
-    // VR_Etmiss_Top
-    plot_.run_group = 3;
-
-    // VR_Etmiss_Top
+    // CR_low_mcoll_EM
+    // CR_low_mcoll_EM
+    // CR_low_mcoll_EM
+    plot_.run_group = 2;
+    
+    // CR_low_mcoll_EM
     // Plot: MT2
     plot_.root_get_member = "MT2";
     plot_.root_get_factor = " / 1000.0";
-    plot_.signal_region = "VR_Etmiss_Top";
+    plot_.signal_region = "CR_low_mcoll_EM";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "m_{T2} [GeV]";
     plot_.y_label = "Events / 10 GeV";
     plot_.x_bin_width = 10.0;
-    plot_.x_range_min = 20.0;
-    plot_.x_range_max = 250.0;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 300.0;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e5;
-    plot_.long_name = "VR_Etmiss_Top_MT2";
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_low_mcoll_EM_MT2";
     vect_plot.push_back(plot_);
 
-    // VR_Etmiss_Top
+    // CR_low_mcoll_EM
     // Plot: deltaPhi_met_l1
     plot_.root_get_member = "deltaPhi_met_l1";
     plot_.root_get_factor = "";
-    plot_.signal_region = "VR_Etmiss_Top";
+    plot_.signal_region = "CR_low_mcoll_EM";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "#Delta#phi (E_{T}^{miss}, l_{1})";
@@ -1121,15 +1799,15 @@ vector<plot> definePlots()
     plot_.x_range_min = 0.0;
     plot_.x_range_max = 2.5 * Pi;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e5;
-    plot_.long_name = "VR_Etmiss_Top_deltaPhi_met_l1";
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_low_mcoll_EM_deltaPhi_met_l1";
     vect_plot.push_back(plot_);
 
-    // VR_Etmiss_Top
+    // CR_low_mcoll_EM
     // Plot: deltaPhi_met_l2
     plot_.root_get_member = "deltaPhi_met_l2";
     plot_.root_get_factor = "";
-    plot_.signal_region = "VR_Etmiss_Top";
+    plot_.signal_region = "CR_low_mcoll_EM";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "#Delta#phi (E_{T}^{miss}, l_{2})";
@@ -1138,32 +1816,32 @@ vector<plot> definePlots()
     plot_.x_range_min = 0.0;
     plot_.x_range_max = 2.5 * Pi;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e5;
-    plot_.long_name = "VR_Etmiss_Top_deltaPhi_met_l2";
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_low_mcoll_EM_deltaPhi_met_l2";
     vect_plot.push_back(plot_);
 
-    // VR_Etmiss_Top
+    // CR_low_mcoll_EM
     // Plot: ll_M
     plot_.root_get_member = "ll_M";
     plot_.root_get_factor = " / 1000.0";
-    plot_.signal_region = "VR_Etmiss_Top";
+    plot_.signal_region = "CR_low_mcoll_EM";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "m_{ll} [GeV]";
     plot_.y_label = "Events / 25 GeV";
     plot_.x_bin_width = 25.0;
     plot_.x_range_min = 0.0;
-    plot_.x_range_max = 1000.0;
+    plot_.x_range_max = 750.0;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e5;
-    plot_.long_name = "VR_Etmiss_Top_ll_M";
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_low_mcoll_EM_ll_M";
     vect_plot.push_back(plot_);
 
-    // VR_Etmiss_Top
+    // CR_low_mcoll_EM
     // Plot: ll_Pt
     plot_.root_get_member = "ll_Pt";
     plot_.root_get_factor = " / 1000.0";
-    plot_.signal_region = "VR_Etmiss_Top";
+    plot_.signal_region = "CR_low_mcoll_EM";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "p_{T} (ll) [GeV]";
@@ -1172,15 +1850,15 @@ vector<plot> definePlots()
     plot_.x_range_min = 0.0;
     plot_.x_range_max = 500.0;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e5;
-    plot_.long_name = "VR_Etmiss_Top_ll_Pt";
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_low_mcoll_EM_ll_Pt";
     vect_plot.push_back(plot_);
 
-    // VR_Etmiss_Top
+    // CR_low_mcoll_EM
     // Plot: ll_deltaPhi
     plot_.root_get_member = "ll_deltaPhi";
     plot_.root_get_factor = "";
-    plot_.signal_region = "VR_Etmiss_Top";
+    plot_.signal_region = "CR_low_mcoll_EM";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "#Delta#phi (ll)";
@@ -1189,15 +1867,15 @@ vector<plot> definePlots()
     plot_.x_range_min = 0.0;
     plot_.x_range_max = 2.5 * Pi;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e5;
-    plot_.long_name = "VR_Etmiss_Top_ll_deltaPhi";
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_low_mcoll_EM_ll_deltaPhi";
     vect_plot.push_back(plot_);
 
-    // VR_Etmiss_Top
+    // CR_low_mcoll_EM
     // Plot: METrel
     plot_.root_get_member = "METrel";
     plot_.root_get_factor = " / 1000.0";
-    plot_.signal_region = "VR_Etmiss_Top";
+    plot_.signal_region = "CR_low_mcoll_EM";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "E_{T}^{miss, rel} [GeV]";
@@ -1206,32 +1884,15 @@ vector<plot> definePlots()
     plot_.x_range_min = 0.0;
     plot_.x_range_max = 300.0;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e5;
-    plot_.long_name = "VR_Etmiss_Top_METrel";
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_low_mcoll_EM_METrel";
     vect_plot.push_back(plot_);
 
-    // VR_Etmiss_Top
-    // Plot: METrelCorr
-    plot_.root_get_member = "METrelCorr";
-    plot_.root_get_factor = " / 1000.0";
-    plot_.signal_region = "VR_Etmiss_Top";
-    plot_.request_cuts = "";
-    plot_.blind_data = "";
-    plot_.x_label = "E_{T}^{miss-corr, rel} [GeV]";
-    plot_.y_label = "Events / 10 GeV";
-    plot_.x_bin_width = 10.0;
-    plot_.x_range_min = 0.0;
-    plot_.x_range_max = 300.0;
-    plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e5;
-    plot_.long_name = "VR_Etmiss_Top_METrelCorr";
-    vect_plot.push_back(plot_);
-
-    // VR_Etmiss_Top
+    // CR_low_mcoll_EM
     // Plot: lept1Pt
     plot_.root_get_member = "lept1Pt";
     plot_.root_get_factor = " / 1000.0";
-    plot_.signal_region = "VR_Etmiss_Top";
+    plot_.signal_region = "CR_low_mcoll_EM";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "p_{T, l1} [GeV]";
@@ -1240,15 +1901,15 @@ vector<plot> definePlots()
     plot_.x_range_min = 0.0;
     plot_.x_range_max = 500.0;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e5;
-    plot_.long_name = "VR_Etmiss_Top_lept1Pt";
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_low_mcoll_EM_lept1Pt";
     vect_plot.push_back(plot_);
 
-    // VR_Etmiss_Top
+    // CR_low_mcoll_EM
     // Plot: lept2Pt
     plot_.root_get_member = "lept2Pt";
     plot_.root_get_factor = " / 1000.0";
-    plot_.signal_region = "VR_Etmiss_Top";
+    plot_.signal_region = "CR_low_mcoll_EM";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "p_{T, l2} [GeV]";
@@ -1257,15 +1918,15 @@ vector<plot> definePlots()
     plot_.x_range_min = 0.0;
     plot_.x_range_max = 500.0;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e5;
-    plot_.long_name = "VR_Etmiss_Top_lept2Pt";
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_low_mcoll_EM_lept2Pt";
     vect_plot.push_back(plot_);
 
-    // VR_Etmiss_Top
+    // CR_low_mcoll_EM
     // Plot: mcoll
     plot_.root_get_member = "mcoll";
     plot_.root_get_factor = " / 1000.0";
-    plot_.signal_region = "VR_Etmiss_Top";
+    plot_.signal_region = "CR_low_mcoll_EM";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "m_{coll} [GeV]";
@@ -1274,15 +1935,15 @@ vector<plot> definePlots()
     plot_.x_range_min = 0.0;
     plot_.x_range_max = 1000.0;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e5;
-    plot_.long_name = "VR_Etmiss_Top_mcoll";
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_low_mcoll_EM_mcoll";
     vect_plot.push_back(plot_);
-
-    // VR_Etmiss_Top
-    // Plot: mcoll
+    
+    // CR_low_mcoll_EM
+    // Plot: mcollCorr
     plot_.root_get_member = "mcollCorr";
     plot_.root_get_factor = " / 1000.0";
-    plot_.signal_region = "VR_Etmiss_Top";
+    plot_.signal_region = "CR_low_mcoll_EM";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "m_{coll-corr} [GeV]";
@@ -1291,50 +1952,85 @@ vector<plot> definePlots()
     plot_.x_range_min = 0.0;
     plot_.x_range_max = 1000.0;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e5;
-    plot_.long_name = "VR_Etmiss_Top_mcollCorr";
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_low_mcoll_EM_mcollCorr";
     vect_plot.push_back(plot_);
-
-    // VR_Etmiss_Top
+    
+    // CR_low_mcoll_EM
     // Plot: met
     plot_.root_get_member = "met";
     plot_.root_get_factor = " / 1000.0";
-    plot_.signal_region = "VR_Etmiss_Top";
+    plot_.signal_region = "CR_low_mcoll_EM";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "E_{T}^{miss} [GeV]";
-    plot_.y_label = "Events / 20 GeV";
-    plot_.x_bin_width = 15.0;
+    plot_.y_label = "Events / 10 GeV";
+    plot_.x_bin_width = 10.0;
     plot_.x_range_min = 0.0;
-    plot_.x_range_max = 500.0;
+    plot_.x_range_max = 300.0;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e5;
-    plot_.long_name = "VR_Etmiss_Top_met";
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_low_mcoll_EM_met";
     vect_plot.push_back(plot_);
-
-    // VR_Etmiss_Top
+    
+    
+    // CR_low_mcoll_EM
     // Plot: metCorr
     plot_.root_get_member = "metCorr";
     plot_.root_get_factor = " / 1000.0";
-    plot_.signal_region = "VR_Etmiss_Top";
+    plot_.signal_region = "CR_low_mcoll_EM";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "E_{T}^{miss-corr} [GeV]";
-    plot_.y_label = "Events / 20 GeV";
-    plot_.x_bin_width = 15.0;
+    plot_.y_label = "Events / 10 GeV";
+    plot_.x_bin_width = 10.0;
     plot_.x_range_min = 0.0;
-    plot_.x_range_max = 500.0;
+    plot_.x_range_max = 300.0;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e5;
-    plot_.long_name = "VR_Etmiss_Top_metCorr";
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_low_mcoll_EM_metCorr";
+    vect_plot.push_back(plot_);
+    
+    // CR_low_mcoll_EM
+    // Plot: METrelCorr
+    plot_.root_get_member = "METrelCorr";
+    plot_.root_get_factor = " / 1000.0";
+    plot_.signal_region = "CR_low_mcoll_EM";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    plot_.x_label = "E_{T}^{miss-corr, rel} [GeV]";
+    plot_.y_label = "Events / 10 GeV";
+    plot_.x_bin_width = 10.0;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 300.0;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_low_mcoll_EM_METrelCorr";
     vect_plot.push_back(plot_);
 
-    // VR_Etmiss_Top
-    // Plot: deltaPhi_metCorr_l1
+    // // CR_low_mcoll_EM
+    // // Plot: ll_deltaPhi
+    plot_.root_get_member = "ll_deltaPhi";
+    plot_.root_get_factor = "";
+    plot_.signal_region = "CR_low_mcoll_EM";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    plot_.x_label = "#Delta#phi (ll)";
+    plot_.y_label = "Events";
+    plot_.x_bin_width = Pi / 12;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 2.5 * Pi;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_low_mcoll_EM_ll_deltaPhi";
+    vect_plot.push_back(plot_);
+    // 
+    // // CR_low_mcoll_EM
+    // // Plot: deltaPhi_metCorr_l1
     plot_.root_get_member = "abs(3.14159265358979323 - metCorrPhi - lept1Phi)";
     plot_.root_get_member_name = "deltaPhi_metCorr_l1";
     plot_.root_get_factor = "";
-    plot_.signal_region = "VR_Etmiss_Top";
+    plot_.signal_region = "CR_low_mcoll_EM";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "#Delta#phi (E_{T}^{miss-corr}, l_{1})";
@@ -1343,16 +2039,16 @@ vector<plot> definePlots()
     plot_.x_range_min = 0.0;
     plot_.x_range_max = 2.5 * Pi;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e5;
-    plot_.long_name = "VR_Etmiss_Top_deltaPhi_metCorr_l1";
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_low_mcoll_EM_deltaPhi_metCorr_l1";
     vect_plot.push_back(plot_);
-
-    // VR_Etmiss_Top
-    // Plot: deltaPhi_metCorr_l2
+    // 
+    // // CR_low_mcoll_EM
+    // // Plot: deltaPhi_metCorr_l2
     plot_.root_get_member = "abs(3.14159265358979323 - metCorrPhi - lept2Phi)";
     plot_.root_get_member_name = "deltaPhi_metCorr_l2";
     plot_.root_get_factor = "";
-    plot_.signal_region = "VR_Etmiss_Top";
+    plot_.signal_region = "CR_low_mcoll_EM";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "#Delta#phi (E_{T}^{miss-corr}, l_{2})";
@@ -1361,41 +2057,60 @@ vector<plot> definePlots()
     plot_.x_range_min = 0.0;
     plot_.x_range_max = 2.5 * Pi;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e5;
-    plot_.long_name = "VR_Etmiss_Top_deltaPhi_metCorr_l2";
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_low_mcoll_EM_deltaPhi_metCorr_l2";
+    vect_plot.push_back(plot_);
+
+    // Plot: nCentralLightJets
+    // selection region
+    plot_.root_get_member = "nCentralLightJets";
+    plot_.root_get_member_name = "";
+    plot_.root_get_factor = "";
+    plot_.signal_region = "CR_low_mcoll_EM";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    // plot setup
+    plot_.x_label = "N_{jets}-central";
+    plot_.y_label = "Events";
+    plot_.x_bin_width = 1.0;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 10.0;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_low_mcoll_EM_nCentralLightJets";
     vect_plot.push_back(plot_);
 
     plot_.root_get_member_name = "";
     plot_.root_get_member_name = "";
     plot_.root_get_member_name = "";
 
-    // VR_Etmiss_WW
-    // VR_Etmiss_WW
-    // VR_Etmiss_WW
-    plot_.run_group = 4;
-
-    // VR_Etmiss_WW
+    // CR_high_mcoll_ME
+    // CR_high_mcoll_ME
+    // CR_high_mcoll_ME
+    plot_.run_group = 2;
+    
+    // CR_high_mcoll_ME
     // Plot: MT2
     plot_.root_get_member = "MT2";
     plot_.root_get_factor = " / 1000.0";
-    plot_.signal_region = "VR_Etmiss_WW";
+    plot_.signal_region = "CR_high_mcoll_ME";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "m_{T2} [GeV]";
     plot_.y_label = "Events / 10 GeV";
     plot_.x_bin_width = 10.0;
-    plot_.x_range_min = 20.0;
-    plot_.x_range_max = 250.0;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 300.0;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e5;
-    plot_.long_name = "VR_Etmiss_WW_MT2";
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_high_mcoll_ME_MT2";
     vect_plot.push_back(plot_);
 
-    // VR_Etmiss_WW
+    // CR_high_mcoll_ME
     // Plot: deltaPhi_met_l1
     plot_.root_get_member = "deltaPhi_met_l1";
     plot_.root_get_factor = "";
-    plot_.signal_region = "VR_Etmiss_WW";
+    plot_.signal_region = "CR_high_mcoll_ME";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "#Delta#phi (E_{T}^{miss}, l_{1})";
@@ -1404,15 +2119,15 @@ vector<plot> definePlots()
     plot_.x_range_min = 0.0;
     plot_.x_range_max = 2.5 * Pi;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e5;
-    plot_.long_name = "VR_Etmiss_WW_deltaPhi_met_l1";
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_high_mcoll_ME_deltaPhi_met_l1";
     vect_plot.push_back(plot_);
 
-    // VR_Etmiss_WW
+    // CR_high_mcoll_ME
     // Plot: deltaPhi_met_l2
     plot_.root_get_member = "deltaPhi_met_l2";
     plot_.root_get_factor = "";
-    plot_.signal_region = "VR_Etmiss_WW";
+    plot_.signal_region = "CR_high_mcoll_ME";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "#Delta#phi (E_{T}^{miss}, l_{2})";
@@ -1421,32 +2136,32 @@ vector<plot> definePlots()
     plot_.x_range_min = 0.0;
     plot_.x_range_max = 2.5 * Pi;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e5;
-    plot_.long_name = "VR_Etmiss_WW_deltaPhi_met_l2";
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_high_mcoll_ME_deltaPhi_met_l2";
     vect_plot.push_back(plot_);
 
-    // VR_Etmiss_WW
+    // CR_high_mcoll_ME
     // Plot: ll_M
     plot_.root_get_member = "ll_M";
     plot_.root_get_factor = " / 1000.0";
-    plot_.signal_region = "VR_Etmiss_WW";
+    plot_.signal_region = "CR_high_mcoll_ME";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "m_{ll} [GeV]";
     plot_.y_label = "Events / 25 GeV";
     plot_.x_bin_width = 25.0;
     plot_.x_range_min = 0.0;
-    plot_.x_range_max = 1000.0;
+    plot_.x_range_max = 750.0;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e5;
-    plot_.long_name = "VR_Etmiss_WW_ll_M";
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_high_mcoll_ME_ll_M";
     vect_plot.push_back(plot_);
-
-    // VR_Etmiss_WW
+    
+    // CR_high_mcoll_ME
     // Plot: ll_Pt
     plot_.root_get_member = "ll_Pt";
     plot_.root_get_factor = " / 1000.0";
-    plot_.signal_region = "VR_Etmiss_WW";
+    plot_.signal_region = "CR_high_mcoll_ME";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "p_{T} (ll) [GeV]";
@@ -1455,15 +2170,15 @@ vector<plot> definePlots()
     plot_.x_range_min = 0.0;
     plot_.x_range_max = 500.0;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e5;
-    plot_.long_name = "VR_Etmiss_WW_ll_Pt";
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_high_mcoll_ME_ll_Pt";
     vect_plot.push_back(plot_);
 
-    // VR_Etmiss_WW
+    // CR_high_mcoll_ME
     // Plot: ll_deltaPhi
     plot_.root_get_member = "ll_deltaPhi";
     plot_.root_get_factor = "";
-    plot_.signal_region = "VR_Etmiss_WW";
+    plot_.signal_region = "CR_high_mcoll_ME";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "#Delta#phi (ll)";
@@ -1472,15 +2187,15 @@ vector<plot> definePlots()
     plot_.x_range_min = 0.0;
     plot_.x_range_max = 2.5 * Pi;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e5;
-    plot_.long_name = "VR_Etmiss_WW_ll_deltaPhi";
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_high_mcoll_ME_ll_deltaPhi";
     vect_plot.push_back(plot_);
 
-    // VR_Etmiss_WW
+    // CR_high_mcoll_ME
     // Plot: METrel
     plot_.root_get_member = "METrel";
     plot_.root_get_factor = " / 1000.0";
-    plot_.signal_region = "VR_Etmiss_WW";
+    plot_.signal_region = "CR_high_mcoll_ME";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "E_{T}^{miss, rel} [GeV]";
@@ -1489,32 +2204,15 @@ vector<plot> definePlots()
     plot_.x_range_min = 0.0;
     plot_.x_range_max = 300.0;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e5;
-    plot_.long_name = "VR_Etmiss_WW_METrel";
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_high_mcoll_ME_METrel";
     vect_plot.push_back(plot_);
 
-    // VR_Etmiss_WW
-    // Plot: METrelCorr
-    plot_.root_get_member = "METrelCorr";
-    plot_.root_get_factor = " / 1000.0";
-    plot_.signal_region = "VR_Etmiss_WW";
-    plot_.request_cuts = "";
-    plot_.blind_data = "";
-    plot_.x_label = "E_{T}^{miss-corr, rel} [GeV]";
-    plot_.y_label = "Events / 10 GeV";
-    plot_.x_bin_width = 10.0;
-    plot_.x_range_min = 0.0;
-    plot_.x_range_max = 300.0;
-    plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e5;
-    plot_.long_name = "VR_Etmiss_WW_METrelCorr";
-    vect_plot.push_back(plot_);
-
-    // VR_Etmiss_WW
+    // CR_high_mcoll_ME
     // Plot: lept1Pt
     plot_.root_get_member = "lept1Pt";
     plot_.root_get_factor = " / 1000.0";
-    plot_.signal_region = "VR_Etmiss_WW";
+    plot_.signal_region = "CR_high_mcoll_ME";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "p_{T, l1} [GeV]";
@@ -1523,15 +2221,15 @@ vector<plot> definePlots()
     plot_.x_range_min = 0.0;
     plot_.x_range_max = 500.0;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e5;
-    plot_.long_name = "VR_Etmiss_WW_lept1Pt";
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_high_mcoll_ME_lept1Pt";
     vect_plot.push_back(plot_);
 
-    // VR_Etmiss_WW
+    // CR_high_mcoll_ME
     // Plot: lept2Pt
     plot_.root_get_member = "lept2Pt";
     plot_.root_get_factor = " / 1000.0";
-    plot_.signal_region = "VR_Etmiss_WW";
+    plot_.signal_region = "CR_high_mcoll_ME";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "p_{T, l2} [GeV]";
@@ -1540,15 +2238,15 @@ vector<plot> definePlots()
     plot_.x_range_min = 0.0;
     plot_.x_range_max = 500.0;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e5;
-    plot_.long_name = "VR_Etmiss_WW_lept2Pt";
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_high_mcoll_ME_lept2Pt";
     vect_plot.push_back(plot_);
 
-    // VR_Etmiss_WW
+    // CR_high_mcoll_ME
     // Plot: mcoll
     plot_.root_get_member = "mcoll";
     plot_.root_get_factor = " / 1000.0";
-    plot_.signal_region = "VR_Etmiss_WW";
+    plot_.signal_region = "CR_high_mcoll_ME";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "m_{coll} [GeV]";
@@ -1557,15 +2255,15 @@ vector<plot> definePlots()
     plot_.x_range_min = 0.0;
     plot_.x_range_max = 1000.0;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e5;
-    plot_.long_name = "VR_Etmiss_WW_mcoll";
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_high_mcoll_ME_mcoll";
     vect_plot.push_back(plot_);
-
-    // VR_Etmiss_WW
-    // Plot: mcoll
+    
+    // CR_high_mcoll_ME
+    // Plot: mcollCorr
     plot_.root_get_member = "mcollCorr";
     plot_.root_get_factor = " / 1000.0";
-    plot_.signal_region = "VR_Etmiss_WW";
+    plot_.signal_region = "CR_high_mcoll_ME";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "m_{coll-corr} [GeV]";
@@ -1574,50 +2272,85 @@ vector<plot> definePlots()
     plot_.x_range_min = 0.0;
     plot_.x_range_max = 1000.0;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e5;
-    plot_.long_name = "VR_Etmiss_WW_mcollCorr";
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_high_mcoll_ME_mcollCorr";
     vect_plot.push_back(plot_);
-
-    // VR_Etmiss_WW
+    
+    // CR_high_mcoll_ME
     // Plot: met
     plot_.root_get_member = "met";
     plot_.root_get_factor = " / 1000.0";
-    plot_.signal_region = "VR_Etmiss_WW";
+    plot_.signal_region = "CR_high_mcoll_ME";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "E_{T}^{miss} [GeV]";
-    plot_.y_label = "Events / 20 GeV";
-    plot_.x_bin_width = 15.0;
+    plot_.y_label = "Events / 10 GeV";
+    plot_.x_bin_width = 10.0;
     plot_.x_range_min = 0.0;
-    plot_.x_range_max = 500.0;
+    plot_.x_range_max = 300.0;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e5;
-    plot_.long_name = "VR_Etmiss_WW_met";
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_high_mcoll_ME_met";
     vect_plot.push_back(plot_);
-
-    // VR_Etmiss_WW
+    
+    
+    // CR_high_mcoll_ME
     // Plot: metCorr
     plot_.root_get_member = "metCorr";
     plot_.root_get_factor = " / 1000.0";
-    plot_.signal_region = "VR_Etmiss_WW";
+    plot_.signal_region = "CR_high_mcoll_ME";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "E_{T}^{miss-corr} [GeV]";
-    plot_.y_label = "Events / 20 GeV";
-    plot_.x_bin_width = 15.0;
+    plot_.y_label = "Events / 10 GeV";
+    plot_.x_bin_width = 10.0;
     plot_.x_range_min = 0.0;
-    plot_.x_range_max = 500.0;
+    plot_.x_range_max = 300.0;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e5;
-    plot_.long_name = "VR_Etmiss_WW_metCorr";
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_high_mcoll_ME_metCorr";
     vect_plot.push_back(plot_);
-
-    // VR_Etmiss_WW
-    // Plot: deltaPhi_metCorr_l1
+    
+    // CR_high_mcoll_ME
+    // Plot: METrelCorr
+    plot_.root_get_member = "METrelCorr";
+    plot_.root_get_factor = " / 1000.0";
+    plot_.signal_region = "CR_high_mcoll_ME";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    plot_.x_label = "E_{T}^{miss-corr, rel} [GeV]";
+    plot_.y_label = "Events / 10 GeV";
+    plot_.x_bin_width = 10.0;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 300.0;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_high_mcoll_ME_METrelCorr";
+    vect_plot.push_back(plot_);
+    
+    // // CR_high_mcoll_ME
+    // // Plot: ll_deltaPhi
+    plot_.root_get_member = "ll_deltaPhi";
+    plot_.root_get_factor = "";
+    plot_.signal_region = "CR_high_mcoll_ME";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    plot_.x_label = "#Delta#phi (ll)";
+    plot_.y_label = "Events";
+    plot_.x_bin_width = Pi / 12;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 2.5 * Pi;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_high_mcoll_ME_ll_deltaPhi";
+    vect_plot.push_back(plot_);
+    // 
+    // // CR_high_mcoll_ME
+    // // Plot: deltaPhi_metCorr_l1
     plot_.root_get_member = "abs(3.14159265358979323 - metCorrPhi - lept1Phi)";
     plot_.root_get_member_name = "deltaPhi_metCorr_l1";
     plot_.root_get_factor = "";
-    plot_.signal_region = "VR_Etmiss_WW";
+    plot_.signal_region = "CR_high_mcoll_ME";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "#Delta#phi (E_{T}^{miss-corr}, l_{1})";
@@ -1626,16 +2359,16 @@ vector<plot> definePlots()
     plot_.x_range_min = 0.0;
     plot_.x_range_max = 2.5 * Pi;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e5;
-    plot_.long_name = "VR_Etmiss_WW_deltaPhi_metCorr_l1";
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_high_mcoll_ME_deltaPhi_metCorr_l1";
     vect_plot.push_back(plot_);
-
-    // VR_Etmiss_WW
-    // Plot: deltaPhi_metCorr_l2
+    // 
+    // // CR_high_mcoll_ME
+    // // Plot: deltaPhi_metCorr_l2
     plot_.root_get_member = "abs(3.14159265358979323 - metCorrPhi - lept2Phi)";
     plot_.root_get_member_name = "deltaPhi_metCorr_l2";
     plot_.root_get_factor = "";
-    plot_.signal_region = "VR_Etmiss_WW";
+    plot_.signal_region = "CR_high_mcoll_ME";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     plot_.x_label = "#Delta#phi (E_{T}^{miss-corr}, l_{2})";
@@ -1644,8 +2377,348 @@ vector<plot> definePlots()
     plot_.x_range_min = 0.0;
     plot_.x_range_max = 2.5 * Pi;
     plot_.y_range_min = 1.0e-1;
-    plot_.y_range_max = 1.0e5;
-    plot_.long_name = "VR_Etmiss_WW_deltaPhi_metCorr_l2";
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_high_mcoll_ME_deltaPhi_metCorr_l2";
+    vect_plot.push_back(plot_);
+
+    // Plot: nCentralLightJets
+    // selection region
+    plot_.root_get_member = "nCentralLightJets";
+    plot_.root_get_member_name = "";
+    plot_.root_get_factor = "";
+    plot_.signal_region = "CR_high_mcoll_ME";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    // plot setup
+    plot_.x_label = "N_{jets}-central";
+    plot_.y_label = "Events";
+    plot_.x_bin_width = 1.0;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 10.0;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_high_mcoll_ME_nCentralLightJets";
+    vect_plot.push_back(plot_);
+
+    plot_.root_get_member_name = "";
+    plot_.root_get_member_name = "";
+    plot_.root_get_member_name = "";
+
+    // CR_low_mcoll_ME
+    // CR_low_mcoll_ME
+    // CR_low_mcoll_ME
+    plot_.run_group = 2;
+    
+    // CR_low_mcoll_ME
+    // Plot: MT2
+    plot_.root_get_member = "MT2";
+    plot_.root_get_factor = " / 1000.0";
+    plot_.signal_region = "CR_low_mcoll_ME";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    plot_.x_label = "m_{T2} [GeV]";
+    plot_.y_label = "Events / 10 GeV";
+    plot_.x_bin_width = 10.0;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 300.0;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_low_mcoll_ME_MT2";
+    vect_plot.push_back(plot_);
+
+    // CR_low_mcoll_ME
+    // Plot: deltaPhi_met_l1
+    plot_.root_get_member = "deltaPhi_met_l1";
+    plot_.root_get_factor = "";
+    plot_.signal_region = "CR_low_mcoll_ME";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    plot_.x_label = "#Delta#phi (E_{T}^{miss}, l_{1})";
+    plot_.y_label = "Events";
+    plot_.x_bin_width = Pi / 12;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 2.5 * Pi;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_low_mcoll_ME_deltaPhi_met_l1";
+    vect_plot.push_back(plot_);
+
+    // CR_low_mcoll_ME
+    // Plot: deltaPhi_met_l2
+    plot_.root_get_member = "deltaPhi_met_l2";
+    plot_.root_get_factor = "";
+    plot_.signal_region = "CR_low_mcoll_ME";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    plot_.x_label = "#Delta#phi (E_{T}^{miss}, l_{2})";
+    plot_.y_label = "Events";
+    plot_.x_bin_width = Pi / 12;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 2.5 * Pi;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_low_mcoll_ME_deltaPhi_met_l2";
+    vect_plot.push_back(plot_);
+
+    // CR_low_mcoll_ME
+    // Plot: ll_M
+    plot_.root_get_member = "ll_M";
+    plot_.root_get_factor = " / 1000.0";
+    plot_.signal_region = "CR_low_mcoll_ME";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    plot_.x_label = "m_{ll} [GeV]";
+    plot_.y_label = "Events / 25 GeV";
+    plot_.x_bin_width = 25.0;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 750.0;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_low_mcoll_ME_ll_M";
+    vect_plot.push_back(plot_);
+    
+    // CR_low_mcoll_ME
+    // Plot: ll_Pt
+    plot_.root_get_member = "ll_Pt";
+    plot_.root_get_factor = " / 1000.0";
+    plot_.signal_region = "CR_low_mcoll_ME";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    plot_.x_label = "p_{T} (ll) [GeV]";
+    plot_.y_label = "Events / 15 GeV";
+    plot_.x_bin_width = 15.0;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 500.0;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_low_mcoll_ME_ll_Pt";
+    vect_plot.push_back(plot_);
+    
+    // CR_low_mcoll_ME
+    // Plot: ll_deltaPhi
+    plot_.root_get_member = "ll_deltaPhi";
+    plot_.root_get_factor = "";
+    plot_.signal_region = "CR_low_mcoll_ME";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    plot_.x_label = "#Delta#phi (ll)";
+    plot_.y_label = "Events";
+    plot_.x_bin_width = Pi / 12;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 2.5 * Pi;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_low_mcoll_ME_ll_deltaPhi";
+    vect_plot.push_back(plot_);
+
+     // CR_low_mcoll_ME
+     // Plot: METrel
+     plot_.root_get_member = "METrel";
+     plot_.root_get_factor = " / 1000.0";
+     plot_.signal_region = "CR_low_mcoll_ME";
+     plot_.request_cuts = "";
+     plot_.blind_data = "";
+     plot_.x_label = "E_{T}^{miss, rel} [GeV]";
+     plot_.y_label = "Events / 10 GeV";
+     plot_.x_bin_width = 10.0;
+     plot_.x_range_min = 0.0;
+     plot_.x_range_max = 300.0;
+     plot_.y_range_min = 1.0e-1;
+     plot_.y_range_max = 3.0e5;
+     plot_.long_name = "CR_low_mcoll_ME_METrel";
+     vect_plot.push_back(plot_);
+    
+    
+    // CR_low_mcoll_ME
+    // Plot: lept1Pt
+    plot_.root_get_member = "lept1Pt";
+    plot_.root_get_factor = " / 1000.0";
+    plot_.signal_region = "CR_low_mcoll_ME";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    plot_.x_label = "p_{T, l1} [GeV]";
+    plot_.y_label = "Events / 20 GeV";
+    plot_.x_bin_width = 20.0;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 500.0;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_low_mcoll_ME_lept1Pt";
+    vect_plot.push_back(plot_);
+
+    // CR_low_mcoll_ME
+    // Plot: lept2Pt
+    plot_.root_get_member = "lept2Pt";
+    plot_.root_get_factor = " / 1000.0";
+    plot_.signal_region = "CR_low_mcoll_ME";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    plot_.x_label = "p_{T, l2} [GeV]";
+    plot_.y_label = "Events / 20 GeV";
+    plot_.x_bin_width = 20.0;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 500.0;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_low_mcoll_ME_lept2Pt";
+    vect_plot.push_back(plot_);
+    
+
+     // CR_low_mcoll_ME
+     // Plot: mcoll
+     plot_.root_get_member = "mcoll";
+     plot_.root_get_factor = " / 1000.0";
+     plot_.signal_region = "CR_low_mcoll_ME";
+     plot_.request_cuts = "";
+     plot_.blind_data = "";
+     plot_.x_label = "m_{coll} [GeV]";
+     plot_.y_label = "Events / 25 GeV";
+     plot_.x_bin_width = 25.0;
+     plot_.x_range_min = 0.0;
+     plot_.x_range_max = 1000.0;
+     plot_.y_range_min = 1.0e-1;
+     plot_.y_range_max = 3.0e5;
+     plot_.long_name = "CR_low_mcoll_ME_mcoll";
+     vect_plot.push_back(plot_);
+    
+     // CR_low_mcoll_ME
+     // Plot: mcollCorr
+     plot_.root_get_member = "mcollCorr";
+     plot_.root_get_factor = " / 1000.0";
+     plot_.signal_region = "CR_low_mcoll_ME";
+     plot_.request_cuts = "";
+     plot_.blind_data = "";
+     plot_.x_label = "m_{coll-corr} [GeV]";
+     plot_.y_label = "Events / 25 GeV";
+     plot_.x_bin_width = 25.0;
+     plot_.x_range_min = 0.0;
+     plot_.x_range_max = 1000.0;
+     plot_.y_range_min = 1.0e-1;
+     plot_.y_range_max = 3.0e5;
+     plot_.long_name = "CR_low_mcoll_ME_mcollCorr";
+     vect_plot.push_back(plot_);
+    
+     // CR_low_mcoll_ME
+     // Plot: met
+     plot_.root_get_member = "met";
+     plot_.root_get_factor = " / 1000.0";
+     plot_.signal_region = "CR_low_mcoll_ME";
+     plot_.request_cuts = "";
+     plot_.blind_data = "";
+     plot_.x_label = "E_{T}^{miss} [GeV]";
+     plot_.y_label = "Events / 10 GeV";
+     plot_.x_bin_width = 10.0;
+     plot_.x_range_min = 0.0;
+     plot_.x_range_max = 300.0;
+     plot_.y_range_min = 1.0e-1;
+     plot_.y_range_max = 3.0e5;
+     plot_.long_name = "CR_low_mcoll_ME_met";
+     vect_plot.push_back(plot_);
+    
+    
+     // CR_low_mcoll_ME
+     // Plot: metCorr
+     plot_.root_get_member = "metCorr";
+     plot_.root_get_factor = " / 1000.0";
+     plot_.signal_region = "CR_low_mcoll_ME";
+     plot_.request_cuts = "";
+     plot_.blind_data = "";
+     plot_.x_label = "E_{T}^{miss-corr} [GeV]";
+     plot_.y_label = "Events / 10 GeV";
+     plot_.x_bin_width = 10.0;
+     plot_.x_range_min = 0.0;
+     plot_.x_range_max = 300.0;
+     plot_.y_range_min = 1.0e-1;
+     plot_.y_range_max = 3.0e5;
+     plot_.long_name = "CR_low_mcoll_ME_metCorr";
+     vect_plot.push_back(plot_);
+    
+     // CR_low_mcoll_ME
+     // Plot: METrelCorr
+     plot_.root_get_member = "METrelCorr";
+     plot_.root_get_factor = " / 1000.0";
+     plot_.signal_region = "CR_low_mcoll_ME";
+     plot_.request_cuts = "";
+     plot_.blind_data = "";
+     plot_.x_label = "E_{T}^{miss-corr, rel} [GeV]";
+     plot_.y_label = "Events / 10 GeV";
+     plot_.x_bin_width = 10.0;
+     plot_.x_range_min = 0.0;
+     plot_.x_range_max = 300.0;
+     plot_.y_range_min = 1.0e-1;
+     plot_.y_range_max = 3.0e5;
+     plot_.long_name = "CR_low_mcoll_ME_METrelCorr";
+     vect_plot.push_back(plot_);
+
+    // // CR_low_mcoll_ME
+    // // Plot: ll_deltaPhi
+    plot_.root_get_member = "ll_deltaPhi";
+    plot_.root_get_factor = "";
+    plot_.signal_region = "CR_low_mcoll_ME";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    plot_.x_label = "#Delta#phi (ll)";
+    plot_.y_label = "Events";
+    plot_.x_bin_width = Pi / 12;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 2.5 * Pi;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_low_mcoll_ME_ll_deltaPhi";
+    vect_plot.push_back(plot_);
+    // 
+    // // CR_low_mcoll_ME
+    // // Plot: deltaPhi_metCorr_l1
+    plot_.root_get_member = "abs(3.14159265358979323 - metCorrPhi - lept1Phi)";
+    plot_.root_get_member_name = "deltaPhi_metCorr_l1";
+    plot_.root_get_factor = "";
+    plot_.signal_region = "CR_low_mcoll_ME";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    plot_.x_label = "#Delta#phi (E_{T}^{miss-corr}, l_{1})";
+    plot_.y_label = "Events";
+    plot_.x_bin_width = Pi / 12;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 2.5 * Pi;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_low_mcoll_ME_deltaPhi_metCorr_l1";
+    vect_plot.push_back(plot_);
+    // 
+    // // CR_low_mcoll_ME
+    // // Plot: deltaPhi_metCorr_l2
+    plot_.root_get_member = "abs(3.14159265358979323 - metCorrPhi - lept2Phi)";
+    plot_.root_get_member_name = "deltaPhi_metCorr_l2";
+    plot_.root_get_factor = "";
+    plot_.signal_region = "CR_low_mcoll_ME";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    plot_.x_label = "#Delta#phi (E_{T}^{miss-corr}, l_{2})";
+    plot_.y_label = "Events";
+    plot_.x_bin_width = Pi / 12;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 2.5 * Pi;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_low_mcoll_ME_deltaPhi_metCorr_l2";
+    vect_plot.push_back(plot_);
+
+    // Plot: nCentralLightJets
+    // selection region
+    plot_.root_get_member = "nCentralLightJets";
+    plot_.root_get_member_name = "";
+    plot_.root_get_factor = "";
+    plot_.signal_region = "CR_low_mcoll_ME";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    plot_.x_label = "N_{jets}-central";
+    plot_.y_label = "Events";
+    plot_.x_bin_width = 1.0;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 10.0;
+    plot_.y_range_min = 1.0e-1;
+    plot_.y_range_max = 3.0e5;
+    plot_.long_name = "CR_low_mcoll_ME_nCentralLightJets";
     vect_plot.push_back(plot_);
 
     plot_.root_get_member_name = "";
@@ -1691,21 +2764,34 @@ int main(int argc, char* argv[])
     map <string, string> tcuts;
     stringstream tcuts_join;
 
-    //VR_Etmiss_Zmm
-    tcuts_join << "isMuMu && lept1Pt>35000 && lept2Pt>18000 && !(ll_M>(91200.-10000.) && ll_M<(91200.+10000.)) && nCentralBJets==0 && nForwardJets==0 && nCentralLightJets<2"; //  && MT2>40000
-    tcuts["VR_Etmiss_Zmm"] = tcuts_join.str(); tcuts_join.str("");// clear stringstream
+    //CR_el_and_mu
+    tcuts_join << "isElMu && lept1Pt>35000. && lept2Pt>18000."; //
+    tcuts["CR_el_and_mu"] = tcuts_join.str(); tcuts_join.str("");// clear stringstream
 
-    //VR_Etmiss_Zee
-    tcuts_join << "isElEl && lept1Pt>35000 && lept2Pt>18000 && !(ll_M>(91200.-10000.) && ll_M<(91200.+10000.)) && nCentralBJets==0 && nForwardJets==0 && nCentralLightJets<2";
-    tcuts["VR_Etmiss_Zee"] = tcuts_join.str(); tcuts_join.str("");// clear stringstream
+    //CR_EM
+    tcuts_join << "isEM && lept1Pt>35000. && lept2Pt>18000."; //  
+    tcuts["CR_EM"] = tcuts_join.str(); tcuts_join.str("");// clear stringstream
 
-    //VR_Etmiss_WW
-    tcuts_join << "isElMu && lept1Pt>35000 && lept2Pt>18000 && nCentralBJets==0 && nForwardJets==0 && nCentralLightJets<2 && MT2>40000";
-    tcuts["VR_Etmiss_WW"] = tcuts_join.str(); tcuts_join.str("");// clear stringstream
+    //CR_ME
+    tcuts_join << "isME && lept1Pt>35000. && lept2Pt>18000."; //
+    tcuts["CR_ME"] = tcuts_join.str(); tcuts_join.str("");// clear stringstream
 
-    //VR_LFV_Top
-    tcuts_join << "isElMu && lept1Pt>30000 && lept2Pt>18000 && nCentralBJets>0 && nForwardJets==0 && MT2>40000";
-    tcuts["VR_Etmiss_Top"] = tcuts_join.str(); tcuts_join.str("");// clear stringstream
+    //CR_high_mcoll_EM                                              
+    tcuts_join << "isEM && lept1Pt>35000. && lept2Pt>18000. && mcoll>150000. && nCentralBJets==0 && nForwardJets==0 ";
+    tcuts["CR_high_mcoll_EM"] = tcuts_join.str(); tcuts_join.str("");// clear stringstream
+
+    //CR_high_mcoll_EM
+    tcuts_join << "isEM && lept1Pt>35000. && lept2Pt>18000. && mcoll<100000. && nCentralBJets==0 && nForwardJets==0 ";
+    tcuts["CR_low_mcoll_EM"] = tcuts_join.str(); tcuts_join.str("");// clear stringstream
+
+    //CR_high_mcoll_ME
+    tcuts_join << "isME && lept1Pt>35000. && lept2Pt>18000. && mcoll>150000. && nCentralBJets==0 && nForwardJets==0 ";
+    tcuts["CR_high_mcoll_ME"] = tcuts_join.str(); tcuts_join.str("");// clear stringstream
+
+    //CR_low_mcoll_ME
+    tcuts_join << "isME && lept1Pt>35000. && lept2Pt>18000. && mcoll<100000. && nCentralBJets==0 && nForwardJets==0 ";
+    tcuts["CR_low_mcoll_ME"] = tcuts_join.str(); tcuts_join.str("");// clear stringstream
+
 
     tcuts["none"] = "1";
 
@@ -1826,7 +2912,7 @@ int main(int argc, char* argv[])
             draw_hist << plot_.root_get_member << plot_.root_get_factor << " >>+ " << hist_central[t_]->GetName();
 
             chain_->Draw(draw_list.str().data(), (sel + blind)); // drawing list
-            
+
             TEventList* eventList = (TEventList*)gDirectory->Get(list_name.data());
             chain_->SetEventList(eventList);
 
@@ -2397,6 +3483,15 @@ int main(int argc, char* argv[])
         char annoyingLabel1[100] = "#bf{#it{ATLAS}} Internal", annoyingLabel2[100] = "#scale[0.6]{#int} L dt = 20.3 fb^{-1} #sqrt{s} = 8 TeV";
         myText(0.14, 0.82, kBlack, annoyingLabel1);
         myText(0.14, 0.74, kBlack, annoyingLabel2);
+        string var_name = plot_.x_label;
+        size_t find_g = var_name.find("[GeV]");
+        if (find_g != string::npos) {
+            var_name = var_name.substr(0, find_g);
+        }
+        string title_ = plot_.signal_region + ": " + var_name;
+
+        myText(0.14, 0.940, kBlack, title_.c_str());
+
         tl->Draw();
 
 
@@ -2544,7 +3639,7 @@ int main(int argc, char* argv[])
 
         tc->Print(out_file.str().data());
         tc->Print(out_file_image.str().data());
-        tc->SaveAs(out_file_root.str().data());
+        // tc->SaveAs(out_file_root.str().data());
         tc->Close();
 
         /// /// /// /// ///

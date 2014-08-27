@@ -40,9 +40,8 @@ using namespace std;
 
 #define DEBUG_NTC true
 
-
-#define DIR_0 "/gdata/atlas/suneetu/Documents/LFV_Higgs2014/output/R1_August_16/Processed/"
-#define DIR_1 "/gdata/atlas/suneetu/Documents/LFV_Higgs2014/S2_Superflow/Superflow/plots/"
+#define DIR_0 "/gdata/atlas/suneetu/Documents/LFV_Higgs2014/output/R3_August_22_patch/Processed/"
+#define DIR_1 "/gdata/atlas/suneetu/Documents/LFV_Higgs2014/S9_Superflow/Superflow/plots/"
 
 #define BG_FILE "LFVHBKG8TeV.root"
 #define DATA_FILE "LFVHBKG8TeV.root"
@@ -203,108 +202,108 @@ vector<hft_systematic> defineSystematics() {
 
 	syst.adhoc_tcut2 = "";
 
-	// OBJECT SYSTEMATICS
-	// these apply to all
-	syst.sys_type = k_sys_object;
-	syst.up_name = "UP";
-	syst.down_name = "DOWN";
-	syst.preface = "";
-	syst.adhoc_tcut = "";
-	syst.binding_group = 0;
+    // OBJECT SYSTEMATICS
+    // these apply to all
+    syst.sys_type = k_sys_object;
+    syst.up_name = "UP";
+    syst.down_name = "DOWN";
+    syst.preface = "";
+    syst.adhoc_tcut = "";
+    syst.binding_group = 0;
 
-	// EESZ
-	syst.basename = "EESZ";
-	hft_syst.push_back(syst);
+    // EESZ
+    syst.basename = "EESZ";
+    hft_syst.push_back(syst);
 
-	// EER
-	syst.basename = "EER";
-	hft_syst.push_back(syst);
+    // EER
+    syst.basename = "EER";
+    hft_syst.push_back(syst);
 
-	// EESLOW
-	syst.basename = "EESLOW";
-	hft_syst.push_back(syst);
+    // EESLOW
+    syst.basename = "EESLOW";
+    hft_syst.push_back(syst);
 
-	// EESMAT
-	syst.basename = "EESMAT";
-	hft_syst.push_back(syst);
+    // EESMAT
+    syst.basename = "EESMAT";
+    hft_syst.push_back(syst);
 
-	// EESPS
-	syst.basename = "EESPS";
-	hft_syst.push_back(syst);
+    // EESPS
+    syst.basename = "EESPS";
+    hft_syst.push_back(syst);
 
-	// ID
-	syst.basename = "ID";
-	hft_syst.push_back(syst);
+    // ID
+    syst.basename = "ID";
+    hft_syst.push_back(syst);
 
-	// JES
-	syst.basename = "JES";
-	hft_syst.push_back(syst);
+    // JES
+    syst.basename = "JES";
+    hft_syst.push_back(syst);
 
-	// MS
-	syst.basename = "MS";
-	hft_syst.push_back(syst);
+    // MS
+    syst.basename = "MS";
+    hft_syst.push_back(syst);
 
-	// SCALEST
-	syst.basename = "SCALEST";
-	hft_syst.push_back(syst);
+    // SCALEST
+    syst.basename = "SCALEST";
+    hft_syst.push_back(syst);
 
     // TES
     syst.basename = "TES";
     hft_syst.push_back(syst);
 
-	// ONE-SIDED SYSTEMATICS
-	// these apply to all
-	syst.sys_type = k_sys_one_sided_object;
-	syst.up_name = "";
-	syst.down_name = "";
-	syst.preface = "";
-	syst.adhoc_tcut = "";
-	syst.binding_group = 0;
+    // ONE-SIDED SYSTEMATICS
+    // these apply to all
+    syst.sys_type = k_sys_one_sided_object;
+    syst.up_name = "";
+    syst.down_name = "";
+    syst.preface = "";
+    syst.adhoc_tcut = "";
+    syst.binding_group = 0;
 
-	// JER
-	syst.basename = "JER";
-	hft_syst.push_back(syst);
+    // JER
+    syst.basename = "JER";
+    hft_syst.push_back(syst);
 
-	// RESOST
-	syst.basename = "RESOST";
-	hft_syst.push_back(syst);
+    // RESOST
+    syst.basename = "RESOST";
+    hft_syst.push_back(syst);
 
-	// WEIGHT SYSTEMATICS
-	// these apply to all
-	syst.sys_type = k_sys_weight;
-	syst.up_name = "UP";
-	syst.down_name = "DOWN";
-	syst.preface = "syst_";
-	syst.adhoc_tcut = "";
-	syst.binding_group = 0;
+    // WEIGHT SYSTEMATICS
+    // these apply to all
+    syst.sys_type = k_sys_weight;
+    syst.up_name = "UP";
+    syst.down_name = "DOWN";
+    syst.preface = "syst_";
+    syst.adhoc_tcut = "";
+    syst.binding_group = 0;
 
-	// BJET
-	syst.basename = "BJET";
-	hft_syst.push_back(syst);
+    // BJET
+    syst.basename = "BJET";
+    hft_syst.push_back(syst);
 
-	// CJET
-	syst.basename = "CJET";
-	hft_syst.push_back(syst);
+    // CJET
+    syst.basename = "CJET";
+    hft_syst.push_back(syst);
 
-	// BMISTAG
-	syst.basename = "BMISTAG";
-	hft_syst.push_back(syst);
+    // BMISTAG
+    syst.basename = "BMISTAG";
+    hft_syst.push_back(syst);
 
-	// ETRIGREW
-	syst.basename = "ETRIGREW";
-	hft_syst.push_back(syst);
+    // ETRIGREW
+    syst.basename = "ETRIGREW";
+    hft_syst.push_back(syst);
 
-	// MTRIGREW
-	syst.basename = "MTRIGREW";
-	hft_syst.push_back(syst);
+    // MTRIGREW
+    syst.basename = "MTRIGREW";
+    hft_syst.push_back(syst);
 
-	// ESF
-	syst.basename = "ESF";
-	hft_syst.push_back(syst);
+    // ESF
+    syst.basename = "ESF";
+    hft_syst.push_back(syst);
 
-	// MEFF
-	syst.basename = "MEFF";
-	hft_syst.push_back(syst);
+    // MEFF
+    syst.basename = "MEFF";
+    hft_syst.push_back(syst);
 
     // PILEUP
     syst.basename = "PILEUP";
@@ -314,13 +313,39 @@ vector<hft_systematic> defineSystematics() {
     syst.basename = "MEFF";
     hft_syst.push_back(syst);
 
-	// SPLIT XS
-	// these apply to all XS
-	syst.sys_type = k_sys_weight;
-	syst.up_name = "UP";
-	syst.down_name = "DOWN";
-	syst.preface = "syst_";
-	syst.adhoc_tcut = "";
+    // SPLIT XS
+    // these apply to all XS
+    syst.sys_type = k_sys_weight;
+    syst.up_name = "UP";
+    syst.down_name = "DOWN";
+    syst.preface = "syst_";
+    syst.adhoc_tcut = "";
+
+    // XS
+    syst.basename = "XS";
+    syst.binding_group = 3;
+    hft_syst.push_back(syst);
+
+    syst.basename = "XS";
+    syst.binding_group = 4;
+    hft_syst.push_back(syst);
+
+    syst.basename = "XS";
+    syst.binding_group = 5;
+    hft_syst.push_back(syst);
+
+    syst.basename = "XS";
+    syst.binding_group = 7;
+    hft_syst.push_back(syst);
+
+    // XS on Z+jets
+    syst.sys_type = k_sys_adhoc;
+    syst.basename = "XS";
+    syst.binding_group = 6;
+    syst.preface = "syst_";
+    syst.adhoc_tcut = "1.0014";
+    syst.adhoc_tcut2 = "0.9986"; // note
+    hft_syst.push_back(syst);
 
     /*
 	// XS
@@ -422,10 +447,10 @@ vector<plot> definePlots() {
 	plot_.reweight = "";
 
 	// Section: VR_Etmiss_Zmm
-	// Plot: m_lj
+	// Plot: table
 	plot_.root_get_member = "1";
 	plot_.root_get_factor = "";
-	plot_.signal_region = "VR_Etmiss_Zmm";
+	plot_.signal_region = "CR_el_and_mu";
 	plot_.request_cuts = "";
 	plot_.blind_data = "";
 	// plot setup
@@ -439,10 +464,95 @@ vector<plot> definePlots() {
 	vect_plot.push_back(plot_);
 
     // Section: VR_Etmiss_Zee
-    // Plot: m_lj
+    // Plot: table
     plot_.root_get_member = "1";
     plot_.root_get_factor = "";
-    plot_.signal_region = "VR_Etmiss_Zee";
+    plot_.signal_region = "CR_EM";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    // plot setup
+    plot_.x_label = "";
+    plot_.y_label = "";
+    plot_.x_bin_width = 1.0;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 1.0;
+    plot_.y_range_min = 0.0;
+    plot_.y_range_max = 1.0;
+    vect_plot.push_back(plot_);
+
+    // Section: VR_Etmiss_Zmm
+    // Plot: table
+    plot_.root_get_member = "1";
+    plot_.root_get_factor = "";
+    plot_.signal_region = "CR_ME";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    // plot setup
+    plot_.x_label = "";
+    plot_.y_label = "";
+    plot_.x_bin_width = 1.0;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 1.0;
+    plot_.y_range_min = 0.0;
+    plot_.y_range_max = 1.0;
+    vect_plot.push_back(plot_);
+
+    // Section: VR_Etmiss_Zee
+    // Plot: table
+    plot_.root_get_member = "1";
+    plot_.root_get_factor = "";
+    plot_.signal_region = "CR_high_mcoll_EM";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    // plot setup
+    plot_.x_label = "";
+    plot_.y_label = "";
+    plot_.x_bin_width = 1.0;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 1.0;
+    plot_.y_range_min = 0.0;
+    plot_.y_range_max = 1.0;
+    vect_plot.push_back(plot_);
+
+    // Section: VR_Etmiss_Zmm
+    // Plot: table
+    plot_.root_get_member = "1";
+    plot_.root_get_factor = "";
+    plot_.signal_region = "CR_low_mcoll_EM";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    // plot setup
+    plot_.x_label = "";
+    plot_.y_label = "";
+    plot_.x_bin_width = 1.0;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 1.0;
+    plot_.y_range_min = 0.0;
+    plot_.y_range_max = 1.0;
+    vect_plot.push_back(plot_);
+
+    // Section: VR_Etmiss_Zee
+    // Plot: table
+    plot_.root_get_member = "1";
+    plot_.root_get_factor = "";
+    plot_.signal_region = "CR_high_mcoll_ME";
+    plot_.request_cuts = "";
+    plot_.blind_data = "";
+    // plot setup
+    plot_.x_label = "";
+    plot_.y_label = "";
+    plot_.x_bin_width = 1.0;
+    plot_.x_range_min = 0.0;
+    plot_.x_range_max = 1.0;
+    plot_.y_range_min = 0.0;
+    plot_.y_range_max = 1.0;
+    vect_plot.push_back(plot_);
+
+    // Section: VR_Etmiss_Zee
+    // Plot: table
+    plot_.root_get_member = "1";
+    plot_.root_get_factor = "";
+    plot_.signal_region = "CR_low_mcoll_ME";
     plot_.request_cuts = "";
     plot_.blind_data = "";
     // plot setup
@@ -470,15 +580,43 @@ int main(int argc, char* argv[]) {
 
     //VR_Etmiss_Zmm
     tcuts_join << "isMuMu && lept1Pt>35000 && lept2Pt>18000 && !(ll_M>(91200.-10000.) && ll_M<(91200.+10000.)) && nCentralBJets==0 && nForwardJets==0 && nCentralLightJets<2"; //  && MT2>40000
-    tcuts["VR_Etmiss_Zmm"] = tcuts_join.str(); tcuts_join.str("");// clear stringstream
+    tcuts["VR_Etmiss_Zmm"] = tcuts_join.str(); tcuts_join.str("");
 
     //VR_Etmiss_Zee
     tcuts_join << "isElEl && lept1Pt>35000 && lept2Pt>18000 && !(ll_M>(91200.-10000.) && ll_M<(91200.+10000.)) && nCentralBJets==0 && nForwardJets==0 && nCentralLightJets<2";
-    tcuts["VR_Etmiss_Zee"] = tcuts_join.str(); tcuts_join.str("");// clear stringstream
+    tcuts["VR_Etmiss_Zee"] = tcuts_join.str(); tcuts_join.str("");
 
     //VR_LFV_Top
     tcuts_join << "(isEM || isME) && lept1Pt>30000 && lept2Pt>18000 && nCentralBJets>0 && nForwardJets==0";
-    tcuts["VR_LFV_Top"] = tcuts_join.str(); tcuts_join.str("");// clear stringstream
+    tcuts["VR_LFV_Top"] = tcuts_join.str(); tcuts_join.str("");
+
+    //CR_el_and_mu
+    tcuts_join << "isElMu && lept1Pt>35000. && lept2Pt>18000.";
+    tcuts["CR_el_and_mu"] = tcuts_join.str(); tcuts_join.str("");
+
+    //CR_EM
+    tcuts_join << "isEM && lept1Pt>35000. && lept2Pt>18000.";
+    tcuts["CR_EM"] = tcuts_join.str(); tcuts_join.str("");
+
+    //CR_ME
+    tcuts_join << "isME && lept1Pt>35000. && lept2Pt>18000.";
+    tcuts["CR_ME"] = tcuts_join.str(); tcuts_join.str("");
+
+    //CR_high_mcoll_EM                                              
+    tcuts_join << "isEM && lept1Pt>35000. && lept2Pt>18000. && mcoll>150000. && nCentralBJets==0 && nForwardJets==0 ";
+    tcuts["CR_high_mcoll_EM"] = tcuts_join.str(); tcuts_join.str("");
+
+    //CR_high_mcoll_EM
+    tcuts_join << "isEM && lept1Pt>35000. && lept2Pt>18000. && mcoll<100000. && nCentralBJets==0 && nForwardJets==0 ";
+    tcuts["CR_low_mcoll_EM"] = tcuts_join.str(); tcuts_join.str("");
+
+    //CR_high_mcoll_ME
+    tcuts_join << "isME && lept1Pt>35000. && lept2Pt>18000. && mcoll>150000. && nCentralBJets==0 && nForwardJets==0 ";
+    tcuts["CR_high_mcoll_ME"] = tcuts_join.str(); tcuts_join.str("");
+
+    //CR_low_mcoll_ME
+    tcuts_join << "isME && lept1Pt>35000. && lept2Pt>18000. && mcoll<100000. && nCentralBJets==0 && nForwardJets==0 ";
+    tcuts["CR_low_mcoll_ME"] = tcuts_join.str(); tcuts_join.str("");
 
 	tcuts["none"] = "1";
 

@@ -17,7 +17,7 @@ using namespace std;
 void listFiles(vector<string>& list_, string dir_);
 
 #define MC_TEXT_DIR "/gdata/atlas/suneetu/Documents/LFV_Higgs2014/generation/filelists/"
-#define MC_SAMPLES_DIR "/gdata/atlas/ucintprod/SusyNt/mc12_n0154/"
+#define MC_SAMPLES_DIR "/gdata/atlas/ucintprod/SusyNt/mc12_n0154b/"
 #define OUT_PREFIX "file_list_"
 
 const int n_files = 5;
