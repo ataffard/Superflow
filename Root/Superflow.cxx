@@ -1188,8 +1188,6 @@ namespace sflow {
                 isPmssmSample = true;
             }
 
-            m_mcWeighter->parseAdditionalXsecFile("${ROOTCOREBIN}/data/Superflow/LFV.txt", /*m_dbg*/ false);
-
             if (isPmssmSample) {
                 m_mcWeighter->setLabelBinCounter("Initial").clearAndRebuildSumwMap(m_tree);
             }
