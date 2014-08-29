@@ -76,11 +76,7 @@ int main(int argc, char* argv[])
     int cutFlags = 0;
 
     *cutflow << CutName("GRL, tile trip, and LAr error") << [&](Superlink* sl) -> bool {
-        cutFlags = sl->tools->cleaningCutFlags(sl->nt->evt()->cutFlags[sl->nt_sys],
-                                               *sl->preMuons,
-                                               *sl->baseMuons,
-                                               *sl->preJets,
-                                               *sl->baseJets);
+        cutFlags = sl->tools->cleaningCutFlags(sl->nt->evt()->cutFlags[sl->nt_sys], *sl->preMuons, *sl->baseMuons, *sl->preJets, *sl->baseJets);
         return sl->tools->passGRL(cutFlags)
             && sl->tools->passTileTripCut(cutFlags)
             && sl->tools->passLarErr(cutFlags);

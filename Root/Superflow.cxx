@@ -1128,30 +1128,31 @@ namespace sflow {
         }
         cout << app_name << endl << app_name << endl;
 
+        if (m_entry_list_single_tree != nullptr) {
+            m_entry_list_total->Add(m_entry_list_single_tree); // last tree
+        }
 
         m_outputFile->Write();
         m_entryListFile->Write();
         for (int i = 0; i < index_event_sys.size(); i++) m_output_array[i]->Write();
+
+        m_outputFile->Close();
+        m_entryListFile->Close();
+        for (int i = 0; i < index_event_sys.size(); i++) m_output_array[i]->Close();
 
         cout << app_name << "Files OK." << endl;
 
         delete m_outputFile;
         delete m_entryListFile;
         for (int i = 0; i < index_event_sys.size(); i++) delete m_output_array[i];
-        delete m_output_array;
+        delete[] m_output_array;
 
-        if (m_entry_list_single_tree != nullptr) {
-            m_entry_list_total->Add(m_entry_list_single_tree); // last tree
-            delete m_entry_list_single_tree;
-        }
+        if (m_entry_list_single_tree != nullptr) delete m_entry_list_single_tree;
 
-        delete m_HFT;
-        for (int i = 0; i < index_event_sys.size(); i++) delete m_HFT_array[i];
-        delete m_HFT_array;
-
-        delete m_entry_list_total;
+       // Trees and entry-lists in the files are deleted with the file.
 
         SusyNtAna::Terminate();
+
         if (m_mcWeighter) delete m_mcWeighter;
         if (m_trigObj) delete m_trigObj;
 
