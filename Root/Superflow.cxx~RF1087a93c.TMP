@@ -10,7 +10,6 @@
 
 #include "Superflow/Superflow.h"
 #include "Superflow/StringTools.h"
-#include "Superflow/SuperTools.h"
 
 using namespace std;
 
@@ -1404,9 +1403,9 @@ namespace sflow {
         )
     {
 
-        if (m_runMode == SuperflowRunMode::fakes) {
+        if (m_runMode = SuperflowRunMode::fakes) {
 
-            susy::fake::Systematic::Value fake_sys = susy::fake::Systematic::Value::SYS_NOM;
+            susy::fake::Systematic fake_sys = susy::fake::Systematic::Value::SYS_NOM;
             bool do_fake_ = false;         // FAKE
 
             switch (super_sys->weight_syst) {
@@ -1448,10 +1447,7 @@ namespace sflow {
                 default: break;
 
                     if (do_fake_) {
-                        Superlink* sl_ = new Superlink;
-                        attach_superlink(sl_);
-
-                        weights_->fake = SuperTools::getFakeWeight(sl_, m_fake_region, fake_sys);
+                        weights_->fake = getFakeWeight(sl, m_fake_region, fake_sys)
                     }
             } // end if runMode fakes
         }

@@ -13,6 +13,8 @@
 #include "Superflow/DataDefinitions.h"
 #include "JVFUncertaintyTool/JVFUncertaintyTool.h"
 
+#include "DileptonMatrixMethod/DileptonMatrixMethod.h"
+
 using namespace DataDefinitions;
 
 namespace sflow {
@@ -61,5 +63,7 @@ namespace sflow {
         DilTrigLogic* dileptonTrigger;
 
         JVFUncertaintyTool* jvfTool;
+
+        susy::fake::DileptonMatrixMethod* fakeMatrix;
     };
 };

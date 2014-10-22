@@ -10,7 +10,6 @@
 
 #include "Superflow/Superflow.h"
 #include "Superflow/StringTools.h"
-#include "Superflow/SuperTools.h"
 
 using namespace std;
 
