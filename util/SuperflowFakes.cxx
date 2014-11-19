@@ -172,8 +172,7 @@ int main(int argc, char* argv[])
     *cutflow << CutName("prompt leptons") << [&](Superlink* sl) -> bool {       // DANTRIM (capture)
         bool pass_ = true;
 
-        if ((sl->isMC && !sl->doFake)) {                            // DANTRIM || doFakes_  incorp. sl->doFake instead of doFakes_
-    //    if(!doFakes_ && sl->isMC){                                                 // DANTRIM if running Fakes we have baseLeptons, so need to skip this 
+        if (sl->isMC) {                      
             for (int l_ = 0; l_ < sl->leptons->size(); l_++) {
                 bool isReal = sl->leptons->at(l_)->truthType == LeptonTruthType::PROMPT;
 
@@ -308,6 +307,12 @@ int main(int argc, char* argv[])
     *cutflow << NewVar("is mu + mu"); {
         *cutflow << HFTname("isMuMu");
         *cutflow << [](Superlink* sl, var_bool*) -> bool { return sl->leptons->at(0)->isMu() && sl->leptons->at(1)->isMu(); };
+        *cutflow << SaveVar();
+    }
+
+    *cutflow << NewVar("is genuine same-same"); {
+        *cutflow << HFTname("isGenSS");
+        *cutflow << [](Superlink *sl, var_bool*) -> bool { return PhysicsTools::isGenuineSS(sl->leptons); };
         *cutflow << SaveVar();
     }
 

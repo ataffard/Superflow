@@ -1,9 +1,15 @@
 #pragma once
 
 #include <math.h>
+#include <fstream>
 
 // Root Packages
 #include "TLorentzVector.h"
+
+#include "DileptonMatrixMethod/DileptonMatrixMethod.h"
+#include "SusyNtuple/SusyNtTools.h"
+#include "Superflow/Superlink.h"
+
 
 namespace PhysicsTools {
     //Efficiency using binomial error
@@ -52,4 +58,18 @@ namespace PhysicsTools {
         std::vector<float> &pyVector,
         std::vector<float> &pzVector,
         bool IsTransverseSphericity);
+
+    // ttbar re-weight (PowHeg sample 117050 only!)
+    double ttbar_powheg_differentialxsec(double ttbarpt);
+    
+    // calculate fake weight
+    double getFakeWeight(sflow::Superlink* sl, std::string fakeRegion, susy::fake::Systematic::Value sys, bool computeSyst);
+
+    // is genuine same-sign
+    bool isGenuineSS(const LeptonVector* leps);
+    
+    // has charge-flip
+    bool hasQFlip(const LeptonVector* leps);
+
+
 }

@@ -10,7 +10,7 @@
 
 #include "Superflow/Superflow.h"
 #include "Superflow/StringTools.h"
-#include "Superflow/SuperTools.h"
+#include "Superflow/PhysicsTools.h"
 
 using namespace std;
 
@@ -27,6 +27,7 @@ namespace sflow {
         m_use2dparametrization = false;
         m_allconfigured = false;
         m_matrix = nullptr;
+        m_fake_region = "";
 
         // Charge-flip
         m_do_qflip = false;
@@ -80,7 +81,6 @@ namespace sflow {
 
         m_sysState = SupersysState::closed;
 
-        m_fake_region = "";
 
         m_sysTemplate.reset();
         m_sys_hasNiceName = false;
@@ -578,8 +578,10 @@ namespace sflow {
         // Currently set-up to run ChargeFlip-00-00-11 which has the 
         // charge flip map chargeFlip.root and the functionality as used
         // here
+        // TODO: re-configure for Emma's  new map (--Dantrim 11/18/2014)
         if(m_do_qflip) {  // global switch set in SuperflowQFlip executable
-            string chargeFlipInput = "../../ChargeFlip/data/chargeFlip.root";
+            //string chargeFlipInput = "../../ChargeFlip/data/chargeFlip.root";
+            string chargeFlipInput = "../../ChargeFlip/data/chargeflip_map_12nov2014.root";
             ifstream qflipFile(chargeFlipInput.data());
             if(qflipFile) {
                 cout << "\n >>> Using chargeflip map: " << chargeFlipInput << ". " << endl;
@@ -1500,7 +1502,7 @@ namespace sflow {
                         Superlink* sl_ = new Superlink;
                         attach_superlink(sl_);
 
-                        weights_->fake = SuperTools::getFakeWeight(sl_, m_fake_region, fake_sys, do_syst_);
+                        weights_->fake = PhysicsTools::getFakeWeight(sl_, m_fake_region, fake_sys, do_syst_);
                     }
          //   } // end if runMode fakes
         
@@ -1697,10 +1699,10 @@ namespace sflow {
             int _sys = (sys==SupersysWeight::BKGMETHODUP ? +1 :
                         (sys==SupersysWeight::BKGMETHODDOWN ? -1 : 0)); // convert to convention used in ChargeFlip (sys==0 --> nominal)
             int syst = int(_sys);
-            //bool isData=false; // this is used only in new verisions of ChargeFlip package
+            bool isData=false; // this is used only in new verisions of ChargeFlip package
             m_chargeFlip->setSeed(nt.evt()->event);
-            //float flipProb(m_chargeFlip->OS2SS(pdg0, l0, pdg1, l1, _sys, isData, chargeFlip::dataonly)); // newer version
-            float flipProb(m_chargeFlip->OS2SS(pdg0, l0, pdg1, l1, &met, syst));
+            float flipProb(m_chargeFlip->OS2SS(pdg0, l0, pdg1, l1, _sys, isData, chargeFlip::dataonly)); // newer version
+            //float flipProb(m_chargeFlip->OS2SS(pdg0, l0, pdg1, l1, &met, syst));
             float overlapFrac(m_chargeFlip->overlapFrac().first);
             
             qflipProb = flipProb*overlapFrac;
