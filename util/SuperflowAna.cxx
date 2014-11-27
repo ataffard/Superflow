@@ -21,7 +21,6 @@
 #include "Superflow/PhysicsTools.h"
 #include "Superflow/LeptonTruthDefinitions.h"
 
-#include "TAnalysis/TAnalysis.h"
 
 #include "Mt2/mt2_bisect.h"
 
@@ -70,11 +69,14 @@ int main(int argc, char* argv[])
     *cutflow << CutName("HFOR") << [](Superlink *sl) -> bool {
         bool pass_ = true;
 
-        if(sl->nt->evt()->hfor==4 &&
-           !( (sl->nt->evt()->mcChannel >= 164440 && sl->nt->evt()->mcChannel <= 164443) ||
-              (sl->nt->evt()->mcChannel >= 164450 && sl->nt->evt()->mcChannel <= 164453))){
-           pass_ = false;
+        if(sl->nt->evt()->hfor==4) {
+            pass_ = false;
         }
+//        if(sl->nt->evt()->hfor==4 &&
+//           !( (sl->nt->evt()->mcChannel >= 164440 && sl->nt->evt()->mcChannel <= 164443) ||
+//              (sl->nt->evt()->mcChannel >= 164450 && sl->nt->evt()->mcChannel <= 164453))){
+//           pass_ = false;
+//        }
         return pass_;
     };
 
@@ -225,10 +227,12 @@ int main(int argc, char* argv[])
                     double ttbarPt = (ttbarPart[0] + ttbarPart[1]).Pt() * GeV_to_MeV;
                     powHegWeight = PhysicsTools::ttbar_powheg_differentialxsec( ttbarPt );
                 }
-                return sl->weights->product()*powHegWeight > 0.0 ? sl->weights->product()*powHegWeight : 0.0;
+                return sl->weights->product()*powHegWeight;
+//                return sl->weights->product()*powHegWeight > 0.0 ? sl->weights->product()*powHegWeight : 0.0;
             } // end if PowHeg+Pythia    
             else { 
-                return sl->weights->product() > 0.0 ? sl->weights->product() : 0.0;
+                return sl->weights->product();
+//                return sl->weights->product() > 0.0 ? sl->weights->product() : 0.0;
             }
         };
     

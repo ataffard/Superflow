@@ -1402,7 +1402,7 @@ namespace sflow {
                 isPmssmSample = true;
             }
 
-            m_mcWeighter->parseAdditionalXsecFile("${ROOTCOREBIN}/data/Superflow/LFV.txt", /*m_dbg*/ false);
+         //   m_mcWeighter->parseAdditionalXsecFile("${ROOTCOREBIN}/data/Superflow/LFV.txt", /*m_dbg*/ false);
 
             if (isPmssmSample) {
                 m_mcWeighter->setLabelBinCounter("Initial").clearAndRebuildSumwMap(m_tree);
@@ -1698,7 +1698,6 @@ namespace sflow {
             TVector2 met(m_met->lv().Px(), m_met->lv().Py());
             int _sys = (sys==SupersysWeight::BKGMETHODUP ? +1 :
                         (sys==SupersysWeight::BKGMETHODDOWN ? -1 : 0)); // convert to convention used in ChargeFlip (sys==0 --> nominal)
-            int syst = int(_sys);
             bool isData=false; // this is used only in new verisions of ChargeFlip package
             m_chargeFlip->setSeed(nt.evt()->event);
             float flipProb(m_chargeFlip->OS2SS(pdg0, l0, pdg1, l1, _sys, isData, chargeFlip::dataonly)); // newer version
