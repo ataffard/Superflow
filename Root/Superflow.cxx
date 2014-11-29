@@ -581,7 +581,9 @@ namespace sflow {
         // TODO: re-configure for Emma's  new map (--Dantrim 11/18/2014)
         if(m_do_qflip) {  // global switch set in SuperflowQFlip executable
             //string chargeFlipInput = "../../ChargeFlip/data/chargeFlip.root";
-            string chargeFlipInput = "../../ChargeFlip/data/chargeflip_map_12nov2014.root";
+        //    string xsecDir = gSystem->ExpandPathName("$ROOTCOREBIN/data/SUSYTools/mc12_8TeV/");
+            string chargeFlipInput = gSystem->ExpandPathName("$ROOTCOREBIN/data/ChargeFlip/chargeflip_map_12nov2014.root");
+        //    string chargeFlipInput = "../../ChargeFlip/data/chargeflip_map_12nov2014.root";
             ifstream qflipFile(chargeFlipInput.data());
             if(qflipFile) {
                 cout << "\n >>> Using chargeflip map: " << chargeFlipInput << ". " << endl;
@@ -596,7 +598,8 @@ namespace sflow {
         // ----------------- Configure Matrix Tool [BEGIN] ------------------------//
         // cf https://github.com/gerbaudo/DileptonMatrixMethod/
         if (m_runMode == SuperflowRunMode::fakes) {   
-            m_matrixFilename = "../../DileptonMatrixMethod/data/FakeMatrix_Oct_20.root";
+            m_matrixFilename = gSystem->ExpandPathName("$ROOTCOREBIN/data/DileptonMatrixMethod/FakeMatrix_Oct_20.root");
+       //     m_matrixFilename = "../../DileptonMatrixMethod/data/FakeMatrix_Oct_20.root";
             ifstream the_matrix(m_matrixFilename.data());
             if(!the_matrix){
                 cout << "ERROR (Fatal): matrix method matrix at " << m_matrixFilename << " does not exist or cannot be opened. Exitting. " << endl;
@@ -1705,8 +1708,8 @@ namespace sflow {
             float overlapFrac(m_chargeFlip->overlapFrac().first);
             
             qflipProb = flipProb*overlapFrac;
-            if(sys==SupersysWeight::BKGMETHODUP) qflipProb *= 1.5;
-            if(sys==SupersysWeight::BKGMETHODDOWN) qflipProb *= 0.5;
+//            if(sys==SupersysWeight::BKGMETHODUP) qflipProb *= 1.5;
+//            if(sys==SupersysWeight::BKGMETHODDOWN) qflipProb *= 0.5;
 
             return qflipProb;
             // check if final qflipProb > 0.0 && < 1.0 before returning?

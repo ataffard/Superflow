@@ -192,6 +192,14 @@ int main(int argc, char* argv[])
         return (sl->leptons->at(0)->q * sl->leptons->at(1)->q < 0);
     };
 
+    *cutflow << CutName("not MuMu") << [](Superlink* sl) -> bool {
+        bool pass_ = true;
+        if(sl->leptons->at(0)->isMu() && sl->leptons->at(1)->isMu()) {
+            pass_ = false;
+        }
+        return pass_;
+    };
+
 
     // END Setup cuts
     // END Setup cuts
@@ -204,6 +212,14 @@ int main(int argc, char* argv[])
     // START Setup output trees
     // START Setup output trees
     // START Setup output trees
+
+    *cutflow << NewVar("is qflip sample"); {
+        *cutflow << HFTname("qflipSample");
+        *cutflow << [](Superlink*sl, var_bool*) -> bool {
+            return true;
+        };
+        *cutflow << SaveVar();
+    }
 
     *cutflow << NewVar("event weight"); {
         *cutflow << HFTname("eventweight");
