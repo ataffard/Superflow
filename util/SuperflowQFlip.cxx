@@ -69,18 +69,14 @@ int main(int argc, char* argv[])
     // START Setup cuts
     // START Setup cuts
 
+    *cutflow << CutName("read in") << [](Superlink* sl) -> bool { return true; };
+
     *cutflow << CutName("HFOR") << [](Superlink *sl) -> bool {
         bool pass_ = true;
 
         if(sl->nt->evt()->hfor==4){
             pass_ = false;
         }
-
-//        if(sl->nt->evt()->hfor==4 &&
-//           !( (sl->nt->evt()->mcChannel >= 164440 && sl->nt->evt()->mcChannel <= 164443) ||
-//              (sl->nt->evt()->mcChannel >= 164450 && sl->nt->evt()->mcChannel <= 164453))){
-//           pass_ = false;
-//        }
         return pass_;
     };
 
@@ -105,7 +101,6 @@ int main(int argc, char* argv[])
     };
         
 
-    *cutflow << CutName("read in") << [](Superlink* sl) -> bool { return true; };
 
     *cutflow << CutName("at least two signal leptons") << [](Superlink* sl) -> bool {
         return !(sl->leptons->size() < 2);
@@ -188,17 +183,17 @@ int main(int argc, char* argv[])
         return pass_;
     };
 
-    *cutflow << CutName("opposite sign") << [](Superlink* sl) -> bool {
-        return (sl->leptons->at(0)->q * sl->leptons->at(1)->q < 0);
-    };
-
-    *cutflow << CutName("not MuMu") << [](Superlink* sl) -> bool {
-        bool pass_ = true;
-        if(sl->leptons->at(0)->isMu() && sl->leptons->at(1)->isMu()) {
-            pass_ = false;
-        }
-        return pass_;
-    };
+//    *cutflow << CutName("opposite sign") << [](Superlink* sl) -> bool {
+//        return (sl->leptons->at(0)->q * sl->leptons->at(1)->q < 0);
+//    };
+//
+//    *cutflow << CutName("not MuMu") << [](Superlink* sl) -> bool {
+//        bool pass_ = true;
+//        if(sl->leptons->at(0)->isMu() && sl->leptons->at(1)->isMu()) {
+//            pass_ = false;
+//        }
+//        return pass_;
+//    };
 
 
     // END Setup cuts
@@ -245,6 +240,18 @@ int main(int argc, char* argv[])
             }
         };
         
+        *cutflow << SaveVar();
+    }
+    *cutflow << NewVar("mcChannel (dsid)"); {
+        *cutflow << HFTname("dsid");
+        *cutflow << [&](Superlink* sl, var_double*) -> double {
+            if (sl->isMC) {                        
+                return sl->nt->evt()->mcChannel;
+            }
+            else{
+                return 0.0;
+            }
+        };
         *cutflow << SaveVar();
     }
 

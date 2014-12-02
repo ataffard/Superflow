@@ -28,6 +28,7 @@ namespace sflow {
         m_allconfigured = false;
         m_matrix = nullptr;
         m_fake_region = "";
+        selectBaseLineLeptons = false;
 
         // Charge-flip
         m_do_qflip = false;
@@ -482,11 +483,22 @@ namespace sflow {
         sl_->baseTaus = &m_baseTaus;
         sl_->baseJets = &m_baseJets;
 
-        sl_->leptons = selectBaseLineLeptons ? &m_baseLeptons : &m_signalLeptons;
-        sl_->electrons = selectBaseLineLeptons ? &m_baseElectrons : &m_signalElectrons;
-        sl_->muons = selectBaseLineLeptons ? &m_baseMuons : &m_signalMuons;
+        if (m_runMode == SuperflowRunMode::fakes) {
+            sl_->leptons = &m_baseLeptons;
+            sl_->electrons = &m_baseElectrons;
+            sl_->muons = &m_baseMuons;
+        }
+        else{
+            sl_->leptons = &m_signalLeptons;
+            sl_->electrons = &m_signalElectrons;
+            sl_->muons = &m_signalMuons;
+        }
+     //   sl_->leptons = selectBaseLineLeptons ? &m_baseLeptons : &m_signalLeptons;
+     //   sl_->electrons = selectBaseLineLeptons ? &m_baseElectrons : &m_signalElectrons;
+     //   sl_->muons = selectBaseLineLeptons ? &m_baseMuons : &m_signalMuons;
+
         sl_->taus = &m_signalTaus;
-        sl_->jets = &m_signalJets;
+        sl_->jets = &m_signalJets2Lep;
 
         sl_->met = m_met;
 
@@ -598,7 +610,8 @@ namespace sflow {
         // ----------------- Configure Matrix Tool [BEGIN] ------------------------//
         // cf https://github.com/gerbaudo/DileptonMatrixMethod/
         if (m_runMode == SuperflowRunMode::fakes) {   
-            m_matrixFilename = gSystem->ExpandPathName("$ROOTCOREBIN/data/DileptonMatrixMethod/FakeMatrix_Oct_20.root");
+           // m_matrixFilename = gSystem->ExpandPathName("$ROOTCOREBIN/data/DileptonMatrixMethod/FakeMatrix_Oct_20.root");
+            m_matrixFilename = gSystem->ExpandPathName("$ROOTCOREBIN/data/DileptonMatrixMethod/FakeMatrix_Nov_26.root");
        //     m_matrixFilename = "../../DileptonMatrixMethod/data/FakeMatrix_Oct_20.root";
             ifstream the_matrix(m_matrixFilename.data());
             if(!the_matrix){
@@ -1515,6 +1528,7 @@ namespace sflow {
         if (ntobj.evt()->isMC) {
             MCWeighter::WeightSys wSys = MCWeighter::Sys_NOM;
 
+
             bool do_susynt_w = false;
 
             switch (super_sys->weight_syst) {
@@ -1628,7 +1642,9 @@ namespace sflow {
                         } break;
                         default: break;
                     } // switch
-                    if(do_qflip_){
+                    bool  isMuMu(isMM(leptons));
+                    bool  isGenSS(isGenuineSS(leptons));
+                    if(do_qflip_ && !isMuMu && !isGenSS){
                         weights_->qflip = computeChargeFlipWeight(leptons, super_sys->weight_syst);
                     }
                 } // end if(m_do_qflip)
@@ -1638,6 +1654,7 @@ namespace sflow {
 
         return true;
     }
+
 
     double Superflow::computeDileptonTriggerWeight(const LeptonVector &leptons, const SusyNtSys sys)
     {
@@ -1688,11 +1705,9 @@ namespace sflow {
     float Superflow::computeChargeFlipWeight(const LeptonVector &leptons, const SupersysWeight sys)
     {
         float qflipProb = 1.0;
-        bool  isMuMu(isMM(leptons));
-        bool  isGenSS(isGenuineSS(leptons));
     
-        if(!isGenSS && isMuMu ) return 0.0;
-        else if(!isGenSS && !isMuMu){
+     //   if(!isGenSS && isMuMu ) return 0.0;
+     //   if(!isGenSS && !isMuMu){
             const LeptonVector &ls = leptons;
             Susy::Lepton* l0 = ls[0];
             Susy::Lepton* l1 = ls[1];
@@ -1711,12 +1726,14 @@ namespace sflow {
 //            if(sys==SupersysWeight::BKGMETHODUP) qflipProb *= 1.5;
 //            if(sys==SupersysWeight::BKGMETHODDOWN) qflipProb *= 0.5;
 
-            return qflipProb;
+//            return qflipProb;
             // check if final qflipProb > 0.0 && < 1.0 before returning?
-        }
-        else{
-            return 1.0;
-        }
+//        }
+
+        return qflipProb;
+//        else{
+//            return 1.0;
+//        }
     }
     bool Superflow::isGenuineSS(const LeptonVector& leps)
     {

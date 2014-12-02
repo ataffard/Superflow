@@ -70,13 +70,12 @@ int main(int argc, char* argv[])
     // START Setup cuts
     // START Setup cuts
 
+    *cutflow << CutName("read in") << [](Superlink* sl) -> bool { return true; };
+
     *cutflow << CutName("HFOR") << [](Superlink *sl) -> bool {
         bool pass_ = true;
-
-        if(sl->nt->evt()->hfor==4 &&
-           !( (sl->nt->evt()->mcChannel >= 164440 && sl->nt->evt()->mcChannel <= 164443) ||
-              (sl->nt->evt()->mcChannel >= 164450 && sl->nt->evt()->mcChannel <= 164453))){
-           pass_ = false;
+        if(sl->nt->evt()->hfor==4){
+            pass_ = false;
         }
         return pass_;
     };
@@ -102,7 +101,6 @@ int main(int argc, char* argv[])
     };
         
 
-    *cutflow << CutName("read in") << [](Superlink* sl) -> bool { return true; };
 
     *cutflow << CutName("at least two signal leptons") << [](Superlink* sl) -> bool {
         return !(sl->leptons->size() < 2);

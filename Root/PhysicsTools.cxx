@@ -305,9 +305,9 @@ namespace PhysicsTools {
      //   std::string test = susy::fake::Systematic::str(sys);
      //   std::cout << "\t " << test << std::endl;
         
-        if(!computeSyst){
-            outMatrix.open((fakeRegion + "_" + debugMatrixName).c_str(), ios::app | ios::out);
-        }
+  //      if(!computeSyst){
+  //          outMatrix.open((fakeRegion + "_" + debugMatrixName).c_str(), ios::app | ios::out);
+  //      }
         double weight=1.0;
     
         unsigned int nVtx = sl->nt->evt()->nVtx;
@@ -332,7 +332,7 @@ namespace PhysicsTools {
             }
        // }//if(nominal)
      
-        if(!computeSyst){
+/*        if(!computeSyst){
                 int isElectron1 = l0.isEle() ? 1 : 0;
                 int isElectron2 = l1.isEle() ? 1 : 0;
                 int isTight1 = l0IsSig ? 1 : 0;
@@ -350,7 +350,7 @@ namespace PhysicsTools {
                                 << eta1        << "\t"
                                 << eta2        << "\n";
                 outMatrix.close();
-        }
+        }*/
         return weight;
     }
 

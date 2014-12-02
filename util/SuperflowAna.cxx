@@ -13,6 +13,7 @@
 
 #include "SusyNtuple/ChainHelper.h"
 #include "SusyNtuple/string_utils.h"
+#include "SusyNtuple/MCWeighter.h"
 
 #include "Superflow/Superflow.h"
 #include "Superflow/Superlink.h"
@@ -56,7 +57,11 @@ int main(int argc, char* argv[])
     cutflow->setAnaType(Ana_2Lep); // Ana_2Lep Ana_2LepWH 
     cutflow->setSampleName(sample_);
     cutflow->setRunMode(run_mode);
+    cutflow->setCountWeights(true); // print the weighted cutflows
     cutflow->setChain(chain);
+
+    string xsecDir = gSystem->ExpandPathName("$ROOTCOREBIN/data/SUSYTools/mc12_8TeV/");
+    MCWeighter* weighter = new MCWeighter(chain, xsecDir);
 
     cout << "Analysis    Total Entries: " << chain->GetEntries() << endl;
 
@@ -66,19 +71,17 @@ int main(int argc, char* argv[])
     // START Setup cuts
     // START Setup cuts
     
+    *cutflow << CutName("read in") << [](Superlink* sl) -> bool { return true; };
+
     *cutflow << CutName("HFOR") << [](Superlink *sl) -> bool {
         bool pass_ = true;
 
         if(sl->nt->evt()->hfor==4) {
             pass_ = false;
         }
-//        if(sl->nt->evt()->hfor==4 &&
-//           !( (sl->nt->evt()->mcChannel >= 164440 && sl->nt->evt()->mcChannel <= 164443) ||
-//              (sl->nt->evt()->mcChannel >= 164450 && sl->nt->evt()->mcChannel <= 164453))){
-//           pass_ = false;
-//        }
         return pass_;
     };
+    
 
     *cutflow << CutName("Mll Cut") << [](Superlink *sl) -> bool {
         bool pass_ = true;
@@ -101,7 +104,6 @@ int main(int argc, char* argv[])
     };
         
 
-    *cutflow << CutName("read in") << [](Superlink* sl) -> bool { return true; };
 
     *cutflow << CutName("at least two signal leptons") << [](Superlink* sl) -> bool {
         return !(sl->leptons->size() < 2);
@@ -212,6 +214,9 @@ int main(int argc, char* argv[])
     // START Setup output trees
     // START Setup output trees
 
+
+
+
     *cutflow << NewVar("event weight"); {
         *cutflow << HFTname("eventweight");
         *cutflow << [](Superlink* sl, var_double*) -> double { 
@@ -238,6 +243,53 @@ int main(int argc, char* argv[])
     
         *cutflow << SaveVar();
     }
+
+    // VARIABLES FOR DEBUGGING "NEW" AND "OLD" ALPGEN+PYTHIA Z+JETS [BEGIN]
+    // VARIABLES FOR DEBUGGING "NEW" AND "OLD" ALPGEN+PYTHIA Z+JETS [BEGIN]
+    // VARIABLES FOR DEBUGGING "NEW" AND "OLD" ALPGEN+PYTHIA Z+JETS [BEGIN]
+
+    *cutflow << NewVar("mcChannel (dsid)"); {
+        *cutflow << HFTname("dsid");
+        *cutflow << [&](Superlink* sl, var_double*) -> double {
+            if (sl->isMC) {                        
+                return sl->nt->evt()->mcChannel;
+            }
+            else{
+                return 0.0;
+            }
+        };
+        *cutflow << SaveVar();
+    }
+
+    *cutflow << NewVar("sumw"); {
+        *cutflow << HFTname("sumw");
+        *cutflow << [&](Superlink* sl, var_double*) -> double {
+            return weighter->getSumw(sl->nt->evt());
+        };
+        *cutflow << SaveVar();
+    }
+    *cutflow << NewVar("w"); {
+        *cutflow << HFTname("w");
+        *cutflow << [](Superlink* sl, var_double*) -> double {
+            return sl->nt->evt()->w; 
+        };
+        *cutflow << SaveVar();
+    }
+    *cutflow << NewVar("pile-up weight"); {
+        *cutflow << HFTname("pupw");
+        *cutflow << [](Superlink* sl, var_double*) -> double {
+            return sl->nt->evt()->wPileup;
+        };
+        *cutflow << SaveVar();
+    }
+    *cutflow << NewVar("xsec times eff"); {
+        *cutflow << HFTname("xsec");
+        *cutflow << [&](Superlink* sl, var_double*) -> double {
+            return weighter->getXsecTimesEff(sl->nt->evt(), MCWeighter::Sys_NOM);
+        };
+        *cutflow << SaveVar();
+    }
+
 
     *cutflow << NewVar("run number"); {
         *cutflow << HFTname("runNumber");
