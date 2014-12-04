@@ -611,7 +611,8 @@ namespace sflow {
         // cf https://github.com/gerbaudo/DileptonMatrixMethod/
         if (m_runMode == SuperflowRunMode::fakes) {   
            // m_matrixFilename = gSystem->ExpandPathName("$ROOTCOREBIN/data/DileptonMatrixMethod/FakeMatrix_Oct_20.root");
-            m_matrixFilename = gSystem->ExpandPathName("$ROOTCOREBIN/data/DileptonMatrixMethod/FakeMatrix_Nov_26.root");
+           // m_matrixFilename = gSystem->ExpandPathName("$ROOTCOREBIN/data/DileptonMatrixMethod/FakeMatrix_Nov_26.root");
+            m_matrixFilename = gSystem->ExpandPathName("$ROOTCOREBIN/data/DileptonMatrixMethod/pass3_Summer2013.root");
        //     m_matrixFilename = "../../DileptonMatrixMethod/data/FakeMatrix_Oct_20.root";
             ifstream the_matrix(m_matrixFilename.data());
             if(!the_matrix){

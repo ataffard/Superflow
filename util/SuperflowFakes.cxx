@@ -182,6 +182,13 @@ int main(int argc, char* argv[])
         }
         return pass_;
     };
+    
+    // running over matt's matrix for VRSS, so select only same-sign events
+    *cutflow << CutName("same-sign") << [](Superlink* sl) -> bool {
+            return sl->leptons->at(0)->q * sl->leptons->at(1)->q > 0; 
+    };
+        
+        
 
 
     // END Setup cuts
