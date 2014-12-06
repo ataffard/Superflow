@@ -1,4 +1,4 @@
-// SuperflowAna.cxx
+// SAME.cxx
 //
 
 #include <cstdlib>
@@ -181,6 +181,10 @@ int main(int argc, char* argv[])
             }
         }
         return pass_;
+    };
+
+    *cutflow << CutName("same sign") << [](Superlink* sl) -> bool {
+        return sl->leptons->at(0)->q * sl->leptons->at(1)->q > 0;
     };
     
 

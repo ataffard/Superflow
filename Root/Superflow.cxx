@@ -594,7 +594,8 @@ namespace sflow {
         if(m_do_qflip) {  // global switch set in SuperflowQFlip executable
             //string chargeFlipInput = "../../ChargeFlip/data/chargeFlip.root";
         //    string xsecDir = gSystem->ExpandPathName("$ROOTCOREBIN/data/SUSYTools/mc12_8TeV/");
-            string chargeFlipInput = gSystem->ExpandPathName("$ROOTCOREBIN/data/ChargeFlip/chargeflip_map_12nov2014.root");
+        //    string chargeFlipInput = gSystem->ExpandPathName("$ROOTCOREBIN/data/ChargeFlip/chargeflip_map_12nov2014.root");
+            string chargeFlipInput = gSystem->ExpandPathName("$ROOTCOREBIN/data/ChargeFlip/chargeflip_map_12nov2014_scale_with_mc_last_ptbin.root");
         //    string chargeFlipInput = "../../ChargeFlip/data/chargeflip_map_12nov2014.root";
             ifstream qflipFile(chargeFlipInput.data());
             if(qflipFile) {
@@ -612,7 +613,8 @@ namespace sflow {
         if (m_runMode == SuperflowRunMode::fakes) {   
            // m_matrixFilename = gSystem->ExpandPathName("$ROOTCOREBIN/data/DileptonMatrixMethod/FakeMatrix_Oct_20.root");
            // m_matrixFilename = gSystem->ExpandPathName("$ROOTCOREBIN/data/DileptonMatrixMethod/FakeMatrix_Nov_26.root");
-            m_matrixFilename = gSystem->ExpandPathName("$ROOTCOREBIN/data/DileptonMatrixMethod/pass3_Summer2013.root");
+           // m_matrixFilename = gSystem->ExpandPathName("$ROOTCOREBIN/data/DileptonMatrixMethod/pass3_Summer2013.root");
+            m_matrixFilename = gSystem->ExpandPathName("$ROOTCOREBIN/data/DileptonMatrixMethod/FakeMatrix_Dec_03.root");
        //     m_matrixFilename = "../../DileptonMatrixMethod/data/FakeMatrix_Oct_20.root";
             ifstream the_matrix(m_matrixFilename.data());
             if(!the_matrix){
