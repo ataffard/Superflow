@@ -19,7 +19,7 @@ namespace sflow {
 
         nt = nullptr;
         weights = nullptr;
-        nt_sys = NtSys_NOM;
+        nt_sys = Susy::NtSys::NOM;
 
         preElectrons = nullptr;
         preMuons = nullptr;
@@ -59,7 +59,7 @@ namespace sflow {
 
         nt = nullptr;
         weights = nullptr;
-        nt_sys = NtSys_NOM;
+        nt_sys = Susy::NtSys::NOM;
 
         preElectrons = nullptr;
         preMuons = nullptr;

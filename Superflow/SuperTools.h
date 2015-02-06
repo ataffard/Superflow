@@ -15,7 +15,8 @@ namespace SuperTools {
 
 
 double ttbar_powheg_differentialxsec(double ttbarpt);
-double getFakeWeight(sflow::Superlink* sl, std::string fakeRegion, susy::fake::Systematic::Value sys);
+double getFakeWeight(sflow::Superlink* sl, std::string fakeRegion, susy::fake::Systematic::Value sys, bool doSyst);
+//double getFakeWeight(sflow::Superlink* sl, const std::string fakeRegion, int sys);
 
 
 }

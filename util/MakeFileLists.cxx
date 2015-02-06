@@ -17,8 +17,9 @@ using namespace std;
 void listFiles(vector<string>& list_, string dir_);
 
 #define MC_TEXT_DIR "/gdata/atlas/suneetu/Documents/LFV_Higgs2014/generation/filelists/"
-#define MC_SAMPLES_DIR "/gdata/atlas/ucintprod/SusyNt/mc12_n0154b/"
+#define MC_SAMPLES_DIR "/gdata/atlas/ucintprod/SusyNt/mc12_n0155/"
 #define OUT_PREFIX "file_list_"
+#define RUN_SUFFIX "n0155"
 
 const int n_files = 5;
 string files[] = { "Higgs", "top_MCNLO", "WW_Sherpa", "WZ_ZZ_Sherpa", "Zjets_AlpgenPythia" };
@@ -64,6 +65,7 @@ int main(int argc, char** argv)
                 vector<int> near_index;
                 vector<string> near_list;
 
+                int smallcount = 2;
                 for (uint i = 0; i < files_in_mc.size(); i++) {
                     string line_ = files_in_mc[i];
                     size_t found = line_.find(sample_);
@@ -77,10 +79,18 @@ int main(int argc, char** argv)
 
                         near_list.push_back(line_);
                         size_t find_e_ = line_.find("SusyNt.e");// 8 chars
+                        size_t find_p_ = line_.find("SusyNt.p");// 8 chars
                         if (find_e_ != string::npos) {
                             near_index.push_back(atoi(line_.substr(find_e_ + 8, 4).data()));
                         }
-                        else cout << "ERROR: can't find e-number" << endl;
+                        else if (find_p_ != string::npos) {
+                            near_index.push_back(atoi(line_.substr(find_p_ + 8, 4).data()));
+                        }
+                        else {
+                            cout << "ERROR: can't find e,p-number" << endl;
+                            near_index.push_back(smallcount);
+                            smallcount++;
+                        }
                     }
                 }
 
@@ -105,7 +115,7 @@ int main(int argc, char** argv)
         mc_in_.close();
 
         stringstream out_filename;
-        out_filename << MC_TEXT_DIR << OUT_PREFIX << ren_files[f_] << ext;
+        out_filename << MC_TEXT_DIR << OUT_PREFIX << ren_files[f_] << "_" << RUN_SUFFIX << ext;
 
         ofstream out_file;
         out_file.open(out_filename.str().data(), ofstream::trunc);

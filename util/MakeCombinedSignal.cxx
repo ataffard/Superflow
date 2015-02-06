@@ -6,7 +6,7 @@
 #include <iomanip> // setw, setprecision
 #include <iostream>
 #include <fstream> 
-#include <sstream>  // ostringstream
+#include <sstream>  // std::ostringstream
 #include <dirent.h> // UNIX
 #include <vector>
 #include <map>
@@ -38,31 +38,26 @@ using namespace std;
 
 void listFiles(vector<string>& list_, string dir_);
 
-#define MC_TEXT_DIR "/data7/atlas/suneetu/Documents/UCI_XAOD_2014/C3_Superflow/susynt-write/prod/Superflow/data/"
-#define RAW_SAMPLES_DIR "/gdata/atlas/suneetu/Documents/LFV_Higgs2014/output/R35_January_30_XAOD/"
-#define NEW_SAMPLES_DIR "/local/scratch/suneetu/R35_Output_XAOD/"
+#define MC_TEXT_DIR "/gdata/atlas/suneetu/Documents/LFV_Higgs2014/S9_Superflow/Superflow/data/"
+#define RAW_SAMPLES_DIR "/data7/atlas/suneetu/Documents/LFV_Higgs2014/output/R12_September_15/"
+//#define NEW_SAMPLES_DIR "/data7/atlas/suneetu/Documents/LFV_Higgs2014/output/R4_August_30/Processed/"
+#define NEW_SAMPLES_DIR "/local/scratch/suneetu/R12_Output/"
 
-//#define OUT_FILENAME "LFVHTOP8TeV.root"
-#define OUT_FILENAME "LFVHBKG8TeV.root"
+#define OUT_FILENAME "LFVHSIG8TeV.root"
 
 #define OUT_PREFIX "file_list_"
 
-const int n_files = 6;
-string files[] = { "Data", "ww", "zv", "top", "zjets", "higgs" };
+// const int n_files = 6;
+// string files[] = { "Higgs", "top_MCNLO", "WW_Sherpa", "WZ_ZZ_Sherpa", "Zjets_AlpgenPythia", "Data" };
+// string ext = ".txt";
+// 
+// string new_tree_names[] = { "Higgs", "Top", "WW", "ZV", "Zjets", "Data" };
+
+const int n_files = 4;
+string files[] = { "LFV_169670", "LFV_169671", "LFV_169672", "LFV_169673"};
 string ext = ".txt";
 
-string new_tree_names[] = { "Data", "WW", "ZV", "Top", "Zjets", "Higgs" };
-
-string replace(string subject, const string& search, const string& replace)
-{
-    size_t pos = 0;
-    while ((pos = subject.find(search, pos)) != string::npos) {
-        subject.replace(pos, search.length(), replace);
-        pos += replace.length();
-    }
-    return subject;
-}
-
+string new_tree_names[] = { "169670", "169671", "169672", "169673" };
 
 enum hft_sys_type {
     k_sys_object,
@@ -102,72 +97,72 @@ vector<hft_systematic> defineSystematics()
     syst.basename = "CENTRAL";
     hft_syst.push_back(syst);
 
-    // // OBJECT SYSTEMATICS
-    // // these apply to all
-    // syst.sys_type = k_sys_object;
-    // syst.up_name = "UP";
-    // syst.down_name = "DOWN";
-    // syst.preface = "";
-    // syst.adhoc_tcut = "";
-    // syst.binding_group = 0;
-    // 
-    // // EESZ
-    // syst.basename = "EESZ";
-    // hft_syst.push_back(syst);
-    // 
-    // // EER
-    // syst.basename = "EER";
-    // hft_syst.push_back(syst);
-    // 
-    // // EESLOW
-    // syst.basename = "EESLOW";
-    // hft_syst.push_back(syst);
-    // 
-    // // EESMAT
-    // syst.basename = "EESMAT";
-    // hft_syst.push_back(syst);
-    // 
-    // // EESPS
-    // syst.basename = "EESPS";
-    // hft_syst.push_back(syst);
-    // 
-    // // ID
-    // syst.basename = "ID";
-    // hft_syst.push_back(syst);
-    // 
-    // // JES
-    // syst.basename = "JES";
-    // hft_syst.push_back(syst);
-    // 
-    // // MS
-    // syst.basename = "MS";
-    // hft_syst.push_back(syst);
-    // 
-    // // SCALEST
-    // syst.basename = "SCALEST";
-    // hft_syst.push_back(syst);
-    // 
-    // // TES
-    // syst.basename = "TES";
-    // hft_syst.push_back(syst);
-    // 
-    // // ONE-SIDED SYSTEMATICS
-    // // these apply to all
-    // syst.sys_type = k_sys_one_sided_object;
-    // syst.up_name = "";
-    // syst.down_name = "";
-    // syst.preface = "";
-    // syst.adhoc_tcut = "";
-    // syst.binding_group = 0;
-    // 
-    // // JER
-    // syst.basename = "JER";
-    // hft_syst.push_back(syst);
-    // 
-    // // RESOST
-    // syst.basename = "RESOST";
-    // hft_syst.push_back(syst);
-    // 
+    // OBJECT SYSTEMATICS
+    // these apply to all
+    syst.sys_type = k_sys_object;
+    syst.up_name = "UP";
+    syst.down_name = "DOWN";
+    syst.preface = "";
+    syst.adhoc_tcut = "";
+    syst.binding_group = 0;
+
+    // EESZ
+    syst.basename = "EESZ";
+    hft_syst.push_back(syst);
+
+    // EER
+    syst.basename = "EER";
+    hft_syst.push_back(syst);
+
+    // EESLOW
+    syst.basename = "EESLOW";
+    hft_syst.push_back(syst);
+
+    // EESMAT
+    syst.basename = "EESMAT";
+    hft_syst.push_back(syst);
+
+    // EESPS
+    syst.basename = "EESPS";
+    hft_syst.push_back(syst);
+
+    // ID
+    syst.basename = "ID";
+    hft_syst.push_back(syst);
+
+    // JES
+    syst.basename = "JES";
+    hft_syst.push_back(syst);
+
+    // MS
+    syst.basename = "MS";
+    hft_syst.push_back(syst);
+
+    // SCALEST
+    syst.basename = "SCALEST";
+    hft_syst.push_back(syst);
+
+    // TES
+    syst.basename = "TES";
+    hft_syst.push_back(syst);
+
+    // ONE-SIDED SYSTEMATICS
+    // these apply to all
+    syst.sys_type = k_sys_one_sided_object;
+    syst.up_name = "";
+    syst.down_name = "";
+    syst.preface = "";
+    syst.adhoc_tcut = "";
+    syst.binding_group = 0;
+
+    // JER
+    syst.basename = "JER";
+    hft_syst.push_back(syst);
+
+    // RESOST
+    syst.basename = "RESOST";
+    hft_syst.push_back(syst);
+
     // DONE //
     return hft_syst;
 }
@@ -218,7 +213,7 @@ int main(int argc, char** argv)
             ifstream mc_in_(in_filename.str().data());
 
             if (!mc_in_.is_open()) {
-                cout << "File not open. Exiting. -> " << in_filename.str() << endl;
+                cout << "File not open. Exiting." << endl;
                 return 0;
             }
             else {
@@ -268,11 +263,6 @@ int main(int argc, char** argv)
                 string root_file_name = string(RAW_SAMPLES_DIR) + sample_filename;
 
                 TFile* in_file = new TFile(root_file_name.data());
-
-                sample_treename = replace(sample_treename, "id_fakes.emuInc.", "id_fakes."); // FOR FAKES
-
-                // cout << "treename: " << sample_treename << endl;
-
                 TTree* in_tree = static_cast<TTree*>(in_file->Get(sample_treename.data()));
 
                 int n_entries = 0;

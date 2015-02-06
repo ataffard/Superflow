@@ -3,6 +3,7 @@
 #include <string>
 
 #include "SusyNtuple/SusyDefs.h"
+#include "SusyNtuple/SusyNtSys.h"
 
 namespace sflow {
 
@@ -65,7 +66,7 @@ namespace sflow {
 
         SupersysType type;
 
-        SusyNtSys event_syst; /// The event systematics are from SusyDefs
+        Susy::NtSys::SusyNtSys event_syst; /// The event systematics are from SusyDefs
         SupersysWeight weight_syst;
         SupersysWeight weight_syst_up; // The weight systematics are given above.
         SupersysWeight weight_syst_down; // The weight systematics are given above.
@@ -106,9 +107,9 @@ namespace sflow {
 
     class EventSystematic {
     public:
-        EventSystematic(SusyNtSys syst_val);
+        EventSystematic(Susy::NtSys::SusyNtSys syst_val);
 
-        SusyNtSys event_syst_;
+        Susy::NtSys::SusyNtSys event_syst_;
     };
 
     class WeightSystematic {

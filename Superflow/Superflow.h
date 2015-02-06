@@ -24,7 +24,7 @@
 #include "Superflow/Supervar.h"
 #include "Superflow/Supersys.h"
 
-//#include "DileptonMatrixMethod/DileptonMatrixMethod.h"
+#include "DileptonMatrixMethod/DileptonMatrixMethod.h"
 #include "ChargeFlip/chargeFlip.h"
 
 using namespace DataDefinitions;
@@ -83,19 +83,29 @@ namespace sflow {
         void setSingleEventSyst(SusyNtSys nt_syst_);
         void setChain(TChain* input_chain_);
         void setFakeRegion(string fk_reg);
+        void setFake2dParam(bool use2d);
+        void setQFlip();
+        float computeChargeFlipWeight(const LeptonVector &leptons, const SupersysWeight sys);
+        bool isGenuineSS(const LeptonVector& leptons);
+        bool hasQFlip(const LeptonVector& leptons); 
+        bool isMM(const LeptonVector& leptons);
 
     protected:
         void attach_superlink(Superlink* sl_);
 
         DilTrigLogic* m_trigObj; ///< trigger logic class
         MCWeighter* m_mcWeighter; ///< tool to determine the normalization
-        chargeFlip*     m_chargeFlip;
 
+        bool m_do_qflip;
+        chargeFlip*     m_chargeFlip; ///< chargeFlip tool
+
+        // Matrix Method tool and configurables
         susy::fake::DileptonMatrixMethod* m_matrix;
         std::string m_matrixFilename;
         bool m_use2dparametrization;
         bool m_allconfigured;
         bool initMatrixTool();
+        bool selectBaseLineLeptons;
 
         bool computeWeights(
             Susy::SusyNtObject &ntobj,

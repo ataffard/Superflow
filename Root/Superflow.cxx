@@ -10,7 +10,7 @@
 
 #include "Superflow/Superflow.h"
 #include "Superflow/StringTools.h"
-#include "Superflow/SuperTools.h"
+#include "Superflow/PhysicsTools.h"
 
 using namespace std;
 
@@ -22,10 +22,17 @@ namespace sflow {
 
         m_runMode = SuperflowRunMode::null;
 
+        // Matrix Method
         m_matrixFilename = "";
         m_use2dparametrization = false;
         m_allconfigured = false;
         m_matrix = nullptr;
+        m_fake_region = "";
+        selectBaseLineLeptons = false;
+
+        // Charge-flip
+        m_do_qflip = false;
+
 
         m_CutStore_Name_Exists = false;
         m_CutStoreUntitled = 1;
@@ -75,7 +82,6 @@ namespace sflow {
 
         m_sysState = SupersysState::closed;
 
-        m_fake_region = "";
 
         m_sysTemplate.reset();
         m_sys_hasNiceName = false;
@@ -83,7 +89,7 @@ namespace sflow {
         m_sys_hasType = false;
         m_sys_hasSystematic = false;
 
-        m_singleEventSyst = NtSys_NOM;
+        m_singleEventSyst = Susy::NtSys::NOM;
         m_RunSyst = new Supersys(SupersysType::central);
 
         m_tree_leafs_size = 0;
@@ -115,34 +121,34 @@ namespace sflow {
         m_data_periods[ATLAS_stream::Muons][ATLAS_period::J] = "periodJ.physics_Muons.PhysCont";
         m_data_periods[ATLAS_stream::Muons][ATLAS_period::L] = "periodL.physics_Muons.PhysCont";
 
-        m_NtSys_to_string[NtSys_EES_Z_UP] = "EESZUP";
-        m_NtSys_to_string[NtSys_EES_Z_DN] = "EESZDOWN";
-        m_NtSys_to_string[NtSys_EES_MAT_UP] = "EESMATUP";
-        m_NtSys_to_string[NtSys_EES_MAT_DN] = "EESMATDOWN";
-        m_NtSys_to_string[NtSys_EES_PS_UP] = "EESPSUP";
-        m_NtSys_to_string[NtSys_EES_PS_DN] = "EESPSDOWN";
-        m_NtSys_to_string[NtSys_EES_LOW_UP] = "EESLOWUP";
-        m_NtSys_to_string[NtSys_EES_LOW_DN] = "EESLOWDOWN";
-        m_NtSys_to_string[NtSys_EER_UP] = "EERUP";
-        m_NtSys_to_string[NtSys_EER_DN] = "EERDOWN";
-        m_NtSys_to_string[NtSys_MS_UP] = "MSUP";
-        m_NtSys_to_string[NtSys_MS_DN] = "MSDOWN";
-        m_NtSys_to_string[NtSys_ID_UP] = "IDUP";
-        m_NtSys_to_string[NtSys_ID_DN] = "IDDOWN";
-        m_NtSys_to_string[NtSys_JES_UP] = "JESUP";
-        m_NtSys_to_string[NtSys_JES_DN] = "JESDOWN";
-        m_NtSys_to_string[NtSys_JER] = "JER";
-        m_NtSys_to_string[NtSys_SCALEST_UP] = "SCALESTUP";
-        m_NtSys_to_string[NtSys_SCALEST_DN] = "SCALESTDOWN";
-        m_NtSys_to_string[NtSys_RESOST] = "RESOST";
-        m_NtSys_to_string[NtSys_TRIGSF_EL_UP] = "TRIGSFELUP";
-        m_NtSys_to_string[NtSys_TRIGSF_EL_DN] = "TRIGSFELDN";
-        m_NtSys_to_string[NtSys_TRIGSF_MU_UP] = "TRIGSFMUUP";
-        m_NtSys_to_string[NtSys_TRIGSF_MU_DN] = "TRIGSFMUDN";
-        m_NtSys_to_string[NtSys_TES_UP] = "TESUP";
-        m_NtSys_to_string[NtSys_TES_DN] = "TESDOWN";
-        m_NtSys_to_string[NtSys_JVF_UP] = "JVFUP";
-        m_NtSys_to_string[NtSys_JVF_DN] = "JVFDOWN";
+        m_NtSys_to_string[Susy::NtSys::EES_Z_UP] = "EESZUP";
+        m_NtSys_to_string[Susy::NtSys::EES_Z_DN] = "EESZDOWN";
+        m_NtSys_to_string[Susy::NtSys::EES_MAT_UP] = "EESMATUP";
+        m_NtSys_to_string[Susy::NtSys::EES_MAT_DN] = "EESMATDOWN";
+        m_NtSys_to_string[Susy::NtSys::EES_PS_UP] = "EESPSUP";
+        m_NtSys_to_string[Susy::NtSys::EES_PS_DN] = "EESPSDOWN";
+        m_NtSys_to_string[Susy::NtSys::EES_LOW_UP] = "EESLOWUP";
+        m_NtSys_to_string[Susy::NtSys::EES_LOW_DN] = "EESLOWDOWN";
+        m_NtSys_to_string[Susy::NtSys::EER_UP] = "EERUP";
+        m_NtSys_to_string[Susy::NtSys::EER_DN] = "EERDOWN";
+        m_NtSys_to_string[Susy::NtSys::MS_UP] = "MSUP";
+        m_NtSys_to_string[Susy::NtSys::MS_DN] = "MSDOWN";
+        m_NtSys_to_string[Susy::NtSys::ID_UP] = "IDUP";
+        m_NtSys_to_string[Susy::NtSys::ID_DN] = "IDDOWN";
+        m_NtSys_to_string[Susy::NtSys::JES_UP] = "JESUP";
+        m_NtSys_to_string[Susy::NtSys::JES_DN] = "JESDOWN";
+        m_NtSys_to_string[Susy::NtSys::JER] = "JER";
+        m_NtSys_to_string[Susy::NtSys::SCALEST_UP] = "SCALESTUP";
+        m_NtSys_to_string[Susy::NtSys::SCALEST_DN] = "SCALESTDOWN";
+        m_NtSys_to_string[Susy::NtSys::RESOST] = "RESOST";
+        // m_NtSys_to_string[Susy::NtSys::TRIGSF_EL_UP] = "TRIGSFELUP"; // doesn't exist
+        // m_NtSys_to_string[Susy::NtSys::TRIGSF_EL_DN] = "TRIGSFELDN";
+        // m_NtSys_to_string[Susy::NtSys::TRIGSF_MU_UP] = "TRIGSFMUUP";
+        // m_NtSys_to_string[Susy::NtSys::TRIGSF_MU_DN] = "TRIGSFMUDN";
+        m_NtSys_to_string[Susy::NtSys::TES_UP] = "TESUP";
+        m_NtSys_to_string[Susy::NtSys::TES_DN] = "TESDOWN";
+        m_NtSys_to_string[Susy::NtSys::JVF_UP] = "JVFUP";
+        m_NtSys_to_string[Susy::NtSys::JVF_DN] = "JVFDOWN";
     }
 
     Superflow::~Superflow()
@@ -392,7 +398,7 @@ namespace sflow {
     Superflow& Superflow::operator<<(WeightSystematic obj_)
     {
         if (m_sysState == SupersysState::open && m_varState == SupervarState::closed && !m_sys_hasSystematic) {
-            m_sysTemplate.event_syst = NtSys_NOM;
+            m_sysTemplate.event_syst = Susy::NtSys::NOM;
             m_sysTemplate.weight_syst_up = obj_.weight_syst_up;
             m_sysTemplate.weight_syst_down = obj_.weight_syst_down;
             m_sys_hasSystematic = true;
@@ -477,17 +483,30 @@ namespace sflow {
         sl_->baseTaus = &m_baseTaus;
         sl_->baseJets = &m_baseJets;
 
-        sl_->leptons = &m_signalLeptons;
-        sl_->electrons = &m_signalElectrons;
-        sl_->muons = &m_signalMuons;
+        if (m_runMode == SuperflowRunMode::fakes) {
+            sl_->leptons = &m_baseLeptons;
+            sl_->electrons = &m_baseElectrons;
+            sl_->muons = &m_baseMuons;
+        }
+        else {
+            sl_->leptons = &m_signalLeptons;
+            sl_->electrons = &m_signalElectrons;
+            sl_->muons = &m_signalMuons;
+        }
+        sl_->leptons = selectBaseLineLeptons ? &m_baseLeptons : &m_signalLeptons;
+        sl_->electrons = selectBaseLineLeptons ? &m_baseElectrons : &m_signalElectrons;
+        sl_->muons = selectBaseLineLeptons ? &m_baseMuons : &m_signalMuons;
+
         sl_->taus = &m_signalTaus;
-        sl_->jets = &m_signalJets;
+        sl_->jets = &m_signalJets2Lep;
 
         sl_->met = m_met;
 
         sl_->dileptonTrigger = m_trigObj;
 
         sl_->jvfTool = m_jvfTool;
+
+        sl_->fakeMatrix = m_matrix;
 
         if (nt.evt()->isMC) {
             sl_->isMC = true;
@@ -517,7 +536,7 @@ namespace sflow {
             exit(1);
         }
 
-        if (m_runMode == SuperflowRunMode::single_event_syst && m_singleEventSyst == NtSys_NOM) {
+        if (m_runMode == SuperflowRunMode::single_event_syst && m_singleEventSyst == Susy::NtSys::NOM) {
             cout << app_name << "ERROR (Fatal): SuperflowRunMode::single_event_syst: Call setSingleEventSyst(SusyNtSys nt_syst_)." << endl;
             exit(1);
         }
@@ -567,11 +586,39 @@ namespace sflow {
         bool useReweightUtils = false;
         m_trigObj = new DilTrigLogic(period, useReweightUtils);
 
-        if (m_runMode == SuperflowRunMode::fakes) {    // DANTRIM   FAKE
-            m_use2dparametrization = false;
-            m_matrixFilename = "/gdata/atlas/dantrim/SuperHistFitter_00/DileptonMatrixMethod/data/FakeMatrix_Oct_20.root";
+        // -------------- Configure ChargeFlip Tool [BEGIN] ---------------------//
+        // Currently set-up to run ChargeFlip-00-00-11 which has the 
+        // charge flip map chargeFlip.root and the functionality as used
+        // here
+        // TODO: re-configure for Emma's  new map (--Dantrim 11/18/2014)
+        if (m_do_qflip) {  // global switch set in SuperflowQFlip executable
+            //string chargeFlipInput = "../../ChargeFlip/data/chargeFlip.root";
+            //    string xsecDir = gSystem->ExpandPathName("$ROOTCOREBIN/data/SUSYTools/mc12_8TeV/");
+            string chargeFlipInput = gSystem->ExpandPathName("$ROOTCOREBIN/data/ChargeFlip/chargeflip_map_12nov2014.root");
+            //    string chargeFlipInput = "../../ChargeFlip/data/chargeflip_map_12nov2014.root";
+            ifstream qflipFile(chargeFlipInput.data());
+            if (qflipFile) {
+                cout << "\n >>> Using chargeflip map: " << chargeFlipInput << ". " << endl;
+            }
+            else {
+                cout << "ERROR (Fatal): chargeflip map file (" << chargeFlipInput << ") does not exist or cannot be opened. Exitting. " << endl;
+                exit(1);
+            }
+            m_chargeFlip = new chargeFlip(chargeFlipInput);
+        }
+        // ---------------- Configure ChargeFlip Tool [END] ---------------------//
+        // ----------------- Configure Matrix Tool [BEGIN] ------------------------//
+        // cf https://github.com/gerbaudo/DileptonMatrixMethod/
+        if (m_runMode == SuperflowRunMode::fakes) {
+            m_matrixFilename = "/gdata/atlas/suneetu/Documents/LFV_Higgs2014/T3_Superflow/Superflow/data/FakeMatrix_Dec_10.root"; // gSystem->ExpandPathName("$ROOTCOREBIN/data/DileptonMatrixMethod/FakeMatrix_Oct_28.root");
+            ifstream the_matrix(m_matrixFilename.data());
+            if (!the_matrix) {
+                cout << "ERROR (Fatal): matrix method matrix at " << m_matrixFilename << " does not exist or cannot be opened. Exitting. " << endl;
+                exit(1);
+            }
             m_allconfigured = initMatrixTool();
         }
+        // ----------------- Configure Matrix Tool [END] ------------------------//
     }
 
     void Superflow::Init(TTree* tree)
@@ -583,7 +630,9 @@ namespace sflow {
             m_runMode = SuperflowRunMode::data; // Changing the run mode!!
         }
         else if (m_runMode != SuperflowRunMode::fakes) {
+            cout << app_name << "Initializing McWeighter..." << endl;
             initMcWeighter(tree);
+
         }
 
         // output file name
@@ -883,7 +932,7 @@ namespace sflow {
     Bool_t Superflow::Process(Long64_t entry)
     {
         GetEntry(entry);
-        bool save_entry_to_list = true;
+        bool save_entry_to_list = false;
 
         m_chainEntry++; // SusyNtAna counter
 
@@ -1369,14 +1418,14 @@ namespace sflow {
                 isPmssmSample = true;
             }
 
-            m_mcWeighter->parseAdditionalXsecFile("${ROOTCOREBIN}/data/Superflow/LFV.txt", /*m_dbg*/ false);
+            //   m_mcWeighter->parseAdditionalXsecFile("${ROOTCOREBIN}/data/Superflow/LFV.txt", /*m_dbg*/ false);
 
             if (isPmssmSample) {
                 m_mcWeighter->setLabelBinCounter("Initial").clearAndRebuildSumwMap(m_tree);
             }
-            if (m_dbg) {
-                cout << app_name << "MCWeighter has been initialized." << endl;
-            }
+
+            cout << app_name << "MCWeighter has been initialized." << endl;
+
         }
         else {
             cout << app_name << "ERROR: Invalid input tree, cannot initialize MCWeighter." << endl;
@@ -1384,15 +1433,23 @@ namespace sflow {
         return success;
     }
 
-    bool Superflow::initMatrixTool()            // FAKE
+    // ----------------------- Initialize Matrix Tool [BEGIN] ------------------------ //
+    bool Superflow::initMatrixTool()
     {
-        std::cout << "\n ----- Initializating DileptonMatrixMethod ------\n" << std::endl;
+        std::cout << "\n    ----- Initializating DileptonMatrixMethod    -----" << std::endl;
         m_matrix = new susy::fake::DileptonMatrixMethod();
+        if (m_use2dparametrization) {
+            std::cout << " ----- Using 2D-Parametrized Fake Weight Calculation ----- \n" << std::endl;
+        }
         susy::fake::Parametrization::Value p = (m_use2dparametrization ? susy::fake::Parametrization::PT_ETA : susy::fake::Parametrization::PT);
         std::vector<std::string> regions;
-        regions.push_back(m_fake_region);             // FAKE
+        regions.push_back(m_fake_region);
+        for (int i = 0; i < regions.size(); ++i) {
+            std::cout << ">> Available fake-region:  " << regions[i] << std::endl;
+        }
         return m_matrix->configure(m_matrixFilename, regions, p, p, p, p);
     }
+    // ----------------------- Initialize Matrix Tool [END] --------------------------- //
 
     bool Superflow::computeWeights(
         Susy::SusyNtObject &ntobj,
@@ -1405,60 +1462,72 @@ namespace sflow {
     {
 
         if (m_runMode == SuperflowRunMode::fakes) {
-
             susy::fake::Systematic::Value fake_sys = susy::fake::Systematic::Value::SYS_NOM;
             bool do_fake_ = false;         // FAKE
+            bool do_syst_ = false;
 
             switch (super_sys->weight_syst) {
                 case SupersysWeight::ELFRUP: {
                     fake_sys = susy::fake::Systematic::Value::SYS_EL_FR_UP;
                     do_fake_ = true;
+                    do_syst_ = true;
                 }   break;
                 case SupersysWeight::ELFRDOWN: {
                     fake_sys = susy::fake::Systematic::Value::SYS_EL_FR_DOWN;
                     do_fake_ = true;
+                    do_syst_ = true;
                 }   break;
                 case SupersysWeight::ELREUP: {
                     fake_sys = susy::fake::Systematic::Value::SYS_EL_RE_UP;
                     do_fake_ = true;
+                    do_syst_ = true;
                 }   break;
                 case SupersysWeight::ELREDOWN: {
                     fake_sys = susy::fake::Systematic::Value::SYS_EL_RE_DOWN;
                     do_fake_ = true;
+                    do_syst_ = true;
                 }   break;
                 case SupersysWeight::MUFRUP: {
                     fake_sys = susy::fake::Systematic::Value::SYS_MU_FR_UP;
                     do_fake_ = true;
+                    do_syst_ = true;
                 }   break;
                 case SupersysWeight::MUFRDOWN: {
                     fake_sys = susy::fake::Systematic::Value::SYS_MU_FR_DOWN;
                     do_fake_ = true;
+                    do_syst_ = true;
                 }   break;
                 case SupersysWeight::MUREUP: {
                     fake_sys = susy::fake::Systematic::Value::SYS_MU_RE_UP;
                     do_fake_ = true;
+                    do_syst_ = true;
                 }   break;
                 case SupersysWeight::MUREDOWN: {
                     fake_sys = susy::fake::Systematic::Value::SYS_MU_RE_DOWN;
                     do_fake_ = true;
+                    do_syst_ = true;
                 }   break;
                 case SupersysWeight::null: {
                     do_fake_ = true;
+                    do_syst_ = false;
                 } break;
                 default: break;
+            }
+            if (do_fake_) {
 
-                    if (do_fake_) {
-                        Superlink* sl_ = new Superlink;
-                        attach_superlink(sl_);
+                Superlink* sl_ = new Superlink;
+                attach_superlink(sl_);
 
-                        weights_->fake = SuperTools::getFakeWeight(sl_, m_fake_region, fake_sys);
-                    }
-            } // end if runMode fakes
+                weights_->fake = PhysicsTools::getFakeWeight(sl_, m_fake_region, fake_sys, do_syst_);
+            }
+            //   } // end if runMode fakes
+
         }
 
         // MCWeighter's susynt-weight calculation
         if (ntobj.evt()->isMC) {
             MCWeighter::WeightSys wSys = MCWeighter::Sys_NOM;
+
 
             bool do_susynt_w = false;
 
@@ -1489,7 +1558,7 @@ namespace sflow {
                 default: break;
             }
             if (do_susynt_w) {
-                weights_->susynt = weighter.getMCWeight(ntobj.evt(), LUMI_A_L, wSys);
+                weights_->susynt = weighter.getMCWeight(ntobj.evt(), 5594, wSys);
             }
 
             // Other weight systematic variations
@@ -1516,23 +1585,23 @@ namespace sflow {
                 }
 
                 bool do_lep_triggers_ = false; // do_lep_triggers_
-                SusyNtSys trig_sys = NtSys_NOM;
+                SusyNtSys trig_sys = Susy::NtSys::NOM;
 
                 switch (super_sys->weight_syst) {
                     case SupersysWeight::ETRIGREWUP: {
-                        trig_sys = NtSys_TRIGSF_EL_UP;
+                        trig_sys = Susy::NtSys::TRIGSF_EL_UP;
                         do_lep_triggers_ = true;
                     } break;
                     case SupersysWeight::ETRIGREWDOWN: {
-                        trig_sys = NtSys_TRIGSF_EL_DN;
+                        trig_sys = Susy::NtSys::TRIGSF_EL_DN;
                         do_lep_triggers_ = true;
                     } break;
                     case SupersysWeight::MTRIGREWUP: {
-                        trig_sys = NtSys_TRIGSF_MU_UP;
+                        trig_sys = Susy::NtSys::TRIGSF_MU_UP;
                         do_lep_triggers_ = true;
                     } break;
                     case SupersysWeight::MTRIGREWDOWN: {
-                        trig_sys = NtSys_TRIGSF_MU_DN;
+                        trig_sys = Susy::NtSys::TRIGSF_MU_DN;
                         do_lep_triggers_ = true;
                     } break;
                     case SupersysWeight::null: {
@@ -1561,11 +1630,31 @@ namespace sflow {
                 if (do_btag_) {
                     weights_->btag = computeBtagWeight(jets, nt.evt(), super_sys->weight_syst);
                 }
+
+                if (m_do_qflip) { // global switch set in SuperflowQFlip executable
+                    bool do_qflip_ = false;
+
+                    switch (super_sys->weight_syst) {
+                        case SupersysWeight::BKGMETHODUP:
+                        case SupersysWeight::BKGMETHODDOWN:
+                        case SupersysWeight::null: {
+                            do_qflip_ = true;
+                        } break;
+                        default: break;
+                    } // switch
+                    bool  isMuMu(isMM(leptons));
+                    bool  isGenSS(isGenuineSS(leptons));
+                    if (do_qflip_ && !isMuMu && !isGenSS) {
+                        weights_->qflip = computeChargeFlipWeight(leptons, super_sys->weight_syst);
+                    }
+                } // end if(m_do_qflip)
+
             }
         }
 
         return true;
     }
+
 
     double Superflow::computeDileptonTriggerWeight(const LeptonVector &leptons, const SusyNtSys sys)
     {
@@ -1613,6 +1702,70 @@ namespace sflow {
         return effFactor;
     }
 
+    float Superflow::computeChargeFlipWeight(const LeptonVector &leptons, const SupersysWeight sys)
+    {
+        float qflipProb = 1.0;
+
+        //   if(!isGenSS && isMuMu ) return 0.0;
+        //   if(!isGenSS && !isMuMu){
+        const LeptonVector &ls = leptons;
+        Susy::Lepton* l0 = ls[0];
+        Susy::Lepton* l1 = ls[1];
+        int pdg0 = l0->isEle() ? 11 : 13;
+        int pdg1 = l1->isEle() ? 11 : 13;
+        TVector2 met(m_met->lv().Px(), m_met->lv().Py());
+        int _sys = (sys == SupersysWeight::BKGMETHODUP ? +1 :
+                    (sys == SupersysWeight::BKGMETHODDOWN ? -1 : 0)); // convert to convention used in ChargeFlip (sys==0 --> nominal)
+        bool isData = false; // this is used only in new verisions of ChargeFlip package
+        m_chargeFlip->setSeed(nt.evt()->event);
+        float flipProb(m_chargeFlip->OS2SS(pdg0, l0, pdg1, l1, _sys, isData, chargeFlip::dataonly)); // newer version
+        //float flipProb(m_chargeFlip->OS2SS(pdg0, l0, pdg1, l1, &met, syst));
+        float overlapFrac(m_chargeFlip->overlapFrac().first);
+
+        qflipProb = flipProb*overlapFrac;
+        //            if(sys==SupersysWeight::BKGMETHODUP) qflipProb *= 1.5;
+        //            if(sys==SupersysWeight::BKGMETHODDOWN) qflipProb *= 0.5;
+
+        //            return qflipProb;
+        // check if final qflipProb > 0.0 && < 1.0 before returning?
+        //        }
+
+        return qflipProb;
+        //        else{
+        //            return 1.0;
+        //        }
+    }
+    bool Superflow::isGenuineSS(const LeptonVector& leps)
+    {
+        bool lessThanTwo = (leps.size() < 2) ? true : false;
+        bool qFlipPresent = hasQFlip(leps) ? true : false;
+        float qq = leps.at(0)->q * leps.at(1)->q;
+        bool ntOS = (qq < 0) ? true : false;
+        if (!lessThanTwo && !qFlipPresent && !ntOS) return true;
+        else {
+            return false;
+        }
+    }
+    bool Superflow::hasQFlip(const LeptonVector& leps)
+    {
+        bool lessThanTwo = (leps.size() < 2) ? true : false;
+        const Susy::Lepton* l0 = leps.at(0);
+        const Susy::Lepton* l1 = leps.at(1);
+        bool l0_isQFlip = l0->isEle() ? (static_cast<const Susy::Electron*>(l0))->isChargeFlip : false;
+        bool l1_isQFlip = l1->isEle() ? (static_cast<const Susy::Electron*>(l1))->isChargeFlip : false;
+        if (!lessThanTwo && (l0_isQFlip || l1_isQFlip)) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    bool Superflow::isMM(const LeptonVector& leps)
+    {
+        return (leps.at(0)->isMu() && leps.at(1)->isMu());
+    }
+
+
     void Superflow::setCountWeights(bool value) ///> public function, if set true it prints the weighted cutflow
     {
         m_countWeights = value;
@@ -1636,6 +1789,15 @@ namespace sflow {
     void Superflow::setFakeRegion(string fk_reg)
     {
         m_fake_region = fk_reg;
+        selectBaseLineLeptons = true;
+    }
+    void Superflow::setFake2dParam(bool use2d)
+    {
+        m_use2dparametrization = use2d;
+    }
+    void Superflow::setQFlip()
+    {
+        m_do_qflip = true;
     }
 }
 
