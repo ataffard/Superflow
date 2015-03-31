@@ -69,6 +69,45 @@ int main(int argc, char* argv[])
 
     *cutflow << CutName("read in") << [](Superlink* sl) -> bool { return true; };
 
+    int cutFlags = 0;
+    
+
+    *cutflow << CutName("pass GRL") << [&](Superlink* sl) -> bool { 
+        cutFlags = sl->nt->evt()->cutFlags[sl->nt_sys];
+        bool pass_grl(cutFlags & ECut_GRL);
+        return pass_grl;
+    };
+
+    *cutflow << CutName("error flags") << [&](Superlink* sl) -> bool {
+        bool passLarErr(cutFlags & ECut_LarErr);
+        bool pass_tile(cutFlags & ECut_TileErr);
+        bool pass_TTC(cutFlags & ECut_TTC);
+        bool passFlags(passLarErr && pass_tile && pass_TTC);
+        return passFlags;
+    };
+
+    *cutflow << CutName("bad muon") << [&](Superlink* sl) -> bool {
+        bool pass_bad_moun(cutFlags & ECut_BadMuon);
+        return pass_bad_moun;
+    };
+    
+    *cutflow << CutName("jet cleaning") << [&](Superlink *sl) -> bool {
+        bool passJetCleaning(cutFlags & ECut_BadJet);
+        return passJetCleaning;
+    };
+   
+    *cutflow << CutName("pass good vtx") << [&](Superlink *sl) -> bool {
+        bool pass_goodpv(cutFlags & ECut_GoodVtx);
+        return pass_goodpv;
+    }; 
+    
+    *cutflow << CutName("cosmics") << [&](Superlink *sl) -> bool {
+        bool pass_cosmic(cutFlags & ECut_Cosmic);
+        return pass_cosmic;
+    };
+    
+                
+
     *cutflow << CutName("exactly two base leptons") << [](Superlink* sl) -> bool {
         return sl->baseLeptons->size() == 2;
     };
@@ -448,7 +487,32 @@ int main(int argc, char* argv[])
     }
 
 
+/*Mine
+ *
     *cutflow << NewVar("jet-1 Pt"); {
+        *cutflow << HFTname("jet1Pt");
+        if(central_light_jets.size() >= 1){ 
+		*cutflow << [&](Superlink* sl, var_float*) -> double {return central_light_jets[0]->Pt();};}
+        *cutflow << SaveVar();
+    }
+
+    *cutflow << NewVar("jet-1 Eta"); {
+        *cutflow << HFTname("jet1Eta");
+         if(central_light_jets.size() >= 1) {
+		*cutflow << [&](Superlink* sl, var_float*) -> double {return central_light_jets[0]->Eta();};}
+        *cutflow << SaveVar();
+    }
+
+*/
+
+/****
+ * 
+ * q
+ *	Back up of previous (had errors)
+ *
+  
+*/
+  *cutflow << NewVar("jet-1 Pt"); {
         *cutflow << HFTname("jet1Pt");
         *cutflow << [&](Superlink* sl, var_float*) -> double {
             return central_light_jets.size() >= 1 ? central_light_jets[0]->Pt() : 0.0;
@@ -464,6 +528,8 @@ int main(int argc, char* argv[])
         *cutflow << SaveVar();
     }
 
+
+
     *cutflow << NewVar("jet-1 Phi"); {
         *cutflow << HFTname("jet1Phi");
         *cutflow << [&](Superlink* sl, var_float*) -> double {
@@ -471,6 +537,52 @@ int main(int argc, char* argv[])
         };
         *cutflow << SaveVar();
     }
+
+
+
+
+
+ /********
+ *
+ *
+ *
+ *	Use this as template from 2 below...
+ *
+ *
+ *
+    *cutflow << NewVar("jet-1 Pt"); {
+        *cutflow << HFTname("jet1Pt");
+        if(central_light_jets.size() >= 1) 
+		*cutflow << [&](Superlink* sl, var_float*) -> double {return central_light_jets[0]->Pt();};
+        *cutflow << SaveVar();
+    }
+
+   
+*/
+
+
+
+/* Mine
+ *
+    *cutflow << NewVar("jet-2 Pt"); {
+        *cutflow << HFTname("jet2Pt");
+        if(central_light_jets.size() >= 2) {*cutflow << [&](Superlink* sl, var_float*) -> double {return  central_light_jets[1]->Pt();};}
+        *cutflow << SaveVar();
+    }
+
+    *cutflow << NewVar("jet-2 Eta"); {
+        *cutflow << HFTname("jet2Eta");
+        if(central_light_jets.size() >= 2){
+		*cutflow << [&](Superlink* sl, var_float*) -> double {return central_light_jets[1]->Eta();};}
+        *cutflow << SaveVar();
+    }
+*/
+
+/**
+ *
+ *	Backup of previous (had errors)
+ *
+ */
 
     *cutflow << NewVar("jet-2 Pt"); {
         *cutflow << HFTname("jet2Pt");
@@ -487,6 +599,7 @@ int main(int argc, char* argv[])
         };
         *cutflow << SaveVar();
     }
+
 
     *cutflow << NewVar("jet-2 Phi"); {
         *cutflow << HFTname("jet2Phi");

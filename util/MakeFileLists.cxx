@@ -7,10 +7,11 @@
 #include <fstream> 
 #include <sstream>  // std::ostringstream
 #include <dirent.h> // UNIX
+#include <iostream>
 
 #include "TChain.h"
 #include "TCanvas.h"
-#include "Cintex/Cintex.h"
+//#include "Cintex/Cintex.h"
 
 using namespace std;
 
@@ -29,7 +30,7 @@ string ren_files[] = { "Higgs", "ttbar", "WW", "ZV", "ZPlusJets" };
 
 int main(int argc, char** argv)
 {
-    ROOT::Cintex::Cintex::Enable();
+//    ROOT::Cintex::Cintex::Enable();
 
     vector<string> sample_numbers;
     vector<string> files_in_mc;

@@ -46,8 +46,8 @@ using namespace sflow;
 
 #define DEBUG_NTC true
 
-#define DIR_0 "/scratch/suneetu/R35_Output_XAOD/"
-#define DIR_1 "/data7/atlas/suneetu/Documents/UCI_XAOD_2014/C3_Superflow/susynt-write/prod/Superflow/plots/x7_testing/"
+#define DIR_0 "/gdata/atlas/suneetu/Documents/UCI_XAOD_2014/R35_Trees/"
+#define DIR_1 "/data7/atlas/btullyha/UCI_XAOD_Validation/X1_SusyNt/susynt-write/prod/Superflow/plots/"
 
 #define BG_FILE "LFVHBKG8TeV.root"
 #define DATA_FILE "LFVHBKG8TeV.root"
@@ -277,7 +277,9 @@ vector<plot> definePlots()
     // plot_.is_Log = true;
 
 
-#include "Superflow/define_test_SR.cxx"
+//#include "Superflow/define_test_SR.cxx"
+#include "Superflow/define_test_Zee.cxx"
+#include "Superflow/define_test_Zmm.cxx"
 // #include "Superflow/define_test_VR_5.cxx"
 // #include "Superflow/define_test_ptconeplots.cxx"
 
@@ -328,6 +330,9 @@ int main(int argc, char* argv[])
     stringstream tcuts_join;
 
     //SR_OPT_no_jets
+   
+
+/* 
     tcuts_join << "isOS && lept1Pt>30. && lept2Pt>20. && nCentralBJets>0 && nForwardJets==0 && MT2 > 40.0";
     tcuts_join << " && ((lept1isEle && lept1d0_sig<5.0 && lept1z0sin_theta<0.4) || (lept1isMu && lept1d0_sig<3.0 && lept1z0sin_theta<1.0)) && ((lept2isEle && lept2d0_sig<5.0 && lept2z0sin_theta<0.4) || (lept2isMu && lept2d0_sig<3.0 && lept2z0sin_theta<1.0))";
     tcuts_join << " && ((lept1isEle && lept1ptcone30_Pt<0.16 && lept1etcone20_Pt<0.18) || (lept1isMu && lept1ptcone30_Pt<0.12)) && ((lept2isEle && lept2ptcone30_Pt<0.16 && lept2etcone20_Pt<0.18) || (lept2isMu && lept2ptcone30_Pt<0.12))";
@@ -349,14 +354,22 @@ int main(int argc, char* argv[])
     tcuts["VR_Zee"] = tcuts_join.str(); tcuts_join.str("");// clear stringstream
 
 
+*/   
+    tcuts_join << "isOS && isElEl && lept1Pt>30. && lept2Pt>30. && abs(ll_M - 91.2)<10";
+    tcuts["Zee"] = tcuts_join.str(); tcuts_join.str("");
+
+    tcuts_join << "isOS && isMuMu && lept1Pt>30. && lept2Pt>30. && abs(ll_M - 91.2)<10";
+    tcuts["Zmm"] = tcuts_join.str(); tcuts_join.str("");
+	
+/*
     tcuts_join << "isOS && (isEM|| isME) && !(ll_M>(91.2-10.) && ll_M<(91.2+10.)) && met>50. && nCentralBJets==0";
     tcuts["VR_X5"] = tcuts_join.str(); tcuts_join.str("");// clear stringstream
 
     tcuts_join << "isOS && isMuMu && nCentralBJets==0";
     tcuts["VR_MuMu"] = tcuts_join.str(); tcuts_join.str("");// clear stringstream
-
+    
     tcuts["none"] = "1";
-
+*/
     TCanvas* ttemp = new TCanvas("canvas_1", "", 768, 768);
 
     vector<vector<vector<double>>> table_columns;
@@ -384,7 +397,6 @@ int main(int argc, char* argv[])
         cout << setprecision(4);
         cout << std::fixed;
         cout << "+++++++++++++ " << plot_.signal_region << " +++++++++++++" << endl;
-
         // Complete/finalize TCut strings.
         stringstream signal_region_stream;
         signal_region_stream << "( ";
